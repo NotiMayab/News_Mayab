@@ -1,0 +1,15 @@
+baseURL = "https://newsmayab.example.org/"
+locale = "es-mx"
+defaultContentLanguage = "es"
+title = "News Mayab — Transparencia y Trazabilidad Informativa en Yucatán"
+disableKinds = ["taxonomy", "term"]
+enableRobotsTXT = true
+
+[security]
+  [security.funcs]
+    getenv = ['^HUGO_']
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = false

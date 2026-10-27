@@ -1,0 +1,20 @@
+{{ define "main" }}
+<section>
+  <h1>Cobertura Agrupada por Evento y Orígenes Independientes</h1>
+  <p>Una historia, varias versiones: distinguimos cuántos medios publican una nota frente a cuántos <strong>orígenes independientes</strong> la sustentan.</p>
+  {{ $eventos := where .Site.RegularPages "Section" "eventos" }}
+  {{ if eq (len $eventos) 0 }}
+    <div class="card">
+      <span class="badge">Estado del Sistema: Base de Datos y Esqueleto Listos (Fase B)</span>
+      <p>Aún no se han exportado eventos desde <code>state.sqlite</code>. Consulta nuestra <a href="/metodologia/">Metodología Pública</a>.</p>
+    </div>
+  {{ else }}
+    {{ range $eventos }}
+      <article class="card">
+        <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+        <p>{{ .Summary }}</p>
+      </article>
+    {{ end }}
+  {{ end }}
+</section>
+{{ end }}

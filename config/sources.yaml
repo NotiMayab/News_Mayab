@@ -1,0 +1,179 @@
+# =============================================================================
+# Catálogo Semilla de Fuentes y Grupos Propietarios — News_Mayab
+# =============================================================================
+# REGLA ANTI-ECO (ADR-002 / Threat Model #6):
+# Múltiples medios que comparten `ownership_group_id` cuentan como MÁXIMO 1 origen
+# independiente para un mismo evento, independientemente de su redacción.
+
+ownership_groups:
+  - ownership_group_id: "GRP_MEGACOMUNICACION_YUC"
+    display_name: "Grupo Megamedia / Corporativo Diario de Yucatán"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Grupo editorial privado regional con sede en Mérida, Yucatán."
+
+  - ownership_group_id: "GRP_PORESTO_PENINSULA"
+    display_name: "Compañía Editora del Mayab (Por Esto!)"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Grupo editorial impreso y digital con cobertura en Yucatán, Campeche y Quintana Roo."
+
+  - ownership_group_id: "GRP_SIPSE"
+    display_name: "Grupo SIPSE"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Consorcio regional de televisión, radio y prensa digital en la Península de Yucatán."
+
+  - ownership_group_id: "GRP_GOB_ESTATAL_YUC"
+    display_name: "Gobierno del Estado de Yucatán y Dependencias Estatales"
+    group_type: "PUBLIC_STATE_ENTITY"
+    transparency_notes: "Comunicación social oficial del Poder Ejecutivo del Estado de Yucatán. Todas sus dependencias cuentan como un único origen oficial."
+
+  - ownership_group_id: "GRP_AYUNTAMIENTO_MERIDA"
+    display_name: "Ayuntamiento de Mérida"
+    group_type: "PUBLIC_STATE_ENTITY"
+    transparency_notes: "Comunicación social oficial del gobierno municipal de Mérida."
+
+  - ownership_group_id: "GRP_UADY_ACADEMIA"
+    display_name: "Universidad Autónoma de Yucatán (UADY)"
+    group_type: "ACADEMIC_INSTITUTION"
+    transparency_notes: "Universidad pública autónoma estatal; boletines científicos, culturales e institucionales."
+
+  - ownership_group_id: "GRP_CICY_CONAHCYT"
+    display_name: "Centro de Investigación Científica de Yucatán (CICY)"
+    group_type: "ACADEMIC_INSTITUTION"
+    transparency_notes: "Centro público de investigación científica y tecnológica con sede en Mérida."
+
+  - ownership_group_id: "GRP_ANIMAL_POLITICO"
+    display_name: "Grupo Editorial Criterio / Animal Político"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Medio digital nacional especializado en periodismo de investigación y verificación."
+
+  - ownership_group_id: "GRP_LA_JORNADA_MAYA"
+    display_name: "La Jornada Maya / Demos"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Edición peninsular vinculada a la franquicia periodística de La Jornada."
+
+  - ownership_group_id: "GRP_PROCESO"
+    display_name: "Comunicación e Información S.A. de C.V. (Proceso)"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Revista y portal nacional de investigación periodística."
+
+  - ownership_group_id: "GRP_DW_GLOBAL"
+    display_name: "Deutsche Welle (DW Español)"
+    group_type: "PUBLIC_STATE_ENTITY"
+    transparency_notes: "Radiodifusora pública internacional de Alemania regulada por derecho público."
+
+  - ownership_group_id: "GRP_BBC_MUNDO"
+    display_name: "BBC News Mundo"
+    group_type: "PUBLIC_STATE_ENTITY"
+    transparency_notes: "Servicio público internacional británico en español."
+
+sources:
+  # --- YUCATÁN Y PENÍNSULA ---
+  - source_id: "yuc_jornada_maya"
+    name: "La Jornada Maya"
+    rss_url: "https://www.lajornadamaya.mx/rss"
+    website_url: "https://www.lajornadamaya.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_LA_JORNADA_MAYA"
+    editorial_stance_note: "Cobertura regional de Yucatán, Campeche y Quintana Roo."
+    geographic_scope: "REGIONAL_PENINSULA"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_sipse_merida"
+    name: "Novedades Yucatán (SIPSE)"
+    rss_url: "https://sipse.com/rss/merida.xml"
+    website_url: "https://sipse.com/novedades-yucatan/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_SIPSE"
+    editorial_stance_note: "Cobertura generalista y policiaca de Mérida y municipios de Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_poresto"
+    name: "Por Esto! Yucatán"
+    rss_url: "https://www.poresto.net/rss/feed.xml"
+    website_url: "https://www.poresto.net/yucatan/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_PORESTO_PENINSULA"
+    editorial_stance_note: "Diario regional con amplia cobertura de municipios de Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_diario_yucatan"
+    name: "Diario de Yucatán"
+    rss_url: "https://www.yucatan.com.mx/feed"
+    website_url: "https://www.yucatan.com.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_MEGACOMUNICACION_YUC"
+    editorial_stance_note: "Diario decano regional de línea editorial tradicional/conservadora en Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_cicy_ciencia"
+    name: "CICY — Divulgación y Prensa Científica"
+    rss_url: "https://www.cicy.mx/sitios/noticias/rss"
+    website_url: "https://www.cicy.mx"
+    source_type: "ACADEMIC"
+    ownership_group_id: "GRP_CICY_CONAHCYT"
+    editorial_stance_note: "Comunicados de investigación en biología, energía, agua y recursos naturales en Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: true
+
+  # --- NACIONAL (MÉXICO) ---
+  - source_id: "mex_animal_politico"
+    name: "Animal Político"
+    rss_url: "https://www.animalpolitico.com/feed"
+    website_url: "https://www.animalpolitico.com"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_ANIMAL_POLITICO"
+    editorial_stance_note: "Periodismo nacional de investigación, datos abiertos y verificación (El Sabueso)."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "mex_proceso"
+    name: "Proceso"
+    rss_url: "https://www.proceso.com.mx/rss/feed.html?r=1"
+    website_url: "https://www.proceso.com.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_PROCESO"
+    editorial_stance_note: "Cobertura política, derechos humanos y seguridad nacional."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  # --- MUNDIAL Y CIENCIA ---
+  - source_id: "glo_dw_espanol"
+    name: "DW Español"
+    rss_url: "https://rss.dw.com/xml/rss-sp-all"
+    website_url: "https://www.dw.com/es/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_DW_GLOBAL"
+    editorial_stance_note: "Cobertura internacional, ciencia, medio ambiente y derechos humanos."
+    geographic_scope: "GLOBAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "glo_bbc_mundo"
+    name: "BBC News Mundo"
+    rss_url: "https://feeds.bbci.co.uk/mundo/rss.xml"
+    website_url: "https://www.bbc.com/mundo"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_BBC_MUNDO"
+    editorial_stance_note: "Cobertura global, América Latina, ciencia y salud."
+    geographic_scope: "GLOBAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true

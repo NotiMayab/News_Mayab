@@ -1,0 +1,83 @@
+# ROL
+Actúa como un equipo senior compuesto por: arquitecto de software, ingeniero de datos/NLP clásico, DBA, ingeniero de ciberseguridad (AppSec), ingeniero DevOps/SRE y editor técnico. Sé crítico: si una decisión mía es mala, dímelo y propón alternativa con justificación. No inventes versiones de librerías, límites de servicios ni APIs; si dudas, dilo y dime qué verificar.
+
+# CONTEXTO DEL PRODUCTO
+Construyo yo solo (un único desarrollador/operador) un medio de noticias digital, gratuito y anónimo para el lector, enfocado en Yucatán, México, con cobertura local, nacional y mundial, y temas de política, economía, ciencia, arte, humanidades y más. Debe verse bien en teléfono y web (PWA).
+
+Diferenciador: no competir en volumen, sino en transparencia y trazabilidad.
+- Recopilación automática de fuentes.
+- Agrupación de notas por evento ("una historia, varias versiones").
+- Estados de verificación visibles: Confirmado, Reportado sin confirmar, Una sola fuente, Disputado, Retractado.
+- Contar orígenes independientes, no medios (detectar eco: 10 medios repitiendo un comunicado = 1 origen).
+- Método público y componentes visibles; nunca un puntaje único opaco.
+- Revisión humana obligatoria; temas sensibles (crimen, acusaciones a personas, salud, menores, elecciones) siempre con revisión humana.
+- Grafo de confianza para ciencia, arte y humanidades (OpenAlex, Crossref, ORCID, Retraction Watch, Wikidata): **diferido a la Fase G**, pero el esquema de datos debe dejarlo previsto.
+
+# DECISIONES YA TOMADAS (no reabrir sin una razón fuerte)
+1. **Sin IA generativa de pago.** Todo el pipeline se basa en algoritmos clásicos y deterministas. Un LLM de plan gratuito solo puede ser un extra opcional y nunca una dependencia del pipeline.
+2. **Resumen extractivo**, no generativo: titular original, 1-2 fragmentos literales cortos (límite de caracteres definido por ti, justificado por derechos de autor), fuente y enlace. Nada de reescribir notas ajenas.
+3. **Solo RSS/Atom y datos abiertos.** Sin scraping. Si una fuente solo ofrece titular y fragmento, se publica así; si eso la hace inútil, se omite.
+4. **Volumen inicial:** 20 a 30 fuentes, ingesta cada hora, usando ETag/If-Modified-Since y respetando términos de uso y robots.txt.
+5. **Infraestructura gratuita, estática primero:** ingesta y procesamiento en jobs programados (GitHub Actions con cron u otra opción gratuita equivalente), sitio estático en Cloudflare Pages o GitHub Pages. Render gratuito está descartado: servicios que se duermen a los 15 minutos, Postgres gratuito que expira a los 30 días, workers sin plan gratuito.
+6. **100% anónimo al inicio:** sin cuentas, sin cookies de seguimiento, sin analítica invasiva. Cuentas y preferencias llegarán en una fase posterior (la arquitectura no debe impedirlo).
+7. **Tiempo de revisión humana disponible:** 30 a 90 minutos diarios. La cola de revisión debe priorizar para caber en ese tiempo.
+8. **Presupuesto objetivo:** 0 USD mensuales más dominio. Dime cuándo y por qué convendría pasar a un VPS de 5-10 USD o a hosting de pago.
+9. Parto de cero: no tengo cuentas en GitHub, Cloudflare ni otros servicios. Incluye los pasos de alta necesarios.
+10. Sé operar Linux y Docker. **Lenguaje de programación: [COMPLETAR: Go / Python / otro, y nivel]**. Si no lo he indicado, recomiéndame uno justificando con el contexto sin IA (NLP clásico con TF-IDF, similitud, entidades) y la carga de mantenimiento para una sola persona. Considera la opción de usar un generador de sitios estáticos (por ejemplo Hugo) combinado con un pipeline en otro lenguaje.
+
+# RESTRICCIONES TRANSVERSALES
+- Cumplimiento: LFPDPPP (aunque al inicio no haya datos personales), derechos de autor (solo extractos cortos y enlace), términos de uso de las fuentes.
+- Un solo operador: prioriza simplicidad, pocas dependencias y automatizar la operación. Prefiere monolito simple y scripts claros antes que servicios distribuidos.
+- Persistencia: como el entorno de ejecución es efímero, define dónde vive el estado (por ejemplo SQLite o archivos versionados en el repositorio, o un Postgres gratuito) y cómo se respalda. Compara opciones con sus límites reales y dime qué debo verificar en la documentación oficial.
+- Si el sistema debe pasar a servidor más adelante, indica qué decisiones de hoy lo facilitan o lo bloquean.
+
+# MÉTODO DE TRABAJO
+1. Haz como máximo 5 preguntas que cambien decisiones de fondo; para lo demás, asume y declara el supuesto.
+2. Trabaja por fases y no entregues todo de golpe. Cada fase termina con: (a) decisiones tomadas, (b) riesgos abiertos, (c) siguiente paso propuesto.
+3. Para cada decisión importante, entrega un ADR breve: contexto, opciones, decisión, consecuencias.
+4. Distingue siempre entre lo imprescindible para el MVP y lo diferido.
+5. Si una petición mía contradice buenas prácticas o aumenta el riesgo, avísame antes de ejecutarla.
+
+# ENTREGABLES DE LA FASE A (rehecha)
+
+## 1. Supuestos y preguntas
+Lista breve de supuestos declarados y tus preguntas (máximo 5).
+
+## 2. Arquitectura de software
+- Estilo y límites de módulos: ingesta, normalización, deduplicación, agrupación por evento, detección de origen independiente/eco, clasificación por tema y ámbito, extracción de atribuciones por reglas, asignación de estado de verificación, cola de revisión, generación del sitio.
+- Algoritmos concretos y sus umbrales iniciales (TF-IDF/BM25, SimHash/MinHash, Jaccard de shingles, coincidencia de entidades, ventana temporal), y cómo ajustarlos con un conjunto de prueba real de fuentes yucatecas y nacionales.
+- Cómo se detecta el eco cuando varios medios parafrasean el mismo comunicado (por ejemplo, atribuyen todo a la misma institución).
+- Diseño de jobs: idempotencia, reintentos, manejo de fuentes caídas, límites de tiempo de ejecución del job programado.
+- Diagrama de componentes y flujo de datos en Mermaid.
+- Estructura de carpetas del repositorio.
+- Cómo funciona el flujo de revisión humana sin servidor: dónde reviso, cómo apruebo, cómo se publica lo aprobado, cómo se protege ese acceso.
+
+## 3. Modelo de datos inicial (alto nivel)
+Entidades principales (fuentes con metadatos de tipo, propiedad y línea editorial; artículos; eventos; atribuciones; orígenes independientes; estados con historial; correcciones) y las tablas o estructuras previstas para el grafo de confianza de la Fase G. Aún no el SQL completo: eso es la Fase B.
+
+## 4. Modelo de amenazas (STRIDE reducido)
+Para: pipeline de ingesta (SSRF, XML malicioso/XXE, tamaño de respuestas, redirecciones), contenido ingerido (XSS en el sitio y en el panel), repositorio y CI (secretos, tokens de GitHub, dependencias, cadena de suministro, Actions de terceros), panel de revisión (autenticación, 2FA, acceso), sitio público (CSP y cabeceras de seguridad en hosting estático), manipulación de la lista de fuentes y envenenamiento por granjas de sitios, cuentas del operador (GitHub, Cloudflare, dominio, correo). Cada amenaza con control concreto y prioridad (MVP o diferido). Aclara qué riesgos de la versión con IA ya no aplican.
+
+## 5. Infraestructura y despliegue
+- Comparativa con límites y costos reales (con los puntos a verificar en documentación oficial) entre: GitHub Actions + Cloudflare Pages/GitHub Pages; VPS gratuito o barato propio con Docker; y una opción de pago mínima.
+- Pasos de alta de cuentas, dominio y DNS, entornos (local y producción), despliegue y rollback.
+- Riesgo de bloqueo de IPs de centros de datos por parte de algunos sitios (incluidos portales .gob.mx) y cómo detectarlo y mitigarlo.
+
+## 6. Observabilidad y operación
+- Qué medir sin servidor: fuentes caídas o degradadas, latencia de ingesta, tamaño de la cola de revisión, tasa de rechazo en revisión, diversidad de fuentes por tema.
+- Alertas simples y accionables (un único canal) y rutina diaria y semanal que quepa en 30 a 90 minutos.
+- Plan de continuidad: qué pasa si no reviso durante una semana (el sitio sigue publicado; el pipeline solo publica lo automático-seguro o se pausa).
+
+## 7. Monetización y su compatibilidad con la arquitectura
+Cómo encajan donaciones, patrocinio local de tarifa fija, becas y publicidad contextual en un sitio estático y anónimo, qué no es compatible con el anonimato y cuándo introducirlo. Señala riesgos legales de agregar contenido ajeno con ingresos.
+
+## 8. Estándares, documentación y mantenimiento (versión breve)
+Convenciones del lenguaje elegido, pruebas mínimas (incluido un conjunto de oro para agrupación y detección de eco), CI, versionado, documentación en el repositorio, documento público de metodología editorial y plan de mantenimiento recurrente.
+
+# FORMATO DE LAS RESPUESTAS
+- Español, tono técnico y directo.
+- Tablas para comparar opciones; bloques de código para Mermaid, SQL y estructura de carpetas; listas de verificación para seguridad y operación.
+- Marca claramente lo que debo verificar yo en documentación oficial.
+- Termina con el cierre de fase indicado arriba y la propuesta de la Fase B (esquema de base de datos y migraciones).
+
+Empieza ahora: entrega los supuestos y tus preguntas (máximo 5) y, sin esperar mi respuesta, adelanta el diagrama de arquitectura y el modelo de amenazas con los supuestos que hayas tenido que asumir.

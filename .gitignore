@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Base de datos SQLite en texto plano (NUNCA subir a main sin cifrar; ADR-004)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+
+# Llaves criptográficas (por si alguien las crea por error en el directorio del proyecto)
+*.key
+*.pem
+
+# Hugo artefactos de compilación local
+site/public/
+site/resources/
+site/.hugo_build.lock

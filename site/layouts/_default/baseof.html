@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if not .IsHome }}{{ .Title }} · {{ end }}{{ .Site.Title }}</title>
+  <meta name="description" content="Medio digital gratuito, 100% anónimo para el lector y verificable por orígenes independientes en Yucatán, México.">
+  <style>
+    :root { --bg: #fafafa; --fg: #141414; --muted: #525252; --border: #d4d4d4; --accent: #0f4c81; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); margin: 0; line-height: 1.55; }
+    header, main, footer { max-width: 54rem; margin: 0 auto; padding: 1rem 1.25rem; }
+    header { border-bottom: 2px solid var(--fg); display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
+    header a { color: var(--fg); text-decoration: none; font-weight: 700; }
+    nav a { margin-left: 1rem; font-weight: 500; color: var(--accent); }
+    .badge { display: inline-block; padding: 0.15rem 0.5rem; font-size: 0.8rem; font-weight: 600; border: 1px solid var(--fg); border-radius: 3px; }
+    .card { background: #fff; border: 1px solid var(--border); padding: 1rem; margin-bottom: 1rem; border-radius: 4px; }
+    footer { border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--muted); margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div><a href="/">{{ .Site.Title }}</a></div>
+    <nav>
+      <a href="/">Eventos</a>
+      <a href="/metodologia/">Metodología y Transparencia</a>
+    </nav>
+  </header>
+  <main>
+    {{ block "main" . }}{{ end }}
+  </main>
+  <footer>
+    <p>Cero cookies · Cero rastreadores · Extractos cortos (&le;240 caracteres) con enlace directo a la fuente original.</p>
+  </footer>
+</body>
+</html>
