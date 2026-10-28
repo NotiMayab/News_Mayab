@@ -1,0 +1,39 @@
+{
+  "generated_at_utc": "2026-10-27T23:52:16Z",
+  "active_sources_count": 12,
+  "degraded_sources": [],
+  "pending_queue_total": 41,
+  "pending_by_priority": {
+    "P1": 33,
+    "P2": 8,
+    "P3": 0,
+    "P4": 0
+  },
+  "oldest_pending_at_utc": "2026-10-22T17:15:13Z",
+  "last_human_action_at_utc": null,
+  "hours_since_last_human_action": null,
+  "is_unattended_degraded_mode": false,
+  "published_events_count": 278,
+  "total_media_mentions": 278,
+  "total_independent_origins": 278,
+  "echo_reduction_ratio": 0.0,
+  "events_by_verification_state": {
+    "CONFIRMED": 1,
+    "DISPUTED": 1,
+    "SINGLE_SOURCE": 310,
+    "UNCONFIRMED_REPORT": 7
+  },
+  "events_by_topic": {
+    "ARTE_CULTURA_HUMANIDADES": 7,
+    "CIENCIA_TECNOLOGIA": 10,
+    "DERECHOS_HUMANOS_SOCIEDAD": 2,
+    "ECONOMIA_EMPLEO": 13,
+    "EDUCACION": 4,
+    "INFRAESTRUCTURA_TRANSPORTE": 7,
+    "MEDIO_AMBIENTE_CLIMA": 3,
+    "POLITICA_GOBIERNO": 237,
+    "SALUD_BIENESTAR": 10,
+    "SEGURIDAD_JUSTICIA": 26
+  },
+  "demoted_in_strict_mode": 0
+}
