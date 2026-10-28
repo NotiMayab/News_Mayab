@@ -1,0 +1,10 @@
+{
+  "name": "News Mayab — Transparencia Informativa en Yucatán",
+  "short_name": "News Mayab",
+  "description": "Medio digital gratuito y verificable por orígenes independientes en Yucatán, México.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#0f4c81",
+  "lang": "es-MX"
+}

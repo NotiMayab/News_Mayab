@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+"""Ejecuta el ciclo completo del pipeline determinista (Ingesta -> Agrupación -> Anti-Eco) sobre state.sqlite."""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT_DIR / "src"))
+
+from mayab_news.db.migrations import apply_migrations, connect_db, sync_sources_catalog  # noqa: E402
+from mayab_news.pipeline import run_full_ingestion_cycle  # noqa: E402
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Ejecuta migraciones, sincroniza sources.yaml y corre un ciclo de ingesta/agrupación."
+    )
+    parser.add_argument(
+        "--db",
+        type=Path,
+        default=ROOT_DIR / "state.sqlite",
+        help="Ruta al archivo SQLite de estado",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=("LOCAL_CLI", "CI_HOURLY"),
+        default="LOCAL_CLI",
+        help="Modo de ejecución (CI_HOURLY omite fuentes marcadas como local_isp_only)",
+    )
+    args = parser.parse_args()
+
+    conn = connect_db(args.db)
+    try:
+        apply_migrations(conn)
+        sync_sources_catalog(conn)
+        summary = run_full_ingestion_cycle(conn, run_mode=args.mode)
+        print(
+            f"[{summary.status}] run_id={summary.run_id} | "
+            f"fuentes={summary.sources_checked} (fallos={summary.sources_failed}) | "
+            f"artículos_nuevos={summary.articles_ingested} | "
+            f"eventos_creados={summary.events_created} | "
+            f"eventos_actualizados={summary.events_updated}"
+        )
+    finally:
+        conn.close()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

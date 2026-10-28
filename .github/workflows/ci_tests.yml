@@ -1,0 +1,41 @@
+name: CI — Pruebas Deterministas, Invariantes SQLite y Build Hugo
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar age y Hugo
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y age hugo
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias mínimas auditadas
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Ejecutar suite completa de pruebas (Seguridad, SQLite, Anti-Eco, Hugo)
+        run: |
+          PYTHONPATH=src python3 -m unittest discover -s tests -v
+
+      - name: Compilar sitio estático Hugo con --minify
+        run: |
+          hugo --source site --minify

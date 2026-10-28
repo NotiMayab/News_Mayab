@@ -1,0 +1,385 @@
+# =============================================================================
+# Reglas Deterministas Auditables — News_Mayab (Fase D)
+# =============================================================================
+# Versión del motor de reglas registrada en `events.rule_engine_version`
+# y en `verification_history.rule_engine_version`.
+
+rule_engine_version: "v1.0.0"
+
+clustering:
+  window_hours: 72
+  high_confidence_threshold: 0.42
+  gray_zone_threshold: 0.24
+  entity_boost_weight: 0.35
+  tfidf_cosine_weight: 0.65
+
+# Expresiones compuestas inocuas que contienen palabras polisémicas ("muerto", "ejecutado", "fosa")
+# y se excluyen antes de evaluar las reglas de sensibilidad.
+safe_phrase_exclusions:
+  - "pan de muerto"
+  - "dia de muertos"
+  - "altar de muertos"
+  - "festejos de muertos"
+  - "presupuesto ejecutado"
+  - "obra ejecutada"
+  - "gasto ejecutado"
+  - "fosa septica"
+  - "punto muerto"
+  - "peso muerto"
+  - "mar muerto"
+
+# 1. Reglas de Sensibilidad (Fuerzan is_sensitive = 1 y review_status = 'PENDING_HUMAN')
+# ADR-003 / ADR-005: Ningún evento que active una de estas reglas puede auto-publicarse.
+sensitivity_rules:
+  - reason_code: "CRIME_OR_VIOLENCE"
+    description: "Crimen, violencia, operativos policiacos, homicidios o accidentes fatales"
+    keywords:
+      - "homicidio"
+      - "homicidios"
+      - "asesinato"
+      - "asesinado"
+      - "asesinados"
+      - "ejecutado"
+      - "ejecutados"
+      - "feminicidio"
+      - "secuestro"
+      - "extorsion"
+      - "narcomenudeo"
+      - "narcotrafico"
+      - "detenido"
+      - "detenidos"
+      - "detienen"
+      - "arrestado"
+      - "arrestados"
+      - "cateo"
+      - "balacera"
+      - "arma de fuego"
+      - "fallecido"
+      - "fallecidos"
+      - "fallece"
+      - "murio"
+      - "muerto"
+      - "muertos"
+      - "cadaver"
+      - "restos sin identificar"
+      - "robo con violencia"
+      - "abuso sexual"
+      - "violacion"
+      - "desaparecido"
+      - "desaparecidos"
+      - "fosa"
+
+  - reason_code: "PERSONAL_ACCUSATION"
+    description: "Imputaciones penales, denuncias de corrupción o acusaciones directas a personas"
+    keywords:
+      - "imputado"
+      - "imputados"
+      - "vinculado a proceso"
+      - "vinculados a proceso"
+      - "orden de aprehension"
+      - "denuncia penal"
+      - "presunto responsable"
+      - "presuntos responsables"
+      - "presunto culpable"
+      - "desvio de recursos"
+      - "peculado"
+      - "cohecho"
+      - "corrupcion"
+      - "fraude"
+      - "lavado de dinero"
+      - "inhabilitado"
+
+  - reason_code: "MINORS_INVOLVED"
+    description: "Temas que involucran a menores de edad, niñas, niños o adolescentes"
+    keywords:
+      - "menor de edad"
+      - "menores de edad"
+      - "alerta amber"
+      - "infante"
+      - "adolescente"
+      - "prodennay"
+      - "maltrato infantil"
+      - "guarderia"
+
+  - reason_code: "CRITICAL_HEALTH_OR_BIO"
+    description: "Brotes epidemiológicos graves, suicidio, alertas sanitarias o riesgos médicos"
+    keywords:
+      - "suicidio"
+      - "se quito la vida"
+      - "brote epidemiologico"
+      - "alerta sanitaria"
+      - "intoxicacion masiva"
+      - "muerte materna"
+      - "negligencia medica"
+      - "epidemia"
+      - "pandemia"
+
+  - reason_code: "ELECTORAL_SENSITIVE"
+    description: "Campañas electorales, encuestas, delitos electorales o impugnaciones"
+    keywords:
+      - "iepacy"
+      - "iepac"
+      - "ine"
+      - "tribunal electoral"
+      - "delito electoral"
+      - "compra de votos"
+      - "candidato"
+      - "candidata"
+      - "precandidato"
+      - "encuesta electoral"
+      - "jornada electoral"
+
+# 2. Señales de Disputa o Retractación
+dispute_markers:
+  - "desmiente"
+  - "desmintio"
+  - "niega"
+  - "nego categoricamente"
+  - "rechaza acusaciones"
+  - "rechazo los senalamientos"
+  - "versiones encontradas"
+  - "contradice"
+  - "falso que"
+  - "califico de falso"
+
+retraction_markers:
+  - "fe de erratas"
+  - "se retracta"
+  - "nota aclaratoria"
+  - "correccion editorial"
+  - "retira publicacion"
+
+# 3. Patrones de Atribución de Orígenes Independientes (Anti-Eco)
+# Si múltiples medios citan al mismo actor oficial o agencia, colapsan en 1 solo origen.
+attribution_rules:
+  # --- Boletines y Dependencias Oficiales ---
+  - rule_id: "ATTR_GOB_YUC_EJECUTIVO"
+    origin_type: "OFFICIAL_BULLETIN"
+    actor_normalized_key: "ACTOR_GOB_ESTATAL_YUCATAN"
+    actor_display_name: "Gobierno del Estado de Yucatán (Ejecutivo Estatal)"
+    patterns:
+      - "gobierno del estado(?: de yucatan)?"
+      - "ejecutivo estatal"
+      - "a traves de un comunicado.*gobierno"
+      - "gobernador del estado"
+
+  - rule_id: "ATTR_AYUNTAMIENTO_MERIDA"
+    origin_type: "OFFICIAL_BULLETIN"
+    actor_normalized_key: "ACTOR_AYUNTAMIENTO_MERIDA"
+    actor_display_name: "Ayuntamiento de Mérida"
+    patterns:
+      - "ayuntamiento de merida"
+      - "comuna meridana"
+      - "alcaldia de merida"
+
+  - rule_id: "ATTR_SSP_YUCATAN"
+    origin_type: "OFFICIAL_BULLETIN"
+    actor_normalized_key: "ACTOR_SSP_YUCATAN"
+    actor_display_name: "Secretaría de Seguridad Pública (SSP Yucatán)"
+    patterns:
+      - "secretaria de seguridad publica"
+      - "\\bssp\\b(?: de yucatan)?"
+
+  - rule_id: "ATTR_FGE_YUCATAN"
+    origin_type: "OFFICIAL_BULLETIN"
+    actor_normalized_key: "ACTOR_FGE_YUCATAN"
+    actor_display_name: "Fiscalía General del Estado (FGE Yucatán)"
+    patterns:
+      - "fiscalia general del estado"
+      - "\\bfge\\b"
+
+  - rule_id: "ATTR_PROCIVY_CONAGUA"
+    origin_type: "OFFICIAL_BULLETIN"
+    actor_normalized_key: "ACTOR_PROTECCION_CIVIL_CLIMA"
+    actor_display_name: "Protección Civil (Procivy) / Conagua"
+    patterns:
+      - "proteccion civil"
+      - "\\bprocivy\\b"
+      - "\\bconagua\\b"
+      - "servicio meteorologico nacional"
+
+  - rule_id: "ATTR_ATY_TRANSPORTE"
+    origin_type: "OFFICIAL_BULLETIN"
+    actor_normalized_key: "ACTOR_ATY_YUCATAN"
+    actor_display_name: "Agencia de Transporte de Yucatán (ATY / Va y Ven)"
+    patterns:
+      - "agencia de transporte de yucatan"
+      - "\\baty\\b"
+      - "sistema va y ven"
+
+  # --- Agencias de Noticias (Cables Sindicados) ---
+  - rule_id: "ATTR_WIRE_EFE"
+    origin_type: "WIRE_AGENCY"
+    actor_normalized_key: "WIRE_EFE"
+    actor_display_name: "Agencia EFE"
+    patterns:
+      - "\\bagencia efe\\b"
+      - "\\(efe\\)"
+      - "con informacion de efe"
+
+  - rule_id: "ATTR_WIRE_AP"
+    origin_type: "WIRE_AGENCY"
+    actor_normalized_key: "WIRE_AP"
+    actor_display_name: "Associated Press (AP)"
+    patterns:
+      - "\\bassociated press\\b"
+      - "\\(ap\\)"
+      - "agencia ap"
+
+  - rule_id: "ATTR_WIRE_AFP"
+    origin_type: "WIRE_AGENCY"
+    actor_normalized_key: "WIRE_AFP"
+    actor_display_name: "Agence France-Presse (AFP)"
+    patterns:
+      - "\\bagencia afp\\b"
+      - "\\(afp\\)"
+
+  - rule_id: "ATTR_WIRE_REUTERS"
+    origin_type: "WIRE_AGENCY"
+    actor_normalized_key: "WIRE_REUTERS"
+    actor_display_name: "Agencia Reuters"
+    patterns:
+      - "\\breuters\\b"
+
+  # --- Instituciones Académicas y Datos Públicos ---
+  - rule_id: "ATTR_ACAD_CICY"
+    origin_type: "ACADEMIC_PUBLICATION"
+    actor_normalized_key: "ACAD_CICY"
+    actor_display_name: "Centro de Investigación Científica de Yucatán (CICY)"
+    patterns:
+      - "centro de investigacion cientifica de yucatan"
+      - "\\bcicy\\b"
+
+  - rule_id: "ATTR_ACAD_UADY"
+    origin_type: "ACADEMIC_PUBLICATION"
+    actor_normalized_key: "ACAD_UADY"
+    actor_display_name: "Universidad Autónoma de Yucatán (UADY)"
+    patterns:
+      - "universidad autonoma de yucatan"
+      - "\\buady\\b"
+
+  - rule_id: "ATTR_DATA_INEGI"
+    origin_type: "PUBLIC_DOCUMENT_OR_DATA"
+    actor_normalized_key: "DATA_INEGI"
+    actor_display_name: "Instituto Nacional de Estadística y Geografía (INEGI)"
+    patterns:
+      - "\\binegi\\b"
+      - "instituto nacional de estadistica"
+
+# 4. Clasificador Temático por Palabras Clave
+topic_rules:
+  SEGURIDAD_JUSTICIA:
+    - "policia"
+    - "seguridad publica"
+    - "fiscalia"
+    - "delito"
+    - "juez"
+    - "tribunal"
+    - "operativo"
+    - "ssp"
+    - "fge"
+  CIENCIA_TECNOLOGIA:
+    - "cientifico"
+    - "investigacion"
+    - "investigadores"
+    - "cicy"
+    - "acuifero"
+    - "estudio"
+    - "universidad"
+    - "astronomia"
+    - "biologia"
+  ARTE_CULTURA_HUMANIDADES:
+    - "cultura"
+    - "museo"
+    - "teatro"
+    - "exposicion"
+    - "concierto"
+    - "patrimonio"
+    - "arqueologia"
+    - "inah"
+    - "literatura"
+    - "lengua maya"
+  MEDIO_AMBIENTE_CLIMA:
+    - "huracan"
+    - "lluvia"
+    - "frente frio"
+    - "sequia"
+    - "reforestacion"
+    - "arboles"
+    - "cenote"
+    - "manglar"
+    - "clima"
+    - "temperatura"
+  INFRAESTRUCTURA_TRANSPORTE:
+    - "periferico"
+    - "repavimentacion"
+    - "bacheo"
+    - "transporte"
+    - "va y ven"
+    - "tren maya"
+    - "puerto de altura"
+    - "obra publica"
+    - "vialidad"
+  SALUD_BIENESTAR:
+    - "hospital"
+    - "salud"
+    - "vacunacion"
+    - "dengue"
+    - "imss"
+    - "clinica"
+    - "enfermedad"
+  ECONOMIA_EMPLEO:
+    - "economia"
+    - "inflacion"
+    - "empleo"
+    - "inversion"
+    - "turismo"
+    - "comercio"
+    - "presupuesto"
+    - "impuesto"
+  EDUCACION:
+    - "escuela"
+    - "clases"
+    - "docentes"
+    - "estudiantes"
+    - "segey"
+    - "becas"
+  DERECHOS_HUMANOS_SOCIEDAD:
+    - "derechos humanos"
+    - "codhey"
+    - "protesta"
+    - "manifestacion"
+    - "comunidad maya"
+    - "consulta indigena"
+  POLITICA_GOBIERNO:
+    - "congreso"
+    - "diputados"
+    - "cabildo"
+    - "ayuntamiento"
+    - "gobierno"
+    - "reforma"
+    - "ley"
+
+# 5. Entidades Geográficas Clave de Yucatán (Para anclaje de agrupación)
+yucatan_municipalities:
+  - "merida"
+  - "progreso"
+  - "kanasin"
+  - "uman"
+  - "valladolid"
+  - "tizimin"
+  - "motul"
+  - "tekax"
+  - "oxkutzcab"
+  - "icul"
+  - "ticul"
+  - "izamal"
+  - "hunucma"
+  - "maxcanu"
+  - "peto"
+  - "chemax"
+  - "celestun"
+  - "sisal"
+  - "rio lagartos"
+  - "san felipe"
+  - "conkal"

@@ -1,4 +1,4 @@
-baseURL = "https://newsmayab.example.org/"
+baseURL = "https://news-mayab.noti-mayab.workers.dev/"
 locale = "es-mx"
 defaultContentLanguage = "es"
 title = "News Mayab — Transparencia y Trazabilidad Informativa en Yucatán"

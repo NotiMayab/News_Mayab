@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+"""Herramienta CLI de diagnóstico para verificar salud de feeds RSS/Atom desde tu PC Linux."""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT_DIR / "src"))
+
+import yaml  # noqa: E402
+
+from mayab_news.ingest.http_client import fetch_feed_safely  # noqa: E402
+from mayab_news.ingest.xml_parser import FeedParseError, parse_rss_or_atom_bytes  # noqa: E402
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Valida conectividad HTTP, posibles bloqueos WAF y parseo XML de config/sources.yaml"
+    )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=ROOT_DIR / "config" / "sources.yaml",
+        help="Ruta al archivo sources.yaml",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=8.0,
+        help="Timeout en segundos por fuente",
+    )
+    args = parser.parse_args()
+
+    catalog = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+    sources = [s for s in catalog.get("sources", []) if s.get("is_active", True)]
+
+    print(f"{'SOURCE_ID':<22} {'HTTP':<6} {'MS':<6} {'ITEMS':<6} {'ESTADO / DETALLE'}")
+    print("-" * 80)
+
+    for src in sources:
+        sid = src["source_id"]
+        res = fetch_feed_safely(src["rss_url"], timeout=args.timeout)
+        if res.error_kind:
+            print(
+                f"{sid:<22} {res.status_code:<6} {res.latency_ms:<6} {'0':<6} "
+                f"FALLO [{res.error_kind}]: {res.error_detail}"
+            )
+            continue
+        try:
+            items = parse_rss_or_atom_bytes(res.xml_bytes)
+            print(
+                f"{sid:<22} {res.status_code:<6} {res.latency_ms:<6} {len(items):<6} OK"
+            )
+        except FeedParseError as exc:
+            print(
+                f"{sid:<22} {res.status_code:<6} {res.latency_ms:<6} {'0':<6} "
+                f"FALLO [INVALID_XML_OR_XXE]: {exc}"
+            )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

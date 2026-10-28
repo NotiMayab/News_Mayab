@@ -1,0 +1,83 @@
+name: Pipeline Horario — Ingesta Segura, Estado Cifrado (age) y Cortes Hugo
+
+on:
+  schedule:
+    # Ejecución horaria de ingesta (minuto 12 para evitar picos en punto de GitHub Actions)
+    - cron: "12 * * * *"
+  workflow_dispatch:
+    inputs:
+      force_publish_cut:
+        description: "Forzar corte de exportación a Hugo en esta corrida"
+        required: false
+        default: "true"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: news-mayab-state-pipeline
+  cancel-in-progress: false
+
+jobs:
+  ingest_and_publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout rama principal
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Instalar age y Hugo
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y age hugo
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar paquete local
+        run: |
+          pip install -e .
+
+      - name: Recuperar y descifrar state.sqlite.age desde rama data-state
+        env:
+          AGE_SECRET_KEY: ${{ secrets.AGE_SECRET_KEY }}
+        run: |
+          if [ -z "$AGE_SECRET_KEY" ]; then
+            echo "ERROR: Secreto AGE_SECRET_KEY no configurado en el repositorio." >&2
+            exit 1
+          fi
+          ./bin/sync_state pull --db state.sqlite
+
+      - name: Ejecutar ciclo de ingesta (CI_HOURLY), continuidad y mantenimiento
+        run: |
+          ./bin/run_pipeline --db state.sqlite --mode CI_HOURLY
+          ./bin/ops_status --db state.sqlite --maintenance
+
+      - name: Cifrar state.sqlite con age y actualizar rama huérfana data-state
+        env:
+          AGE_SECRET_KEY: ${{ secrets.AGE_SECRET_KEY }}
+        run: |
+          git config user.name "news-mayab-bot"
+          git config user.email "bot@newsmayab.local"
+          ./bin/sync_state push --db state.sqlite
+
+      - name: Exportar corte a Hugo (4 cortes diarios: 01, 07, 13, 19 UTC o manual)
+        run: |
+          CURRENT_HOUR=$(date -u +%H)
+          FORCE="${{ github.event.inputs.force_publish_cut }}"
+          if [ "$FORCE" = "true" ] || [ "$CURRENT_HOUR" = "01" ] || [ "$CURRENT_HOUR" = "07" ] || [ "$CURRENT_HOUR" = "13" ] || [ "$CURRENT_HOUR" = "19" ]; then
+            ./bin/export_hugo --db state.sqlite --build
+            git config user.name "news-mayab-bot"
+            git config user.email "bot@newsmayab.local"
+            git add site/content/eventos/ site/data/system_status.json || true
+            if ! git diff --cached --quiet; then
+              git commit -m "content(eventos): corte programado de publicación"
+              git push origin main
+            fi
+          fi
+          shred -u state.sqlite 2>/dev/null || rm -f state.sqlite

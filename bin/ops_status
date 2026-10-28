@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+"""Tablero CLI de salud de fuentes, cola editorial, continuidad operativa y mantenimiento de SQLite."""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT_DIR / "src"))
+
+from mayab_news.db.migrations import apply_migrations, connect_db, sync_sources_catalog  # noqa: E402
+from mayab_news.ops.observability import (  # noqa: E402
+    compute_operational_status,
+    enforce_unattended_graceful_degradation,
+    run_database_maintenance,
+)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Muestra el estado operativo de News_Mayab, aplica degradación elegante y mantenimiento."
+    )
+    parser.add_argument(
+        "--db",
+        type=Path,
+        default=ROOT_DIR / "state.sqlite",
+        help="Ruta al archivo SQLite de estado",
+    )
+    parser.add_argument(
+        "--maintenance",
+        action="store_true",
+        help="Ejecuta retención de logs antiguos y PRAGMA optimize",
+    )
+    parser.add_argument(
+        "--write-status-json",
+        type=Path,
+        default=ROOT_DIR / "site" / "data" / "system_status.json",
+        help="Ruta donde escribir el resumen JSON para Hugo",
+    )
+    args = parser.parse_args()
+
+    conn = connect_db(args.db)
+    try:
+        apply_migrations(conn)
+        sync_sources_catalog(conn)
+
+        is_unattended, demoted = enforce_unattended_graceful_degradation(
+            conn, status_json_output=args.write_status_json
+        )
+        if args.maintenance:
+            del_logs, del_runs = run_database_maintenance(conn)
+        else:
+            del_logs, del_runs = 0, 0
+
+        rep = compute_operational_status(conn)
+        mode_str = (
+            "MODO CONTINUIDAD DESATENDIDO (>48h sin humano: filtro estricto activo)"
+            if is_unattended
+            else "NORMAL (Operador activo)"
+        )
+        print("=" * 84)
+        print(f"TABLERO OPERATIVO NEWS_MAYAB ({rep.generated_at_utc})")
+        print("=" * 84)
+        print(f"Estado Operativo:          {mode_str}")
+        print(f"Última acción humana:      {rep.last_human_action_at_utc or 'Ninguna registrada'}")
+        print(f"Fuentes activas:           {rep.active_sources_count} (Degradadas: {len(rep.degraded_sources)})")
+        print(
+            f"Cola PENDING_HUMAN:        {rep.pending_queue_total} "
+            f"(P1={rep.pending_by_priority['P1']}, P2={rep.pending_by_priority['P2']}, P3={rep.pending_by_priority['P3']})"
+        )
+        print(
+            f"Eventos publicados:        {rep.published_events_count} "
+            f"(Orígenes={rep.total_independent_origins} vs Medios={rep.total_media_mentions} | "
+            f"Reducción de eco={rep.echo_reduction_ratio * 100:.1f}%)"
+        )
+        if demoted > 0:
+            print(f"Eventos retenidos por modo estricto: {demoted}")
+        if args.maintenance:
+            print(f"Mantenimiento SQLite:      logs_purgados={del_logs}, runs_purgados={del_runs}")
+
+        if rep.degraded_sources:
+            print("-" * 84)
+            print("ALERTA — FUENTES DEGRADADAS O BLOQUEADAS:")
+            for ds in rep.degraded_sources:
+                print(
+                    f"  ! {ds.source_id:<22} fallos={ds.consecutive_failures} "
+                    f"error={ds.last_error_kind} modo={ds.fetch_mode}"
+                )
+        print("=" * 84)
+    finally:
+        conn.close()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

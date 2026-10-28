@@ -1,0 +1,29 @@
+{{ define "main" }}
+<section>
+  <h1>{{ .Title }}</h1>
+  {{ range .Pages }}
+    <article class="card">
+      <div class="meta-row">
+        {{ with .Params.verification_state }}<span class="badge badge-{{ . }}">{{ $.Params.verification_label }}</span>{{ end }}
+        {{ with .Params.scope_label }}<span class="badge">{{ . }}</span>{{ end }}
+        {{ with .Params.topic_label }}<span class="badge">{{ . }}</span>{{ end }}
+      </div>
+      <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      {{ if isset .Params "independent_origins_count" }}
+        <div class="ratio-box">
+          <strong>{{ .Params.independent_origins_count }}</strong> origen(es) independiente(s) en <strong>{{ .Params.media_count }}</strong> medio(s).
+        </div>
+      {{ end }}
+      {{ range first 2 .Params.articles }}
+        {{ if .excerpt_plain }}
+          <blockquote class="excerpt">“{{ .excerpt_plain }}”</blockquote>
+        {{ end }}
+        <div class="meta-row">
+          <strong>{{ .source_name }}</strong>
+          · <a href="{{ .canonical_url }}" rel="noopener noreferrer" target="_blank">Leer en fuente original ↗</a>
+        </div>
+      {{ end }}
+    </article>
+  {{ end }}
+</section>
+{{ end }}

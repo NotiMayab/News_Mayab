@@ -5,14 +5,35 @@
   {{ $eventos := where .Site.RegularPages "Section" "eventos" }}
   {{ if eq (len $eventos) 0 }}
     <div class="card">
-      <span class="badge">Estado del Sistema: Base de Datos y Esqueleto Listos (Fase B)</span>
+      <span class="badge">Sin eventos publicados en este corte</span>
       <p>Aún no se han exportado eventos desde <code>state.sqlite</code>. Consulta nuestra <a href="/metodologia/">Metodología Pública</a>.</p>
     </div>
   {{ else }}
     {{ range $eventos }}
       <article class="card">
+        <div class="meta-row">
+          <span class="badge badge-{{ .Params.verification_state }}">{{ .Params.verification_label }}</span>
+          <span class="badge">{{ .Params.scope_label }}</span>
+          <span class="badge">{{ .Params.topic_label }}</span>
+          <span>{{ .Params.review_badge }}</span>
+        </div>
         <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
-        <p>{{ .Summary }}</p>
+        <div class="ratio-box">
+          <strong>{{ .Params.independent_origins_count }}</strong> origen(es) independiente(s) detectado(s) en <strong>{{ .Params.media_count }}</strong> medio(s).
+        </div>
+        {{ range first 2 .Params.articles }}
+          {{ if .excerpt_plain }}
+            <blockquote class="excerpt">“{{ .excerpt_plain }}”</blockquote>
+          {{ end }}
+          <div class="meta-row">
+            <strong>{{ .source_name }}</strong>
+            <span>({{ .ownership_group_name }})</span>
+            · <a href="{{ .canonical_url }}" rel="noopener noreferrer" target="_blank">Leer en fuente original ↗</a>
+          </div>
+        {{ end }}
+        <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+          <a href="{{ .RelPermalink }}"><strong>Ver desglose de orígenes, versiones e historial &rarr;</strong></a>
+        </div>
       </article>
     {{ end }}
   {{ end }}

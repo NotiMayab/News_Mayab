@@ -5,16 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ if not .IsHome }}{{ .Title }} · {{ end }}{{ .Site.Title }}</title>
   <meta name="description" content="Medio digital gratuito, 100% anónimo para el lector y verificable por orígenes independientes en Yucatán, México.">
+  <meta name="theme-color" content="#0f4c81">
+  <link rel="manifest" href="/manifest.webmanifest">
   <style>
-    :root { --bg: #fafafa; --fg: #141414; --muted: #525252; --border: #d4d4d4; --accent: #0f4c81; }
+    :root {
+      --bg: #fafafa;
+      --fg: #141414;
+      --muted: #525252;
+      --border: #d4d4d4;
+      --accent: #0f4c81;
+      --ok-bg: #e6f4ea;
+      --ok-fg: #137333;
+      --warn-bg: #fef7e0;
+      --warn-fg: #b06000;
+      --danger-bg: #fce8e6;
+      --danger-fg: #c5221f;
+      --neutral-bg: #f1f3f4;
+    }
     * { box-sizing: border-box; }
     body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); margin: 0; line-height: 1.55; }
-    header, main, footer { max-width: 54rem; margin: 0 auto; padding: 1rem 1.25rem; }
+    header, main, footer { max-width: 56rem; margin: 0 auto; padding: 1rem 1.25rem; }
     header { border-bottom: 2px solid var(--fg); display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
     header a { color: var(--fg); text-decoration: none; font-weight: 700; }
-    nav a { margin-left: 1rem; font-weight: 500; color: var(--accent); }
-    .badge { display: inline-block; padding: 0.15rem 0.5rem; font-size: 0.8rem; font-weight: 600; border: 1px solid var(--fg); border-radius: 3px; }
-    .card { background: #fff; border: 1px solid var(--border); padding: 1rem; margin-bottom: 1rem; border-radius: 4px; }
+    nav a { margin-left: 1rem; font-weight: 600; color: var(--accent); text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    .badge { display: inline-block; padding: 0.18rem 0.55rem; font-size: 0.78rem; font-weight: 700; border: 1px solid var(--border); border-radius: 3px; background: var(--neutral-bg); }
+    .badge-CONFIRMED { background: var(--ok-bg); color: var(--ok-fg); border-color: var(--ok-fg); }
+    .badge-SINGLE_SOURCE, .badge-UNCONFIRMED_REPORT { background: var(--warn-bg); color: var(--warn-fg); border-color: var(--warn-fg); }
+    .badge-DISPUTED, .badge-RETRACTED { background: var(--danger-bg); color: var(--danger-fg); border-color: var(--danger-fg); }
+    .meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--muted); }
+    .card { background: #fff; border: 1px solid var(--border); padding: 1.1rem; margin-bottom: 1rem; border-radius: 4px; }
+    .card h2 { margin-top: 0.25rem; margin-bottom: 0.5rem; font-size: 1.25rem; }
+    .card h2 a { color: var(--fg); text-decoration: none; }
+    .card h2 a:hover { color: var(--accent); text-decoration: underline; }
+    .ratio-box { background: var(--neutral-bg); padding: 0.5rem 0.75rem; border-left: 4px solid var(--accent); font-size: 0.9rem; margin: 0.5rem 0; }
+    .correction-box { background: var(--danger-bg); border-left: 4px solid var(--danger-fg); padding: 0.75rem; margin-bottom: 1rem; }
+    blockquote.excerpt { margin: 0.5rem 0; padding-left: 0.85rem; border-left: 3px solid var(--border); color: #262626; font-style: italic; }
     footer { border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--muted); margin-top: 2rem; }
   </style>
 </head>
@@ -30,7 +56,7 @@
     {{ block "main" . }}{{ end }}
   </main>
   <footer>
-    <p>Cero cookies · Cero rastreadores · Extractos cortos (&le;240 caracteres) con enlace directo a la fuente original.</p>
+    <p>Cero cookies · Cero rastreadores · Sin reescritura con IA generativa · Extractos cortos (&le;240 caracteres) con enlace directo al medio autor.</p>
   </footer>
 </body>
 </html>

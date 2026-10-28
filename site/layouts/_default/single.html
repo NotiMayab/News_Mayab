@@ -1,6 +1,117 @@
 {{ define "main" }}
 <article>
-  <h1>{{ .Title }}</h1>
-  <div>{{ .Content }}</div>
+  {{ if eq .Section "eventos" }}
+    <div class="meta-row">
+      <span class="badge badge-{{ .Params.verification_state }}">{{ .Params.verification_label }}</span>
+      <span class="badge">{{ .Params.scope_label }}</span>
+      <span class="badge">{{ .Params.topic_label }}</span>
+      <span class="badge">{{ .Params.review_badge }}</span>
+    </div>
+
+    <h1>{{ .Title }}</h1>
+
+    {{ with .Params.corrections }}
+      {{ range . }}
+        <div class="correction-box">
+          <strong>Fe de erratas / Corrección editorial ({{ .issued_at_utc }} — {{ .correction_type }}):</strong>
+          <p>{{ .public_explanation }}</p>
+        </div>
+      {{ end }}
+    {{ end }}
+
+    <div class="ratio-box">
+      <strong>Trazabilidad de Orígenes:</strong> Este evento es cubierto por <strong>{{ .Params.media_count }}</strong> medio(s), sustentados en <strong>{{ .Params.independent_origins_count }}</strong> origen(es) independiente(s).
+    </div>
+
+    <h2>1. Orígenes Independientes Detectados ({{ .Params.independent_origins_count }})</h2>
+    {{ range .Params.origins }}
+      <div class="card">
+        <strong>{{ .actor_display_name }}</strong>
+        <div class="meta-row">
+          <span class="badge">{{ .origin_type_label }}</span>
+          <span>Método: {{ .detection_method_label }}</span>
+          <span>Citado por {{ .attributed_articles_count }} nota(s)</span>
+        </div>
+      </div>
+    {{ end }}
+
+    <h2>2. Versiones Publicadas por Medios ({{ .Params.media_count }})</h2>
+    {{ range .Params.articles }}
+      <div class="card">
+        <div class="meta-row">
+          <strong>{{ .source_name }}</strong>
+          <span>· Grupo propietario: {{ .ownership_group_name }}</span>
+          <span>· {{ .published_at_utc }}</span>
+          {{ if .is_near_duplicate_echo }}
+            <span class="badge">Eco / Cable sindicado</span>
+          {{ end }}
+        </div>
+        <h3><a href="{{ .canonical_url }}" rel="noopener noreferrer" target="_blank">{{ .title_plain }} ↗</a></h3>
+        {{ if .excerpt_plain }}
+          <blockquote class="excerpt">“{{ .excerpt_plain }}”</blockquote>
+        {{ end }}
+        {{ if .editorial_stance_note }}
+          <small>Contexto de la fuente: {{ .editorial_stance_note }}</small>
+        {{ end }}
+      </div>
+    {{ end }}
+
+    {{ with .Params.trust_graph }}
+      {{ if gt .total_linked_works 0 }}
+        <h2>3. Grafo de Confianza (Ciencia, Arte y Humanidades)</h2>
+        {{ if .has_retraction_alert }}
+          <div class="correction-box">
+            <strong>Alerta de Integridad Científica:</strong> Este evento involucra al menos una publicación con registro de retractación o expresión de preocupación.
+          </div>
+        {{ end }}
+        <div class="ratio-box">
+          <strong>Componentes verificables (sin puntaje único opaco):</strong>
+          Revisadas por pares: <strong>{{ .peer_reviewed_count }}</strong> ·
+          Preprints: <strong>{{ .preprint_count }}</strong> ·
+          Libros/Monografías: <strong>{{ .book_or_monograph_count }}</strong> ·
+          Retractadas: <strong>{{ .retracted_or_concern_count }}</strong> ·
+          Autores con ORCID: <strong>{{ .authors_with_orcid_count }}</strong> ·
+          Instituciones con ROR/Wikidata: <strong>{{ .institutions_with_ror_or_wikidata_count }}</strong>
+        </div>
+        {{ range .works_detail }}
+          <div class="card">
+            <div class="meta-row">
+              <span class="badge">{{ .peer_review_status }}</span>
+              <span class="badge">{{ .alignment_type }}</span>
+              {{ with .doi }}<span>DOI: <code>{{ . }}</code></span>{{ end }}
+              {{ with .journal_or_publisher }}<span>· {{ . }}</span>{{ end }}
+            </div>
+            <strong>{{ .title }}</strong>
+            {{ with .authors }}
+              <ul>
+                {{ range . }}
+                  <li>
+                    {{ .author_name }}
+                    {{ with .orcid_id }}(ORCID: <code>{{ . }}</code>){{ end }}
+                    {{ with .institution_name }} — {{ . }}{{ end }}
+                    {{ with .declared_conflicts_of_interest }} · <em>Conflicto declarado: {{ . }}</em>{{ end }}
+                  </li>
+                {{ end }}
+              </ul>
+            {{ end }}
+          </div>
+        {{ end }}
+      {{ end }}
+    {{ end }}
+
+    <h2>Historial de Verificación</h2>
+    <ul>
+      {{ range .Params.history }}
+        <li>
+          <code>{{ .changed_at_utc }}</code>:
+          {{ if .previous_state }}{{ .previous_state }} &rarr; {{ end }}<strong>{{ .new_state }}</strong>
+          (por <code>{{ .changed_by }}</code>, motor <code>{{ .rule_engine_version }}</code>)
+        </li>
+      {{ end }}
+    </ul>
+  {{ else }}
+    <h1>{{ .Title }}</h1>
+    <div>{{ .Content }}</div>
+  {{ end }}
 </article>
 {{ end }}

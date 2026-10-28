@@ -11,6 +11,36 @@ ownership_groups:
     group_type: "PRIVATE_MEDIA_GROUP"
     transparency_notes: "Grupo editorial privado regional con sede en Mérida, Yucatán."
 
+  - ownership_group_id: "GRP_ESTAMOSAQUI_YUC"
+    display_name: "EstamosAquí MX (Mérida, Yucatán)"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Portal digital de noticias locales, economía y comunidad en Mérida y Yucatán."
+
+  - ownership_group_id: "GRP_HAZ_RUIDO_YUC"
+    display_name: "Haz Ruido — Periodismo Independiente en Yucatán"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Medio digital independiente de Yucatán enfocado en derechos humanos, medio ambiente y territorio."
+
+  - ownership_group_id: "GRP_INFOLLITERAS_YUC"
+    display_name: "Infolliteras (Yucatán)"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Portal informativo y de análisis político local con sede en Mérida, Yucatán."
+
+  - ownership_group_id: "GRP_REPORTEROS_HOY_YUC"
+    display_name: "Reporteros Hoy (Mérida, Yucatán)"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Medio digital de cobertura generalista y municipal en Yucatán."
+
+  - ownership_group_id: "GRP_NOTICARIBE_PENINSULA"
+    display_name: "Noticaribe Peninsular"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Portal regional independiente con cobertura en la Península de Yucatán."
+
+  - ownership_group_id: "GRP_LUCES_DEL_SIGLO"
+    display_name: "Editorial Luces del Siglo (Península de Yucatán)"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Semanario y portal regional de periodismo de investigación en la Península de Yucatán."
+
   - ownership_group_id: "GRP_PORESTO_PENINSULA"
     display_name: "Compañía Editora del Mayab (Por Esto!)"
     group_type: "PRIVATE_MEDIA_GROUP"
@@ -47,9 +77,19 @@ ownership_groups:
     transparency_notes: "Medio digital nacional especializado en periodismo de investigación y verificación."
 
   - ownership_group_id: "GRP_LA_JORNADA_MAYA"
-    display_name: "La Jornada Maya / Demos"
+    display_name: "La Jornada / Demos (Nacional y Peninsular)"
     group_type: "PRIVATE_MEDIA_GROUP"
-    transparency_notes: "Edición peninsular vinculada a la franquicia periodística de La Jornada."
+    transparency_notes: "Grupo periodístico de La Jornada (DEMOS, Desarrollo de Medios S.A. de C.V.)."
+
+  - ownership_group_id: "GRP_EL_ECONOMISTA_MEX"
+    display_name: "El Economista (Nacer Global)"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Diario nacional especializado en economía, finanzas, políticas públicas y estados."
+
+  - ownership_group_id: "GRP_LETRAS_LIBRES"
+    display_name: "Editorial Vuelta / Letras Libres"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Revista mensual de ensayo, arte, literatura, historia y humanidades en México."
 
   - ownership_group_id: "GRP_PROCESO"
     display_name: "Comunicación e Información S.A. de C.V. (Proceso)"
@@ -67,43 +107,7 @@ ownership_groups:
     transparency_notes: "Servicio público internacional británico en español."
 
 sources:
-  # --- YUCATÁN Y PENÍNSULA ---
-  - source_id: "yuc_jornada_maya"
-    name: "La Jornada Maya"
-    rss_url: "https://www.lajornadamaya.mx/rss"
-    website_url: "https://www.lajornadamaya.mx"
-    source_type: "INDEPENDENT_MEDIA"
-    ownership_group_id: "GRP_LA_JORNADA_MAYA"
-    editorial_stance_note: "Cobertura regional de Yucatán, Campeche y Quintana Roo."
-    geographic_scope: "REGIONAL_PENINSULA"
-    fetch_mode: "ci_and_local"
-    headline_and_link_only: false
-    is_active: true
-
-  - source_id: "yuc_sipse_merida"
-    name: "Novedades Yucatán (SIPSE)"
-    rss_url: "https://sipse.com/rss/merida.xml"
-    website_url: "https://sipse.com/novedades-yucatan/"
-    source_type: "INDEPENDENT_MEDIA"
-    ownership_group_id: "GRP_SIPSE"
-    editorial_stance_note: "Cobertura generalista y policiaca de Mérida y municipios de Yucatán."
-    geographic_scope: "YUCATAN"
-    fetch_mode: "ci_and_local"
-    headline_and_link_only: false
-    is_active: true
-
-  - source_id: "yuc_poresto"
-    name: "Por Esto! Yucatán"
-    rss_url: "https://www.poresto.net/rss/feed.xml"
-    website_url: "https://www.poresto.net/yucatan/"
-    source_type: "INDEPENDENT_MEDIA"
-    ownership_group_id: "GRP_PORESTO_PENINSULA"
-    editorial_stance_note: "Diario regional con amplia cobertura de municipios de Yucatán."
-    geographic_scope: "YUCATAN"
-    fetch_mode: "ci_and_local"
-    headline_and_link_only: false
-    is_active: true
-
+  # --- FUENTES ACTIVAS Y VERIFICADAS EN YUCATÁN Y PENÍNSULA ---
   - source_id: "yuc_diario_yucatan"
     name: "Diario de Yucatán"
     rss_url: "https://www.yucatan.com.mx/feed"
@@ -116,44 +120,116 @@ sources:
     headline_and_link_only: false
     is_active: true
 
-  - source_id: "yuc_cicy_ciencia"
-    name: "CICY — Divulgación y Prensa Científica"
-    rss_url: "https://www.cicy.mx/sitios/noticias/rss"
-    website_url: "https://www.cicy.mx"
-    source_type: "ACADEMIC"
-    ownership_group_id: "GRP_CICY_CONAHCYT"
-    editorial_stance_note: "Comunicados de investigación en biología, energía, agua y recursos naturales en Yucatán."
+  - source_id: "yuc_estamosaqui"
+    name: "EstamosAquí MX (Mérida)"
+    rss_url: "https://estamosaqui.mx/feed/"
+    website_url: "https://estamosaqui.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_ESTAMOSAQUI_YUC"
+    editorial_stance_note: "Cobertura local de Mérida, servicios públicos, economía y municipios de Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_hazruido"
+    name: "Haz Ruido Yucatán"
+    rss_url: "https://www.hazruido.mx/feed/"
+    website_url: "https://www.hazruido.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_HAZ_RUIDO_YUC"
+    editorial_stance_note: "Periodismo independiente enfocado en derechos humanos, comunidades mayas y medio ambiente en Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_infolliteras"
+    name: "Infolliteras Yucatán"
+    rss_url: "https://infolliteras.com/feed/"
+    website_url: "https://infolliteras.com"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_INFOLLITERAS_YUC"
+    editorial_stance_note: "Cobertura política, administración pública y vida pública en Mérida y Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_reporteroshoy"
+    name: "Reporteros Hoy (Yucatán)"
+    rss_url: "https://www.reporteroshoy.mx/wp/feed/"
+    website_url: "https://www.reporteroshoy.mx/wp/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_REPORTEROS_HOY_YUC"
+    editorial_stance_note: "Portal digital de noticias generales, vialidad y municipios de Yucatán."
     geographic_scope: "YUCATAN"
     fetch_mode: "local_isp_only"
     headline_and_link_only: false
+    is_active: false
+
+  - source_id: "yuc_noticaribe"
+    name: "Noticaribe Peninsular"
+    rss_url: "https://noticaribe.com.mx/feed/"
+    website_url: "https://noticaribe.com.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_NOTICARIBE_PENINSULA"
+    editorial_stance_note: "Cobertura política, ambiental y turística de la Península de Yucatán."
+    geographic_scope: "REGIONAL_PENINSULA"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
     is_active: true
 
-  # --- NACIONAL (MÉXICO) ---
-  - source_id: "mex_animal_politico"
-    name: "Animal Político"
-    rss_url: "https://www.animalpolitico.com/feed"
-    website_url: "https://www.animalpolitico.com"
+  - source_id: "yuc_lucesdelsiglo"
+    name: "Luces del Siglo (Península)"
+    rss_url: "https://lucesdelsiglo.com/feed/"
+    website_url: "https://lucesdelsiglo.com"
     source_type: "INDEPENDENT_MEDIA"
-    ownership_group_id: "GRP_ANIMAL_POLITICO"
-    editorial_stance_note: "Periodismo nacional de investigación, datos abiertos y verificación (El Sabueso)."
+    ownership_group_id: "GRP_LUCES_DEL_SIGLO"
+    editorial_stance_note: "Periodismo regional de investigación, salud, ciencia y sociedad en la Península."
+    geographic_scope: "REGIONAL_PENINSULA"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  # --- FUENTES ACTIVAS NACIONALES (MÉXICO) Y HUMANIDADES ---
+  - source_id: "mex_jornada_nac"
+    name: "La Jornada (Edición Nacional)"
+    rss_url: "https://www.jornada.com.mx/rss/edicion.xml"
+    website_url: "https://www.jornada.com.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_LA_JORNADA_MAYA"
+    editorial_stance_note: "Diario nacional con cobertura de política, estados, ciencia y cultura."
     geographic_scope: "NATIONAL"
     fetch_mode: "ci_and_local"
     headline_and_link_only: false
     is_active: true
 
-  - source_id: "mex_proceso"
-    name: "Proceso"
-    rss_url: "https://www.proceso.com.mx/rss/feed.html?r=1"
-    website_url: "https://www.proceso.com.mx"
+  - source_id: "mex_economista"
+    name: "El Economista"
+    rss_url: "https://www.eleconomista.com.mx/rss/ultimas-noticias"
+    website_url: "https://www.eleconomista.com.mx"
     source_type: "INDEPENDENT_MEDIA"
-    ownership_group_id: "GRP_PROCESO"
-    editorial_stance_note: "Cobertura política, derechos humanos y seguridad nacional."
+    ownership_group_id: "GRP_EL_ECONOMISTA_MEX"
+    editorial_stance_note: "Diario nacional especializado en economía, empleo, energía y desarrollo regional."
     geographic_scope: "NATIONAL"
     fetch_mode: "ci_and_local"
     headline_and_link_only: false
     is_active: true
 
-  # --- MUNDIAL Y CIENCIA ---
+  - source_id: "mex_letraslibres"
+    name: "Letras Libres (Arte y Humanidades)"
+    rss_url: "https://letraslibres.com/feed/"
+    website_url: "https://letraslibres.com"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_LETRAS_LIBRES"
+    editorial_stance_note: "Ensayo, crítica cultural, historia, literatura y humanidades."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  # --- FUENTES ACTIVAS MUNDIALES Y CIENCIA ---
   - source_id: "glo_dw_espanol"
     name: "DW Español"
     rss_url: "https://rss.dw.com/xml/rss-sp-all"
@@ -177,3 +253,76 @@ sources:
     fetch_mode: "ci_and_local"
     headline_and_link_only: false
     is_active: true
+
+  # --- FUENTES CON FEED RSS DESHABILITADO O BLOQUEO WAF (INACTIVAS POR DEFECTO) ---
+  - source_id: "yuc_jornada_maya"
+    name: "La Jornada Maya"
+    rss_url: "https://www.lajornadamaya.mx/rss"
+    website_url: "https://www.lajornadamaya.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_LA_JORNADA_MAYA"
+    editorial_stance_note: "Cobertura regional de Yucatán, Campeche y Quintana Roo."
+    geographic_scope: "REGIONAL_PENINSULA"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "yuc_sipse_merida"
+    name: "Novedades Yucatán (SIPSE)"
+    rss_url: "https://sipse.com/rss/merida.xml"
+    website_url: "https://sipse.com/novedades-yucatan/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_SIPSE"
+    editorial_stance_note: "Cobertura generalista y policiaca de Mérida y municipios de Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "yuc_poresto"
+    name: "Por Esto! Yucatán"
+    rss_url: "https://www.poresto.net/rss/feed.xml"
+    website_url: "https://www.poresto.net/yucatan/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_PORESTO_PENINSULA"
+    editorial_stance_note: "Diario regional con amplia cobertura de municipios de Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "yuc_cicy_ciencia"
+    name: "CICY — Divulgación y Prensa Científica"
+    rss_url: "https://www.cicy.mx/sitios/noticias/rss"
+    website_url: "https://www.cicy.mx"
+    source_type: "ACADEMIC"
+    ownership_group_id: "GRP_CICY_CONAHCYT"
+    editorial_stance_note: "Comunicados de investigación en biología, energía, agua y recursos naturales en Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "mex_animal_politico"
+    name: "Animal Político"
+    rss_url: "https://www.animalpolitico.com/feed"
+    website_url: "https://www.animalpolitico.com"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_ANIMAL_POLITICO"
+    editorial_stance_note: "Periodismo nacional de investigación, datos abiertos y verificación (El Sabueso)."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "mex_proceso"
+    name: "Proceso"
+    rss_url: "https://www.proceso.com.mx/rss/feed.html?r=1"
+    website_url: "https://www.proceso.com.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_PROCESO"
+    editorial_stance_note: "Cobertura política, derechos humanos y seguridad nacional."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false

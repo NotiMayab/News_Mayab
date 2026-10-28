@@ -44,3 +44,48 @@
 * **Decisión:** Opción 2 (Defensa en profundidad en el DDL de SQLite + migrador SQL nativo en Python).
 * **Consecuencias:** Aunque un módulo de Python tuviese un bug, SQLite abortará la transacción (`sqlite3.IntegrityError`) si se intenta insertar `is_sensitive = 1` con `review_status = 'AUTO_PUBLISHED'`, un `excerpt_plain` de >240 caracteres o una URL que no empiece por `http://` o `https://`.
 
+## ADR-006: Ingesta RSS/Atom sobre `defusedxml` puro y sanitización sin dependencias de terceros (Fase C)
+* **Contexto:** El módulo de ingesta procesa XML no confiable proveniente de internet. Librerías históricas como `feedparser` arrastran dependencias adicionales y lógica permisiva, mientras que un cliente HTTP estándar sigue redirecciones sin validar si el destino resuelve a una IP privada (SSRF).
+* **Opciones:**
+  1. Usar `requests` + `feedparser` + `beautifulsoup4`.
+  2. Implementar el cliente HTTP sobre `urllib.request` con validación DNS/IP anti-SSRF en cada salto, parseo RSS 2.0 / Atom 1.0 directamente con `defusedxml.ElementTree` (`forbid_dtd=True`, `forbid_entities=True`, `forbid_external=True`) y sanitizador HTML a texto plano con `html.parser` de la librería estándar.
+* **Decisión:** Opción 2.
+* **Consecuencias:** Cero dependencias externas nuevas que mantener o auditar para la Fase C; bloqueo garantizado de XXE, bombas XML (`Billion Laughs`), SSRF hacia `127.0.0.0/8` o `169.254.169.254`, y detección explícita de bloqueos WAF (`WAF_OR_GEO_BLOCK`) en portales `.gob.mx`.
+
+## ADR-007: Agrupación Determinista Híbrida (TF-IDF + Bigramas + Entidades Ancla) y Colapso de Eco (Fase D)
+* **Contexto:** Agrupar notas del mismo suceso regional en ventana de 72 horas sin LLMs y distinguir entre "10 medios repitiendo un boletín" (`independent_origins_count = 1`) y "confirmación cruzada real" (`independent_origins_count >= 2`).
+* **Opciones:**
+  1. Embeddings neuronales pesados (`sentence-transformers` / `scikit-learn`).
+  2. Similitud coseno TF-IDF sublineal sobre unigramas y bigramas ponderados en Python puro + intersección de entidades ancla (municipios de Yucatán, siglas institucionales, números de ruta/kilómetro y nombres propios) + motor declarativo `config/rules.yaml` para atribución de orígenes, sensibilidad y disputa.
+* **Decisión:** Opción 2.
+* **Consecuencias:** Ejecución en milisegundos sin arrastrar binarios pesados en CI; penalización explícita cuando dos notas mencionan municipios distintos de Yucatán (evitando mezclar obras o incidentes de Mérida con Valladolid); colapso automático en un único origen cuando múltiples medios citan el mismo actor oficial/agencia o pertenecen al mismo `ownership_group_id`; y retención automática en `PENDING_HUMAN` para eventos sensibles, disputados, retractados o en zona gris de similitud (`[0.24, 0.42)`).
+
+## ADR-008: Revisión Editorial desde CLI sin Dependencias TUI Pesadas y Exportación Segura a Hugo (Fase E)
+* **Contexto:** El operador necesita revisar la cola `PENDING_HUMAN` (aprobar, rechazar, fusionar eventos duplicados, separar artículos mal agrupados y emitir fe de erratas) y exportar a Hugo sin arriesgar la publicación de notas sensibles ni depender de paneles web expuestos.
+* **Opciones:**
+  1. Panel web administrativo con login.
+  2. CLI nativo en Python (`./bin/revisar`) con subcomandos deterministas y modo interactivo por teclado sobre `state.sqlite`, acoplado a un exportador estático (`./bin/export_hugo`) que aplica una segunda validación de invariantes antes de escribir Front Matter YAML en `site/content/eventos/` y purga automáticamente archivos `.md` obsoletos.
+* **Decisión:** Opción 2.
+* **Consecuencias:** Superficie de ataque web igual a cero; todas las acciones humanas registran auditoría en `verification_history` (`changed_by = 'EDITOR_HUMAN'`) y `editorial_corrections`; y si un evento previamente auto-publicado recibe una nota con desmentido (`DISPUTED`), el exportador retira su archivo `.md` hasta que el humano lo revise.
+
+## ADR-009: Degradación Elegante en Modo Desatendido (>48h), Aliases de Fusión y Retención SQLite (Fase F)
+* **Contexto:** Si el único operador se enferma o se ausenta varios días, el sistema no debe congelarse por completo ni tampoco auto-publicar agrupaciones dudosas; además, fusionar eventos ya publicados no debe romper enlaces previos (404), y `state.sqlite` debe mantenerse compacto en Git.
+* **Opciones:**
+  1. Apagar todo el cron si el humano no entra en 48 horas.
+  2. Activar automáticamente el modo de continuidad estricto (`is_unattended_degraded_mode`): mantener bloqueado todo lo sensible/disputado y elevar el umbral de confianza de `AUTO_PUBLISHED` a `0.88` (reteniendo el resto en `PENDING_HUMAN`), exportar `site/data/system_status.json`, conservar los slugs absorbidos en `events.aliases_json` para generar redirecciones `aliases` en Hugo, y purgar logs operativos >30 días.
+* **Decisión:** Opción 2.
+* **Consecuencias:** El medio sobrevive ausencias de una semana publicando únicamente notas no sensibles de altísima certeza; cero enlaces rotos tras un `merge`; y el archivo `state.sqlite.age` en la rama `data-state` se mantiene de pocos megabytes.
+
+## ADR-010: Grafo de Confianza Transparente con CTEs Recursivas en SQLite y Auditoría HHI de Diversidad (Fase G)
+* **Contexto:** Cubrir ciencia, arte y humanidades requiere verificar estudios (DOI/OpenAlex), autorías (ORCID), adscripciones (ROR/Wikidata) y retractaciones (Retraction Watch) sin usar un puntaje único opaco ni pagar una base de datos de grafos externa; asimismo, se requiere medir si un solo grupo empresarial monopoliza la agenda temática.
+* **Opciones:**
+  1. Base de datos de grafos externa (Neo4j) + puntaje compuesto único (0–100).
+  2. Tablas relacionales estrictas en SQLite (`knowledge_entities`, `scholarly_works`, `work_authorships`, `claim_evidence_links`) consultadas con CTEs recursivas (`WITH RECURSIVE` acotado a profundidad $\le 3$), exposición pública de cada componente verificable, bloqueo automático cuando se cita una obra retractada (`CITES_RETRACTED_WORK`) y cálculo del índice Herfindahl-Hirschman (HHI) y equidad de Pielou por categoría temática.
+* **Decisión:** Opción 2.
+* **Consecuencias:** Transparencia metodológica total ante el lector; cero costo de infraestructura adicional; alerta inmediata si se divulga un paper retractado; y métricas cuantitativas para detectar sesgo de concentración de medios por tema.
+
+
+
+
+
+

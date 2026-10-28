@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+"""Sincroniza de forma atómica state.sqlite <-> rama huérfana `data-state` (cifrado con age) sin cambiar de rama."""
+
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT_DIR / "src"))
+
+from mayab_news.db.crypto import (  # noqa: E402
+    DEFAULT_KEY_FILE,
+    decrypt_sqlite_file,
+    encrypt_sqlite_file,
+    extract_public_recipient,
+    load_key_material,
+)
+
+
+def _cmd_pull(db_path: Path, remote: str, branch: str, key_file: Path) -> int:
+    ls_res = subprocess.run(
+        ["git", "ls-remote", "--exit-code", "--heads", remote, branch],
+        cwd=ROOT_DIR,
+        capture_output=True,
+        text=True,
+    )
+    if ls_res.returncode != 0:
+        print(f"[SYNC PULL] La rama remota {remote}/{branch} aún no existe; se omite descarga.")
+        return 0
+
+    subprocess.run(
+        ["git", "fetch", remote, f"{branch}:{branch}"],
+        cwd=ROOT_DIR,
+        check=True,
+    )
+    with tempfile.TemporaryDirectory() as tmpdir:
+        enc_path = Path(tmpdir) / "state.sqlite.age"
+        with enc_path.open("wb") as fh:
+            subprocess.run(
+                ["git", "show", f"{branch}:state.sqlite.age"],
+                cwd=ROOT_DIR,
+                stdout=fh,
+                check=True,
+            )
+        decrypt_sqlite_file(enc_path, db_path, key_file=key_file)
+    print(f"[SYNC PULL OK] Descifrado {branch}:state.sqlite.age -> {db_path}")
+    return 0
+
+
+def _cmd_push(db_path: Path, remote: str, branch: str, key_file: Path, no_remote_push: bool) -> int:
+    if not db_path.exists():
+        raise FileNotFoundError(f"No existe la base de datos local: {db_path}")
+
+    key_material = load_key_material(key_file)
+    pub_recipient = extract_public_recipient(key_material)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        enc_path = Path(tmpdir) / "state.sqlite.age"
+        encrypt_sqlite_file(db_path, enc_path, pub_recipient)
+
+        # Usar git plumbing (hash-object + mktree + commit-tree) para no alterar el working tree de main
+        blob_sha = subprocess.run(
+            ["git", "hash-object", "-w", str(enc_path)],
+            cwd=ROOT_DIR,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+
+        tree_input = f"100644 blob {blob_sha}\tstate.sqlite.age\n"
+        tree_sha = subprocess.run(
+            ["git", "mktree"],
+            cwd=ROOT_DIR,
+            input=tree_input,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+
+        commit_sha = subprocess.run(
+            ["git", "commit-tree", tree_sha, "-m", "chore(state): encrypted sqlite snapshot"],
+            cwd=ROOT_DIR,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+
+        subprocess.run(
+            ["git", "update-ref", f"refs/heads/{branch}", commit_sha],
+            cwd=ROOT_DIR,
+            check=True,
+        )
+
+    if not no_remote_push:
+        subprocess.run(
+            ["git", "push", "--force", remote, f"refs/heads/{branch}:refs/heads/{branch}"],
+            cwd=ROOT_DIR,
+            check=True,
+        )
+        print(f"[SYNC PUSH OK] state.sqlite cifrado y publicado en {remote}/{branch} ({commit_sha[:8]})")
+    else:
+        print(f"[SYNC LOCAL OK] ref local refs/heads/{branch} actualizada ({commit_sha[:8]})")
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Descarga/descifra (pull) o cifra/sube (push) state.sqlite en la rama huérfana data-state."
+    )
+    parser.add_argument("action", choices=("pull", "push"))
+    parser.add_argument("--db", type=Path, default=ROOT_DIR / "state.sqlite")
+    parser.add_argument("--remote", default="origin")
+    parser.add_argument("--branch", default="data-state")
+    parser.add_argument("--key-file", type=Path, default=DEFAULT_KEY_FILE)
+    parser.add_argument(
+        "--local-only",
+        action="store_true",
+        help="En push, actualiza refs/heads/data-state sin hacer git push remoto",
+    )
+    args = parser.parse_args()
+
+    if args.action == "pull":
+        return _cmd_pull(args.db, args.remote, args.branch, args.key_file)
+    return _cmd_push(args.db, args.remote, args.branch, args.key_file, args.local_only)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

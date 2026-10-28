@@ -1,0 +1,224 @@
+#!/usr/bin/env python3
+"""CLI de revisión editorial rápida en Linux para aprobar, rechazar, fusionar, separar y corregir eventos."""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT_DIR / "src"))
+
+from mayab_news.db.migrations import apply_migrations, connect_db, sync_sources_catalog  # noqa: E402
+from mayab_news.editorial.review import (  # noqa: E402
+    VALID_CORRECTION_TYPES,
+    VALID_VERIFICATION_STATES,
+    approve_event,
+    get_event_review_detail,
+    issue_editorial_correction,
+    list_review_queue,
+    merge_events,
+    reject_event,
+    split_article_to_new_event,
+)
+
+
+def _print_event_detail(detail) -> None:
+    item = detail.queue_item
+    print("=" * 88)
+    print(f"EVENTO:     {item.event_id}  (Prioridad: P{item.review_priority} | Confianza: {item.clustering_confidence:.2f})")
+    print(f"TITULAR:    {item.canonical_headline}")
+    print(f"TEMA/ÁMBITO:{item.topic_category} / {item.geographic_scope}")
+    print(f"ESTADO:     {item.verification_state} | REVISIÓN: {item.review_status}")
+    print(f"SENSIBLE:   {'SÍ ' + str(item.sensitivity_reasons) if item.is_sensitive else 'NO'}")
+    print(f"CONTEO:     {item.independent_origins_count} origen(es) independiente(s) en {item.media_count} medio(s)")
+    print("-" * 88)
+    print("ORÍGENES INDEPENDIENTES DETECTADOS:")
+    for o in detail.origins:
+        print(
+            f"  * [{o.origin_type}] {o.actor_display_name} "
+            f"(método={o.detection_method}, notas={o.attributed_articles_count})"
+        )
+    print("-" * 88)
+    print("ARTÍCULOS AGRUPADOS:")
+    for a in detail.articles:
+        dup_tag = f" [ECO de {a.duplicate_of_article_id}]" if a.duplicate_of_article_id else ""
+        print(f"  - ({a.article_id}) [{a.source_name} | {a.ownership_group_id}]{dup_tag}")
+        print(f"    Titular:  {a.title_plain}")
+        if a.excerpt_plain:
+            print(f"    Extracto: “{a.excerpt_plain}”")
+        print(f"    URL:      {a.canonical_url}")
+    if detail.corrections:
+        print("-" * 88)
+        print("FE DE ERRATAS / CORRECCIONES:")
+        for c in detail.corrections:
+            print(f"  ! [{c['issued_at_utc']}] ({c['correction_type']}): {c['public_explanation']}")
+    print("=" * 88)
+
+
+def _run_interactive(conn) -> int:
+    queue = list_review_queue(conn, status_filter="PENDING_HUMAN", limit=100)
+    if not queue:
+        print("Cola PENDING_HUMAN vacía. No hay eventos pendientes de revisión humana.")
+        return 0
+
+    print(f"Iniciando revisión interactiva ({len(queue)} evento(s) en cola)...")
+    for idx, q_item in enumerate(queue, start=1):
+        try:
+            detail = get_event_review_detail(conn, q_item.event_id)
+        except ValueError:
+            continue
+        print(f"\n[{idx}/{len(queue)}]")
+        _print_event_detail(detail)
+        while True:
+            cmd = input(
+                "Acción: [a]probar | cambiar e[s]tado y aprobar | [r]echazar | [m]erge | separar art [x] | [n]ext | [q]uit > "
+            ).strip().lower()
+            if cmd == "a":
+                approve_event(conn, q_item.event_id)
+                print(f"-> Aprobado ({q_item.event_id}).")
+                break
+            if cmd == "s":
+                state = input(f"Nuevo estado {sorted(VALID_VERIFICATION_STATES)}: ").strip().upper()
+                note = input("Nota editorial (opcional): ").strip()
+                approve_event(conn, q_item.event_id, new_verification_state=state, editorial_note=note)
+                print(f"-> Aprobado con estado {state}.")
+                break
+            if cmd == "r":
+                reason = input("Motivo de rechazo (opcional): ").strip()
+                reject_event(conn, q_item.event_id, reason=reason)
+                print(f"-> Rechazado ({q_item.event_id}).")
+                break
+            if cmd == "m":
+                target_id = input("ID del evento destino (target_event_id): ").strip()
+                explanation = input("Explicación pública (opcional): ").strip()
+                merge_events(conn, q_item.event_id, target_id, public_explanation=explanation)
+                print(f"-> Fusionado {q_item.event_id} -> {target_id}.")
+                break
+            if cmd == "x":
+                art_id = input("article_id a separar en nuevo evento: ").strip()
+                explanation = input("Explicación pública (opcional): ").strip()
+                new_id = split_article_to_new_event(conn, art_id, public_explanation=explanation)
+                print(f"-> Artículo {art_id} separado hacia nuevo evento {new_id}.")
+                break
+            if cmd == "n":
+                break
+            if cmd == "q":
+                return 0
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Herramienta CLI de revisión editorial para News_Mayab"
+    )
+    parser.add_argument(
+        "--db",
+        type=Path,
+        default=ROOT_DIR / "state.sqlite",
+        help="Ruta al archivo SQLite de estado",
+    )
+    sub = parser.add_subparsers(dest="subcommand")
+
+    q_p = sub.add_parser("queue", help="Lista la cola de revisión")
+    q_p.add_argument("--status", default="PENDING_HUMAN", help="Filtro review_status")
+    q_p.add_argument("--limit", type=int, default=50)
+
+    sh_p = sub.add_parser("show", help="Muestra el detalle de un evento")
+    sh_p.add_argument("event_id")
+
+    ap_p = sub.add_parser("approve", help="Aprueba un evento (HUMAN_APPROVED)")
+    ap_p.add_argument("event_id")
+    ap_p.add_argument("--state", choices=sorted(VALID_VERIFICATION_STATES), default=None)
+    ap_p.add_argument("--note", default="")
+    ap_p.add_argument("--headline", default=None)
+
+    rj_p = sub.add_parser("reject", help="Rechaza un evento (REJECTED)")
+    rj_p.add_argument("event_id")
+    rj_p.add_argument("--reason", default="")
+
+    mg_p = sub.add_parser("merge", help="Fusiona source_event_id dentro de target_event_id")
+    mg_p.add_argument("source_event_id")
+    mg_p.add_argument("target_event_id")
+    mg_p.add_argument("--explanation", default="")
+
+    sp_p = sub.add_parser("split", help="Separa un article_id hacia un nuevo evento")
+    sp_p.add_argument("article_id")
+    sp_p.add_argument("--explanation", default="")
+
+    co_p = sub.add_parser("correct", help="Emite una fe de erratas pública en un evento")
+    co_p.add_argument("event_id")
+    co_p.add_argument("--type", required=True, choices=sorted(VALID_CORRECTION_TYPES))
+    co_p.add_argument("--text", required=True)
+    co_p.add_argument("--state", choices=sorted(VALID_VERIFICATION_STATES), default=None)
+
+    sub.add_parser("interactive", help="Modo interactivo por teclado sobre PENDING_HUMAN")
+
+    args = parser.parse_args()
+    conn = connect_db(args.db)
+    try:
+        apply_migrations(conn)
+        sync_sources_catalog(conn)
+
+        cmd = args.subcommand or "queue"
+        if cmd == "queue":
+            status_filter = getattr(args, "status", "PENDING_HUMAN")
+            limit = getattr(args, "limit", 50)
+            items = list_review_queue(conn, status_filter=status_filter, limit=limit)
+            print(
+                f"{'EVENT_ID':<22} {'PRI':<4} {'SENS':<5} {'ORÍG/MED':<9} {'VERIFICACIÓN':<19} {'TITULAR'}"
+            )
+            print("-" * 100)
+            for it in items:
+                sens = "SÍ" if it.is_sensitive else "NO"
+                ratio = f"{it.independent_origins_count}/{it.media_count}"
+                print(
+                    f"{it.event_id:<22} P{it.review_priority:<3} {sens:<5} {ratio:<9} "
+                    f"{it.verification_state:<19} {it.canonical_headline[:55]}"
+                )
+        elif cmd == "show":
+            _print_event_detail(get_event_review_detail(conn, args.event_id))
+        elif cmd == "approve":
+            approve_event(
+                conn,
+                args.event_id,
+                new_verification_state=args.state,
+                editorial_note=args.note,
+                canonical_headline=args.headline,
+            )
+            print(f"Evento {args.event_id} aprobado (HUMAN_APPROVED).")
+        elif cmd == "reject":
+            reject_event(conn, args.event_id, reason=args.reason)
+            print(f"Evento {args.event_id} rechazado (REJECTED).")
+        elif cmd == "merge":
+            merge_events(
+                conn,
+                args.source_event_id,
+                args.target_event_id,
+                public_explanation=args.explanation,
+            )
+            print(f"Evento {args.source_event_id} fusionado en {args.target_event_id}.")
+        elif cmd == "split":
+            new_id = split_article_to_new_event(
+                conn, args.article_id, public_explanation=args.explanation
+            )
+            print(f"Artículo {args.article_id} separado hacia nuevo evento {new_id}.")
+        elif cmd == "correct":
+            cid = issue_editorial_correction(
+                conn,
+                args.event_id,
+                correction_type=args.type,
+                public_explanation=args.text,
+                new_verification_state=args.state,
+            )
+            print(f"Fe de erratas registrada ({cid}) en evento {args.event_id}.")
+        elif cmd == "interactive":
+            return _run_interactive(conn)
+    finally:
+        conn.close()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
