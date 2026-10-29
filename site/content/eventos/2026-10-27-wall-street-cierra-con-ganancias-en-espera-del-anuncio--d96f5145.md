@@ -3,7 +3,7 @@ title: Wall Street cierra con ganancias en espera del anuncio de la Fed y report
   de tecnológicas
 slug: 2026-10-27-wall-street-cierra-con-ganancias-en-espera-del-anuncio--d96f5145
 aliases: []
-date: '2026-10-27T22:32:38Z'
+date: '2026-10-28T22:20:08Z'
 event_id: evt_20261027_d96f5145
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
@@ -23,7 +23,7 @@ origins:
   actor_display_name: El Economista (Nacer Global) (El Economista)
   detection_method: OWNERSHIP_GROUP_COLLAPSE
   detection_method_label: Agrupado por grupo empresarial propietario
-  attributed_articles_count: 2
+  attributed_articles_count: 3
 articles:
 - article_id: art_7d73f721e3c83c20
   source_id: mex_economista
@@ -53,6 +53,20 @@ articles:
     ganancias.
   canonical_url: https://www.eleconomista.com.mx/mercados/wall-street-cierra-ganancias-espera-anuncio-fed-reportes-tecnologicas-20261027-840777.html
   published_at_utc: '2026-10-27T22:32:38Z'
+  is_near_duplicate_echo: false
+- article_id: art_e02473db2b0109d1
+  source_id: mex_economista
+  source_name: El Economista
+  ownership_group_id: GRP_EL_ECONOMISTA_MEX
+  ownership_group_name: El Economista (Nacer Global)
+  editorial_stance_note: Diario nacional especializado en economía, empleo, energía
+    y desarrollo regional.
+  title_plain: Wall Street cierra con ganancias tras anuncio de política monetaria
+    de la Fed
+  excerpt_plain: Las acciones de Alphabet se desplomaban más de 10% después del cierre
+    del mercado tras la publicación de sus resultados trimestrales.
+  canonical_url: https://www.eleconomista.com.mx/mercados/wall-street-cierra-ganancias-anuncio-politica-monetaria-fed-20261028-841005.html
+  published_at_utc: '2026-10-28T22:20:08Z'
   is_near_duplicate_echo: false
 trust_graph:
   total_linked_works: 0

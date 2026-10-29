@@ -3,7 +3,7 @@ title: 'Día de Muertos y Fórmula 1: Restaurantes de CDMX esperan ventas por 1,
   millones de pesos'
 slug: 2026-10-27-dia-de-muertos-y-formula-1-restaurantes-de-cdmx-esperan-6e000902
 aliases: []
-date: '2026-10-27T15:10:00Z'
+date: '2026-10-28T19:15:19Z'
 event_id: evt_20261027_6e000902
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
@@ -23,7 +23,7 @@ origins:
   actor_display_name: El Economista (Nacer Global) (El Economista)
   detection_method: OWNERSHIP_GROUP_COLLAPSE
   detection_method_label: Agrupado por grupo empresarial propietario
-  attributed_articles_count: 1
+  attributed_articles_count: 2
 articles:
 - article_id: art_a66580628af52a06
   source_id: mex_economista
@@ -40,6 +40,21 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/bistronomie/dia-muertos-formula-1-restaurantes-cdmx-esperan-ventas-1-500-millones-pesos-20261027-840565.html
   published_at_utc: '2026-10-27T15:10:00Z'
   is_near_duplicate_echo: false
+- article_id: art_db6bbd0a7d6df5a3
+  source_id: mex_economista
+  source_name: El Economista
+  ownership_group_id: GRP_EL_ECONOMISTA_MEX
+  ownership_group_name: El Economista (Nacer Global)
+  editorial_stance_note: Diario nacional especializado en economía, empleo, energía
+    y desarrollo regional.
+  title_plain: 'Día de Muertos y Fórmula 1: Restaurantes de CDMX esperan ventas por
+    1,500 millones de pesos'
+  excerpt_plain: La coincidencia del Gran Premio de México con las celebraciones de
+    Día de Muertos abre una oportunidad para la industria restaurantera capitalina,
+    que enfrenta un consumo debilitado y mayores costos de operación.
+  canonical_url: https://www.eleconomista.com.mx/videos/dia-muertos-formula-1-restaurantes-cdmx-esperan-ventas-1-500-millones-pesos-20261028-840961.html
+  published_at_utc: '2026-10-28T19:15:19Z'
+  is_near_duplicate_echo: true
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

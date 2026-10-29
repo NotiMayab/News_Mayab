@@ -4,24 +4,31 @@ title: '“Recibirlos con amor”: Candelaria Vera comparte la tradición del Ja
   generaciones'
 slug: 2026-10-27-recibirlos-con-amor-candelaria-vera-comparte-la-tradici-e3ce7742
 aliases: []
-date: '2026-10-27T23:21:23Z'
+date: '2026-10-28T01:29:22Z'
 event_id: evt_20261027_e3ce7742
 topic_category: ARTE_CULTURA_HUMANIDADES
 topic_label: Arte, Cultura y Humanidades
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
-verification_state: SINGLE_SOURCE
-verification_label: Una sola fuente
+verification_state: CONFIRMED
+verification_label: Confirmado (≥2 orígenes independientes)
 review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
-independent_origins_count: 1
-media_count: 1
-clustering_confidence: 1.0
+independent_origins_count: 2
+media_count: 2
+clustering_confidence: 0.96
 origins:
 - origin_id: orig_22008682457df732
   origin_type: ORIGINAL_MEDIA_REPORTING
   origin_type_label: Cobertura de Medio / Grupo Editorial
   actor_display_name: EstamosAquí MX (Mérida, Yucatán) (EstamosAquí MX (Mérida))
+  detection_method: OWNERSHIP_GROUP_COLLAPSE
+  detection_method_label: Agrupado por grupo empresarial propietario
+  attributed_articles_count: 1
+- origin_id: orig_091607212777c868
+  origin_type: ORIGINAL_MEDIA_REPORTING
+  origin_type_label: Cobertura de Medio / Grupo Editorial
+  actor_display_name: Infolliteras (Yucatán) (Infolliteras Yucatán)
   detection_method: OWNERSHIP_GROUP_COLLAPSE
   detection_method_label: Agrupado por grupo empresarial propietario
   attributed_articles_count: 1
@@ -42,6 +49,22 @@ articles:
     natal…
   canonical_url: https://estamosaqui.mx/recibirlos-con-amor-candelaria-vera-comparte-la-tradicion-del-janal-pixan-en-una-muestra-de-62-altares-que-transmiten-la-memoria-y-la-cultura-maya-a-nuevas-generaciones/
   published_at_utc: '2026-10-27T23:21:23Z'
+  is_near_duplicate_echo: false
+- article_id: art_a4ffb1f492baf85f
+  source_id: yuc_infolliteras
+  source_name: Infolliteras Yucatán
+  ownership_group_id: GRP_INFOLLITERAS_YUC
+  ownership_group_name: Infolliteras (Yucatán)
+  editorial_stance_note: Cobertura política, administración pública y vida pública
+    en Mérida y Yucatán.
+  title_plain: El gobernador Joaquín Díaz Mena inauguró la Muestra Estatal de Altares,
+    un encuentro que fortalece la identidad maya y la transmisión de las costumbres
+    entre generaciones
+  excerpt_plain: 'Desde muy temprano, Leidy Candelaria Vera Chan salió de su natal
+    Cansahcab rumbo a la Plaza Grande de Mérida para compartir una tradición que conserva
+    el amor por sus seres queridos: recibirlos con los alimentos, los aromas y las…'
+  canonical_url: https://infolliteras.com/2026/10/27/el-gobernador-joaquin-diaz-mena-inauguro-la-muestra-estatal-de-altares-un-encuentro-que-fortalece-la-identidad-maya-y-la-transmision-de-las-costumbres-entre-generaciones/
+  published_at_utc: '2026-10-28T01:29:22Z'
   is_near_duplicate_echo: false
 trust_graph:
   total_linked_works: 0
@@ -66,6 +89,15 @@ history:
     ["ORIGINAL_MEDIA_REPORTING"], "is_sensitive": false, "sensitivity_reasons": [],
     "has_dispute_signal": false, "has_retraction_signal": false, "clustering_confidence":
     1.0, "in_gray_zone": false}'
+- previous_state: SINGLE_SOURCE
+  new_state: CONFIRMED
+  changed_at_utc: '2026-10-29T05:42:34Z'
+  changed_by: PIPELINE_RULE
+  rule_engine_version: v1.0.0
+  reason_components_json: '{"independent_origins_count": 2, "media_count": 2, "origin_types":
+    ["ORIGINAL_MEDIA_REPORTING"], "is_sensitive": false, "sensitivity_reasons": [],
+    "has_dispute_signal": false, "has_retraction_signal": false, "clustering_confidence":
+    0.9555, "in_gray_zone": false}'
 ---
 
-Evento cubierto por 1 medio(s) a partir de 1 origen(es) independiente(s). Estado de verificación: Una sola fuente.
+Evento cubierto por 2 medio(s) a partir de 2 origen(es) independiente(s). Estado de verificación: Confirmado (≥2 orígenes independientes).
