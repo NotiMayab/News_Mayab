@@ -7,6 +7,12 @@ date: '2026-10-28T01:38:01Z'
 event_id: evt_20261028_f69b2dd5
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_dcc71d147f3af426
@@ -41,6 +50,8 @@ articles:
   canonical_url: https://infolliteras.com/2026/10/27/fgr-obtuvo-auto-de-vinculacion-a-proceso-contra-carlos-n-por-la-probable-comision-del-delito-de-desocupacion-de-domicilio-fiscal-en-yucatan/
   published_at_utc: '2026-10-28T01:38:01Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

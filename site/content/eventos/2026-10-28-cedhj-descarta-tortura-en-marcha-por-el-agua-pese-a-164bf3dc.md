@@ -6,6 +6,12 @@ date: '2026-10-29T05:44:11Z'
 event_id: evt_20261028_164bf3dc
 topic_category: DERECHOS_HUMANOS_SOCIEDAD
 topic_label: Derechos Humanos y Sociedad
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_f98004aa9ed92274
@@ -40,6 +49,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/estados/027n2est?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

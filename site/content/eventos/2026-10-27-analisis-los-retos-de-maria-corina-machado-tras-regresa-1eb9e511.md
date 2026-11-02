@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:36Z'
 event_id: evt_20261027_1eb9e511
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: GLOBAL
 scope_label: Mundial
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 0.52
 origins:
 - origin_id: orig_a51d1310a34088c1
@@ -39,6 +48,8 @@ articles:
   canonical_url: https://www.bbc.com/mundo/articles/c62ke94w14x2o?at_campaign=rss&at_medium=RSS
   published_at_utc: '2026-10-26T02:13:11Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_651604c277dbbaf3
   source_id: glo_bbc_mundo
   source_name: BBC News Mundo
@@ -53,6 +64,8 @@ articles:
   canonical_url: https://www.bbc.com/mundo/articles/ck9qz5pyrnzjo?at_campaign=rss&at_medium=RSS
   published_at_utc: '2026-10-27T12:04:54Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

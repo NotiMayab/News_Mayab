@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:35Z'
 event_id: evt_20261027_7181ed24
 topic_category: SALUD_BIENESTAR
 topic_label: Salud y Bienestar
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.59
 origins:
 - origin_id: orig_0999b3e150bc0cd8
@@ -48,6 +57,8 @@ articles:
   canonical_url: https://estamosaqui.mx/confianza-de-la-iniciativa-privada-en-yucatan-impulsa-inversiones-por-8641-mdp-preven-generar-14488-empleos/
   published_at_utc: '2026-10-27T21:14:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_84adb414df1ad1b0
   source_id: yuc_hazruido
   source_name: Haz Ruido Yucatán
@@ -62,6 +73,8 @@ articles:
   canonical_url: https://www.hazruido.mx/principales/inversiones-privadas-generaran-mas-de-14-mil-empleos/
   published_at_utc: '2026-10-27T21:46:24Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

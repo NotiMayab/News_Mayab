@@ -6,6 +6,12 @@ date: '2026-10-27T07:40:18Z'
 event_id: evt_20261027_99bd2f9d
 topic_category: SALUD_BIENESTAR
 topic_label: Salud y Bienestar
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 0.91
 origins:
 - origin_id: orig_e177c9bd2ecbc6b9
@@ -39,6 +48,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/27/politica/016n2pol?partner=rss
   published_at_utc: '2026-10-27T07:40:18Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_6c86db3336f01bc4
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -54,6 +65,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/27/politica/016n1pol?partner=rss
   published_at_utc: '2026-10-27T07:40:18Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

@@ -6,6 +6,12 @@ date: '2026-10-27T20:48:00Z'
 event_id: evt_20261027_0902755b
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: GLOBAL
 scope_label: Mundial
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_0a0f6c535392efde
@@ -38,6 +47,8 @@ articles:
   canonical_url: https://www.dw.com/es/alemania-y-el-impacto-del-acuerdo-de-4-000-millones-entre-audi-y-trump/a-79781203?maca=spa-rss-sp-all-1122-xml-mrss
   published_at_utc: '2026-10-27T20:48:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

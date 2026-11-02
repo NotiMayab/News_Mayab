@@ -6,6 +6,12 @@ date: '2026-10-29T00:11:58Z'
 event_id: evt_20261029_cc3ae9ff
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: REGIONAL_PENINSULA
 scope_label: Regional (Península)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_a8311f385553680b
@@ -38,6 +47,8 @@ articles:
   canonical_url: https://lucesdelsiglo.com/2026/10/28/entregan-cisterna-de-cloracion-y-rebombeo-en-comalcalco-tabasco/
   published_at_utc: '2026-10-29T00:11:58Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

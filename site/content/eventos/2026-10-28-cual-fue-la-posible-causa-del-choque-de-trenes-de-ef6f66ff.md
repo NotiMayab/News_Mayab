@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:08Z'
 event_id: evt_20261028_ef6f66ff
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: GLOBAL
 scope_label: Mundial
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.53
 origins:
 - origin_id: orig_de4b0bdf407d797f
@@ -45,6 +54,8 @@ articles:
   canonical_url: https://www.bbc.com/mundo/articles/cqdjv79dkrdzo?at_campaign=rss&at_medium=RSS
   published_at_utc: '2026-10-28T17:24:57Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_e9b7f9d83e4dcb6d
   source_id: glo_dw_espanol
   source_name: DW Español
@@ -59,6 +70,8 @@ articles:
   canonical_url: https://www.dw.com/es/latinoamérica-se-solidariza-con-españa-por-el-accidente-de-trenes/a-79791394?maca=spa-rss-sp-all-1122-xml-mrss
   published_at_utc: '2026-10-28T20:17:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

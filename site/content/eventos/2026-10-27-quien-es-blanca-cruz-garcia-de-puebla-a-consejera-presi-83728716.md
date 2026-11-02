@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:09Z'
 event_id: evt_20261027_83728716
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 3
 media_count: 3
+fuentes_count: 3
+origenes_independientes: 3
+origen_eco: ''
 clustering_confidence: 0.61
 origins:
 - origin_id: orig_82371aee9c689f00
@@ -56,6 +65,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/politica/ine-designa-blanca-cruz-garcia-presidenta-provisional-salida-guadalupe-taddei-20261027-840727.html
   published_at_utc: '2026-10-27T17:32:26Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_a1ca9f303dfa50ed
   source_id: mex_economista
   source_name: El Economista
@@ -71,6 +82,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/politica/blanca-cruz-garcia-puebla-consejera-presidenta-provisional-ine-20261027-840746.html
   published_at_utc: '2026-10-27T20:16:12Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_d102bdcfda77c1d8
   source_id: yuc_diario_yucatan
   source_name: Diario de Yucatán
@@ -87,6 +100,8 @@ articles:
   canonical_url: https://www.yucatan.com.mx/mexico/2026/10/27/blanca-cruz-ine-investigaciones-presuntas-irregularidades.html
   published_at_utc: '2026-10-27T22:39:18Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_68a90c3daa22eb3e
   source_id: yuc_diario_yucatan
   source_name: Diario de Yucatán
@@ -102,6 +117,8 @@ articles:
   canonical_url: https://www.yucatan.com.mx/mexico/2026/10/27/presidenta-interina-del-ine-avalo-contrato-millonario-con-empresa-observada-por-la-asf.html
   published_at_utc: '2026-10-27T23:08:53Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_73ec0f456ac154b2
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -117,6 +134,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/politica/004n1pol?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_233ab4c3abca828e
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -132,6 +151,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/politica/004n2pol?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

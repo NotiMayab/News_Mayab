@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:34Z'
 event_id: evt_20261027_e034391b
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 4
 media_count: 4
+fuentes_count: 4
+origenes_independientes: 4
+origen_eco: ''
 clustering_confidence: 0.51
 origins:
 - origin_id: orig_1d1a8cd06e25c21c
@@ -62,6 +71,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/bistronomie/san-judas-tadeo-devotos-regalan-tacos-tamales-comida-28-octubre-20261027-840537.html
   published_at_utc: '2026-10-27T15:05:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_788e23d0a54dfb62
   source_id: yuc_noticaribe
   source_name: Noticaribe Peninsular
@@ -77,6 +88,8 @@ articles:
   canonical_url: https://noticaribe.com.mx/2026/10/27/crece-devocion-a-san-judas-tadeo-en-jose-maria-morelos/
   published_at_utc: '2026-10-27T21:36:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_1a01306ef6359917
   source_id: yuc_diario_yucatan
   source_name: Diario de Yucatán
@@ -90,6 +103,8 @@ articles:
   canonical_url: https://www.yucatan.com.mx/imagen/2026/10/27/san-judas-tadeo-esta-es-su-verdadera-historia.html
   published_at_utc: '2026-10-27T23:46:20Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_993df66d33f30485
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -104,6 +119,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/capital/030n3cap?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_7c7d10a5165241da
   source_id: mex_economista
   source_name: El Economista
@@ -119,6 +136,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/videos/san-judas-tadeo-devotos-regalan-tacos-tamales-comida-28-octubre-20261028-841022.html
   published_at_utc: '2026-10-28T23:34:38Z'
   is_near_duplicate_echo: true
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

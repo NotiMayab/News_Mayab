@@ -6,6 +6,12 @@ date: '2026-10-27T01:51:06Z'
 event_id: evt_20261027_3c4cdf98
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_ada9ed60b863a328
@@ -38,6 +47,8 @@ articles:
   canonical_url: https://www.hazruido.mx/municipios/esterilizan-a-183-perros-y-gatos-en-progreso/
   published_at_utc: '2026-10-27T01:51:06Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

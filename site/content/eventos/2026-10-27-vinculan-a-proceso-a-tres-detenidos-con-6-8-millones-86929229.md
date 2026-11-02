@@ -6,6 +6,12 @@ date: '2026-10-29T05:44:25Z'
 event_id: evt_20261027_86929229
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: REGIONAL_PENINSULA
 scope_label: Regional (Península)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_924f3413d13a4560
@@ -38,6 +47,8 @@ articles:
   canonical_url: https://lucesdelsiglo.com/2026/10/27/vinculan-a-proceso-a-tres-detenidos-con-6-8-millones-oaxaca/
   published_at_utc: '2026-10-27T23:26:59Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

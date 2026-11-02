@@ -7,6 +7,12 @@ date: '2026-10-27T20:43:29Z'
 event_id: evt_20261027_ecf37258
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_1ca653dea90c679b
@@ -40,6 +49,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/economia/responsabilidad-estados-ejercer-presupuestos-forma-hacienda-20261027-840757.html
   published_at_utc: '2026-10-27T20:43:29Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

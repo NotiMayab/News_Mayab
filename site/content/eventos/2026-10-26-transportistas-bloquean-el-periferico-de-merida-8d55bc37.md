@@ -6,6 +6,12 @@ date: '2026-10-26T17:02:00Z'
 event_id: evt_20261026_8d55bc37
 topic_category: INFRAESTRUCTURA_TRANSPORTE
 topic_label: Infraestructura y Transporte
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_55667eedd75d04a4
@@ -39,6 +48,8 @@ articles:
   canonical_url: https://www.hazruido.mx/principales/transportistas-bloquean-el-periferico-de-merida/
   published_at_utc: '2026-10-26T17:02:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

@@ -6,6 +6,12 @@ date: '2026-10-29T03:47:11Z'
 event_id: evt_20261029_6179df9d
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 0.92
 origins:
 - origin_id: orig_487358422a13378a
@@ -39,6 +48,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/autos/checo-perez-renueva-cadillac-20261028-840996.html
   published_at_utc: '2026-10-28T21:39:02Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_5257114c1eb95be6
   source_id: mex_economista
   source_name: El Economista
@@ -53,6 +64,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/deportes/checo-perez-garantiza-viaje-18-anos-formula-20261028-841057.html
   published_at_utc: '2026-10-29T03:47:11Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

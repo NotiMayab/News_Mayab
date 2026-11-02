@@ -7,6 +7,12 @@ date: '2026-10-29T04:12:31Z'
 event_id: evt_20261029_526b9611
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: CONFIRMED
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.94
 origins:
 - origin_id: orig_4abd4bcc8897e0e8
@@ -48,6 +57,8 @@ articles:
   canonical_url: https://www.yucatan.com.mx/merida/2026/10/28/cfe-realiza-labores-para-restablecer-el-servicio-de-energia-en-el-centro-de-merida.html
   published_at_utc: '2026-10-29T03:14:30Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_ed51c52c5d8231a6
   source_id: yuc_estamosaqui
   source_name: EstamosAquí MX (Mérida)
@@ -63,6 +74,8 @@ articles:
   canonical_url: https://estamosaqui.mx/parte-del-centro-de-merida-sin-luz/
   published_at_utc: '2026-10-29T04:12:31Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

@@ -6,6 +6,12 @@ date: '2026-10-29T05:44:35Z'
 event_id: evt_20261027_1c2318dd
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: REGIONAL_PENINSULA
 scope_label: Regional (Península)
 verification_state: UNCONFIRMED_REPORT
@@ -14,6 +20,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.62
 origins:
 - origin_id: orig_d7f3f8431faac2c8
@@ -48,6 +57,8 @@ articles:
   canonical_url: https://lucesdelsiglo.com/2026/10/27/suprema-corte-invalida-ley-de-comunicacion-de-cuitlahuac-garcia-nacional/
   published_at_utc: '2026-10-27T22:06:32Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_61b92d6dfd81c8e3
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -63,6 +74,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/estados/026n3est?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

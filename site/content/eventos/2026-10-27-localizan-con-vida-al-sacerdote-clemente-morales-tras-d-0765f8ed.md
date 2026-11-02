@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:28Z'
 event_id: evt_20261027_0765f8ed
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.55
 origins:
 - origin_id: orig_c3d11a7ca42ab3e0
@@ -47,6 +56,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/27/estados/031n2est?partner=rss
   published_at_utc: '2026-10-27T07:40:18Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_c571a07d50bc073a
   source_id: mex_economista
   source_name: El Economista
@@ -62,6 +73,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/politica/localizan-vida-sacerdote-clemente-morales-dos-dias-desaparecido-sinaloa-20261027-840751.html
   published_at_utc: '2026-10-27T20:14:57Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

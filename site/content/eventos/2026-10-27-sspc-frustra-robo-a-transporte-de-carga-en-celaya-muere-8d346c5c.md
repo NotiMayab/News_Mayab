@@ -6,6 +6,12 @@ date: '2026-10-28T09:58:43Z'
 event_id: evt_20261027_8d346c5c
 topic_category: INFRAESTRUCTURA_TRANSPORTE
 topic_label: Infraestructura y Transporte
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: CONFIRMED
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.95
 origins:
 - origin_id: orig_0919a6701df361e2
@@ -46,6 +55,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/estados/sspc-frustra-robo-transporte-carga-celaya-muere-agresor-enfrentamiento-20261027-840769.html
   published_at_utc: '2026-10-27T22:36:54Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_319049277773f1bc
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -61,6 +72,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/sociedad/031n2soc?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

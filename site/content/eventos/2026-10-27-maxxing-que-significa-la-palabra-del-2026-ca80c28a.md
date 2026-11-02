@@ -6,6 +6,12 @@ date: '2026-10-27T22:33:32Z'
 event_id: evt_20261027_ca80c28a
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_b9bd65f65ada841a
@@ -39,6 +48,8 @@ articles:
   canonical_url: https://www.yucatan.com.mx/tecnologia/redes-sociales/2026/10/27/maxxing-que-significa-la-palabra-del-2026.html
   published_at_utc: '2026-10-27T22:33:32Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

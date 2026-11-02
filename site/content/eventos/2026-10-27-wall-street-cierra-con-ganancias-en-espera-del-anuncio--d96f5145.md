@@ -7,6 +7,12 @@ date: '2026-10-28T22:20:08Z'
 event_id: evt_20261027_d96f5145
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 0.91
 origins:
 - origin_id: orig_e6e75a5fe27cde3c
@@ -39,6 +48,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/mercados/wall-street-negocia-ganancias-destacan-acciones-tecnologia-20261027-840720.html
   published_at_utc: '2026-10-27T16:33:17Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_e18d097fa430b983
   source_id: mex_economista
   source_name: El Economista
@@ -54,6 +65,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/mercados/wall-street-cierra-ganancias-espera-anuncio-fed-reportes-tecnologicas-20261027-840777.html
   published_at_utc: '2026-10-27T22:32:38Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_e02473db2b0109d1
   source_id: mex_economista
   source_name: El Economista
@@ -68,6 +81,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/mercados/wall-street-cierra-ganancias-anuncio-politica-monetaria-fed-20261028-841005.html
   published_at_utc: '2026-10-28T22:20:08Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

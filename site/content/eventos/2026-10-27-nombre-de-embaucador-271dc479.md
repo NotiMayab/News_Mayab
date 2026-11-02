@@ -6,6 +6,12 @@ date: '2026-10-29T05:44:36Z'
 event_id: evt_20261027_271dc479
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 0.58
 origins:
 - origin_id: orig_425c95a12dc549bb
@@ -37,6 +46,8 @@ articles:
   canonical_url: https://letraslibres.com/politica/brasil-un-balance-provisional/26/10/2026/
   published_at_utc: '2026-10-26T18:31:57Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_63184dc718382793
   source_id: mex_letraslibres
   source_name: Letras Libres (Arte y Humanidades)
@@ -50,6 +61,8 @@ articles:
   canonical_url: https://letraslibres.com/literatura/un-cruce-de-caminos-cosmos-compensatorio/27/10/2026/
   published_at_utc: '2026-10-27T07:01:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_21c8e23f093b37fd
   source_id: mex_letraslibres
   source_name: Letras Libres (Arte y Humanidades)
@@ -63,6 +76,8 @@ articles:
   canonical_url: https://letraslibres.com/ideas/despues-de-la-cima/27/10/2026/
   published_at_utc: '2026-10-27T17:15:35Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_b133a3c7e3f39aab
   source_id: mex_letraslibres
   source_name: Letras Libres (Arte y Humanidades)
@@ -76,6 +91,8 @@ articles:
   canonical_url: https://letraslibres.com/cultura/nombre-de-embaucador/27/10/2026/
   published_at_utc: '2026-10-27T19:06:36Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

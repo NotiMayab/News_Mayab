@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:07Z'
 event_id: evt_20261028_9ea6ba63
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_87d927db10cc49a6
@@ -40,6 +49,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/internacionales/choque-trenes-espana-muertos-20261028-840978.html
   published_at_utc: '2026-10-28T20:34:44Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

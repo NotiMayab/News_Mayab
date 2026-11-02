@@ -6,6 +6,12 @@ date: '2026-10-29T05:44:03Z'
 event_id: evt_20261029_25c89c14
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_23740481ba250b7b
@@ -38,6 +47,8 @@ articles:
   canonical_url: https://www.yucatan.com.mx/imagen/2026/10/28/se-te-sube-el-muerto-explicacion-cientifica-uady.html
   published_at_utc: '2026-10-29T01:44:09Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

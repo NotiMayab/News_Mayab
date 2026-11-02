@@ -6,6 +6,12 @@ date: '2026-10-28T17:45:33Z'
 event_id: evt_20261028_3497e1b1
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 0.92
 origins:
 - origin_id: orig_b915f51baab01b7f
@@ -37,6 +46,8 @@ articles:
   canonical_url: https://letraslibres.com/politica/monarquias/26/10/2026/
   published_at_utc: '2026-10-26T17:18:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_3aa633f363107cd0
   source_id: mex_letraslibres
   source_name: Letras Libres (Arte y Humanidades)
@@ -50,6 +61,8 @@ articles:
   canonical_url: https://letraslibres.com/politica/la-era-de-la-impunidad/28/10/2026/
   published_at_utc: '2026-10-28T17:45:33Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

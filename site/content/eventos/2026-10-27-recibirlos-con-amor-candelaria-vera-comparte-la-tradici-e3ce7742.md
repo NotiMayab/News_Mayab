@@ -8,6 +8,12 @@ date: '2026-10-28T01:29:22Z'
 event_id: evt_20261027_e3ce7742
 topic_category: ARTE_CULTURA_HUMANIDADES
 topic_label: Arte, Cultura y Humanidades
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: CONFIRMED
@@ -16,6 +22,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.96
 origins:
 - origin_id: orig_22008682457df732
@@ -50,6 +59,8 @@ articles:
   canonical_url: https://estamosaqui.mx/recibirlos-con-amor-candelaria-vera-comparte-la-tradicion-del-janal-pixan-en-una-muestra-de-62-altares-que-transmiten-la-memoria-y-la-cultura-maya-a-nuevas-generaciones/
   published_at_utc: '2026-10-27T23:21:23Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_a4ffb1f492baf85f
   source_id: yuc_infolliteras
   source_name: Infolliteras Yucatán
@@ -66,6 +77,8 @@ articles:
   canonical_url: https://infolliteras.com/2026/10/27/el-gobernador-joaquin-diaz-mena-inauguro-la-muestra-estatal-de-altares-un-encuentro-que-fortalece-la-identidad-maya-y-la-transmision-de-las-costumbres-entre-generaciones/
   published_at_utc: '2026-10-28T01:29:22Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

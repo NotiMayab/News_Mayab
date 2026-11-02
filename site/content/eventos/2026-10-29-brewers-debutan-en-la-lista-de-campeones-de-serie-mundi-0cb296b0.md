@@ -6,6 +6,12 @@ date: '2026-10-29T05:44:33Z'
 event_id: evt_20261029_0cb296b0
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: UNCONFIRMED_REPORT
@@ -14,6 +20,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 3
 media_count: 3
+fuentes_count: 3
+origenes_independientes: 3
+origen_eco: ''
 clustering_confidence: 0.66
 origins:
 - origin_id: orig_5e3751dc2d1e58b6
@@ -54,6 +63,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/deportes/a10n1dep?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_de71d37689a6da62
   source_id: yuc_estamosaqui
   source_name: EstamosAquí MX (Mérida)
@@ -70,6 +81,8 @@ articles:
   canonical_url: https://estamosaqui.mx/milwaukee-brewers-ganan-su-primera-serie-mundial-tras-vencer-a-tampa-bay-rays/
   published_at_utc: '2026-10-29T03:33:53Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_c4ed3b9e48110b5a
   source_id: mex_economista
   source_name: El Economista
@@ -83,6 +96,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/deportes/brewers-debutan-lista-campeones-serie-mundial-20261028-841064.html
   published_at_utc: '2026-10-29T04:17:07Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

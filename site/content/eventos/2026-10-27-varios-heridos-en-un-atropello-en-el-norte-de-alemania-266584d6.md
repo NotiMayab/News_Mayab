@@ -7,6 +7,12 @@ date: '2026-10-27T10:51:00Z'
 event_id: evt_20261027_266584d6
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: GLOBAL
 scope_label: Mundial
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_e4be429a7558a7c1
@@ -40,6 +49,8 @@ articles:
   canonical_url: https://www.dw.com/es/varios-heridos-en-un-atropello-en-el-norte-de-alemania-los-sospechosos-siguen-prófugos/a-79774020?maca=spa-rss-sp-all-1122-xml-mrss
   published_at_utc: '2026-10-27T10:51:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

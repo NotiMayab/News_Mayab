@@ -6,6 +6,12 @@ date: '2026-10-27T07:40:18Z'
 event_id: evt_20261027_dfaa666d
 topic_category: EDUCACION
 topic_label: Educación
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 0.99
 origins:
 - origin_id: orig_063eccbda8d3edb2
@@ -40,6 +49,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/27/politica/014n3pol?partner=rss
   published_at_utc: '2026-10-27T07:40:18Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_35fb2f78d7cd50b4
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -55,6 +66,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/27/cultura/a05n2cul?partner=rss
   published_at_utc: '2026-10-27T07:40:18Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

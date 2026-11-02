@@ -6,6 +6,12 @@ date: '2026-10-29T02:36:09Z'
 event_id: evt_20261028_785f3d49
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: CONFIRMED
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.92
 origins:
 - origin_id: orig_4636d75aee3acbee
@@ -46,6 +55,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/estados/caribe-mexicano-anticipa-repunte-30-conectividad-aerea-invierno-20261028-841011.html
   published_at_utc: '2026-10-28T22:38:10Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_fe884eaef9ded8a3
   source_id: yuc_noticaribe
   source_name: Noticaribe Peninsular
@@ -60,6 +71,8 @@ articles:
   canonical_url: https://noticaribe.com.mx/2026/10/28/reforzara-cptq-promocion-con-20-mas-de-recursos-para-el-caribe-mxicano/
   published_at_utc: '2026-10-29T02:36:09Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

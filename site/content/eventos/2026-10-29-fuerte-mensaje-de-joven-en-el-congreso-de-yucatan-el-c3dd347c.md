@@ -7,6 +7,12 @@ date: '2026-10-29T02:29:42Z'
 event_id: evt_20261029_c3dd347c
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_1528c9baf646ba5f
@@ -41,6 +50,8 @@ articles:
   canonical_url: https://www.yucatan.com.mx/merida/2026/10/28/congreso-yucatan-jovenes-crisis-vivienda-empleo-democracia.html
   published_at_utc: '2026-10-29T02:29:42Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

@@ -8,6 +8,12 @@ date: '2026-10-29T05:44:27Z'
 event_id: evt_20261027_a1e32e99
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: REGIONAL_PENINSULA
 scope_label: Regional (Península)
 verification_state: SINGLE_SOURCE
@@ -16,6 +22,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_163619e82bfecb59
@@ -43,6 +52,8 @@ articles:
   canonical_url: https://noticaribe.com.mx/2026/10/27/realizan-mujeres-manifestacion-frente-a-juzgado-penal-oral-por-nuevo-diferimiento-de-audiencia-en-caso-de-denuncia-por-abuso-sexual-infantil-ven-desinteres-de-jueces-para-salvaguardar-derechos-de-inf/
   published_at_utc: '2026-10-27T20:55:20Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

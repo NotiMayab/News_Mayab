@@ -6,6 +6,12 @@ date: '2026-10-29T05:44:05Z'
 event_id: evt_20261027_a18673bd
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: UNCONFIRMED_REPORT
@@ -14,6 +20,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.62
 origins:
 - origin_id: orig_f8387123622d0594
@@ -45,6 +54,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/politica/sheinbaum-pide-auditoria-profunda-ine-transparencia-contratos-20261027-840712.html
   published_at_utc: '2026-10-27T15:36:31Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_c65b18365e385a92
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -59,6 +70,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/politica/006n1pol?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_83dcd28d77e0725a
   source_id: mex_economista
   source_name: El Economista
@@ -73,6 +86,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/videos/sheinbaum-pide-investigar-contratos-ine-20261028-841025.html
   published_at_utc: '2026-10-29T00:07:22Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

@@ -6,6 +6,12 @@ date: '2026-10-29T05:44:35Z'
 event_id: evt_20261027_4e31fbd8
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 0.52
 origins:
 - origin_id: orig_8e32ead46d34576f
@@ -40,6 +49,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/27/estados/030n2est?partner=rss
   published_at_utc: '2026-10-27T07:40:18Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_0d3dbeecc1d1eba2
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -56,6 +67,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/27/estados/030n1est?partner=rss
   published_at_utc: '2026-10-27T07:40:18Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_d6f139952b0c8f12
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -71,6 +84,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/opinion/002a1edi?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_403b03a3f0986eed
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -86,6 +101,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/estados/025n1est?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

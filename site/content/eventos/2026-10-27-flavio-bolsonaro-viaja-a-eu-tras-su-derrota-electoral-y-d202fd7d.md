@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:33Z'
 event_id: evt_20261027_d202fd7d
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 3
+fuentes_count: 3
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.53
 origins:
 - origin_id: orig_0cd354cafb67a5ef
@@ -49,6 +58,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/internacionales/flavio-bolsonaro-dirige-estados-unidos-derrota-electoral-brasil-fuentes-20261027-840739.html
   published_at_utc: '2026-10-27T18:52:02Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_645df90736054f48
   source_id: mex_economista
   source_name: El Economista
@@ -64,6 +75,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/internacionales/flavio-bolsonaro-viaja-ee-uu-derrota-electoral-departamento-le-concede-visa-20261027-840792.html
   published_at_utc: '2026-10-27T23:24:39Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_e9b206c00bd24d81
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -79,6 +92,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/mundo/021n1mun?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_57deffedaedb3c43
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -93,6 +108,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/opinion/020o1eco?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_c175fa67c123db74
   source_id: mex_economista
   source_name: El Economista
@@ -108,6 +125,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/internacionales/flavio-bolsonaro-autoproclama-presidente-brasil-miami-20261028-840985.html
   published_at_utc: '2026-10-28T20:53:32Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_6c2c22f29b5160b8
   source_id: yuc_estamosaqui
   source_name: EstamosAquí MX (Mérida)
@@ -123,6 +142,8 @@ articles:
   canonical_url: https://estamosaqui.mx/no-me-voy-a-involucrar-trump-luego-de-que-flavio-bolsonaro-se-proclamara-presidente-de-brasil/
   published_at_utc: '2026-10-29T03:55:49Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

@@ -2,10 +2,16 @@
 title: Taller El Volador da vida al Desfile de Día de Muertos en CDMX
 slug: 2026-10-29-taller-el-volador-da-vida-al-desfile-de-dia-de-990f4f40
 aliases: []
-date: '2026-10-29T01:54:20Z'
+date: '2026-11-01T01:38:34Z'
 event_id: evt_20261029_990f4f40
 topic_category: ARTE_CULTURA_HUMANIDADES
 topic_label: Arte, Cultura y Humanidades
+categoria_principal: cultura
+categoria_label: Cultura
+categorias_secundarias: []
+categorias:
+- cultura
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,7 +20,10 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
-clustering_confidence: 1.0
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
+clustering_confidence: 0.91
 origins:
 - origin_id: orig_5782efc45f730b87
   origin_type: ORIGINAL_MEDIA_REPORTING
@@ -22,7 +31,7 @@ origins:
   actor_display_name: El Economista (Nacer Global) (El Economista)
   detection_method: OWNERSHIP_GROUP_COLLAPSE
   detection_method_label: Agrupado por grupo empresarial propietario
-  attributed_articles_count: 1
+  attributed_articles_count: 2
 articles:
 - article_id: art_eca8fc70559e6954
   source_id: mex_economista
@@ -38,6 +47,24 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/videos/taller-volador-da-vida-desfile-dia-muertos-cdmx-20261028-841040.html
   published_at_utc: '2026-10-29T01:54:20Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
+- article_id: art_51479cae6432e045
+  source_id: mex_economista
+  source_name: El Economista
+  ownership_group_id: GRP_EL_ECONOMISTA_MEX
+  ownership_group_name: El Economista (Nacer Global)
+  editorial_stance_note: Diario nacional especializado en economía, empleo, energía
+    y desarrollo regional.
+  title_plain: Más de 1,600,000 personas disfrutaron el décimo Gran Desfile de Día
+    de Muertos de la CDMX
+  excerpt_plain: La 10° celebración rindió homenaje a Nellie Campobello, Juan Rulfo,
+    Juan Gabriel y Emilio “El Indio” Fernández.
+  canonical_url: https://www.eleconomista.com.mx/arteseideas/1-600-000-personas-disfrutaron-decimo-gran-desfile-dia-muertos-cdmx-20261031-841554.html
+  published_at_utc: '2026-11-01T01:38:34Z'
+  is_near_duplicate_echo: false
+  categoria_principal: cultura
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

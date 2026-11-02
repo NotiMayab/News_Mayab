@@ -6,6 +6,12 @@ date: '2026-10-29T05:44:27Z'
 event_id: evt_20261027_71496495
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: CONFIRMED
@@ -14,6 +20,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.9
 origins:
 - origin_id: orig_4c2bf2cc384d9c40
@@ -45,6 +54,8 @@ articles:
   canonical_url: https://estamosaqui.mx/renuncian-al-ine-tres-directivos-ligados-a-proveedor/
   published_at_utc: '2026-10-27T19:25:50Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_6574bd3bc80b086c
   source_id: yuc_noticaribe
   source_name: Noticaribe Peninsular
@@ -61,6 +72,8 @@ articles:
   canonical_url: https://noticaribe.com.mx/2026/10/27/se-extiende-crisis-en-el-ine-renuncian-tres-directivos-ligados-a-proveedor-de-taddei-y-revisaran-permanencia-de-mas-funcionarios/
   published_at_utc: '2026-10-27T21:23:14Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

@@ -7,6 +7,12 @@ date: '2026-10-28T19:15:00Z'
 event_id: evt_20261027_25b0fbf5
 topic_category: SALUD_BIENESTAR
 topic_label: Salud y Bienestar
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 0.93
 origins:
 - origin_id: orig_60e1cc6d2681f8a7
@@ -40,6 +49,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/finanzaspersonales/imss-trabajadores-independientes-migrar-modalidad-10-40-buscar-pension-20261027-840596.html
   published_at_utc: '2026-10-27T17:00:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_5b73077120653f64
   source_id: mex_economista
   source_name: El Economista
@@ -55,6 +66,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/explicadores/diferencias-modalidad-10-modalidad-40-imss-explicadas-20261028-840956.html
   published_at_utc: '2026-10-28T19:15:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

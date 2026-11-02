@@ -7,6 +7,12 @@ date: '2026-10-27T21:36:52Z'
 event_id: evt_20261027_f3c0cd87
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_b613c0d6cae0ee5d
@@ -40,6 +49,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/internacionales/paises-america-latina-caribe-exigen-proximo-secretario-general-onu-sea-region-20261027-840766.html
   published_at_utc: '2026-10-27T21:36:52Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

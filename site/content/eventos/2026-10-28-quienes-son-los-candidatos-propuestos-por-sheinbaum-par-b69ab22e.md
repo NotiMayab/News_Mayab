@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:34Z'
 event_id: evt_20261028_b69ab22e
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.61
 origins:
 - origin_id: orig_1b172475d3ba8ba1
@@ -48,6 +57,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/empresas/sheinbaum-envia-senado-terna-encabezar-centro-federal-conciliacion-registro-laboral-20261027-840713.html
   published_at_utc: '2026-10-27T15:41:37Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_499f8656a227adb5
   source_id: mex_economista
   source_name: El Economista
@@ -63,6 +74,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/capital-humano/quienes-son-candidatos-propuestos-sheinbaum-cfcrl-credenciales-trayectorias-20261027-840749.html
   published_at_utc: '2026-10-28T00:00:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_1028fa3b34da8f57
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -78,6 +91,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/politica/012n4pol?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

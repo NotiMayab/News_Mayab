@@ -8,6 +8,12 @@ date: '2026-10-29T00:50:52Z'
 event_id: evt_20261029_ab377dc4
 topic_category: DERECHOS_HUMANOS_SOCIEDAD
 topic_label: Derechos Humanos y Sociedad
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: SINGLE_SOURCE
@@ -16,6 +22,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_50e6dca6fe708ddc
@@ -44,6 +53,8 @@ articles:
   canonical_url: https://infolliteras.com/2026/10/28/el-gasoducto-que-se-construia-en-calles-de-la-colonia-meridana-de-san-damian-quedo-completamente-cancelado-dijo-la-alcaldesa-cecilia-patron-laviada-tras-anuncio-de-la-organizacion-kanan-de-derechos-h/
   published_at_utc: '2026-10-29T00:50:52Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

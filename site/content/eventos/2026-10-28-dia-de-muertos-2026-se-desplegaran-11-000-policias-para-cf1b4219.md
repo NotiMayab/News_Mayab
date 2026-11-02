@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:34Z'
 event_id: evt_20261028_cf1b4219
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.66
 origins:
 - origin_id: orig_f40db906d7c453ee
@@ -47,6 +56,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/capital/030n1cap?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_015c60665197d294
   source_id: mex_economista
   source_name: El Economista
@@ -62,6 +73,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/politica/dia-muertos-2026-desplegaran-11-000-policias-vigilar-panteones-cdmx-20261028-841002.html
   published_at_utc: '2026-10-28T22:48:48Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

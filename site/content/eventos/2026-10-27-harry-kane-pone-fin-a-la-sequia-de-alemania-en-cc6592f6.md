@@ -6,6 +6,12 @@ date: '2026-10-27T18:35:00Z'
 event_id: evt_20261027_cc6592f6
 topic_category: MEDIO_AMBIENTE_CLIMA
 topic_label: Medio Ambiente y Clima
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: GLOBAL
 scope_label: Mundial
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_d9231ef3e17d0fa5
@@ -38,6 +47,8 @@ articles:
   canonical_url: https://www.dw.com/es/harry-kane-pone-fin-a-la-sequía-de-alemania-en-el-balón-de-oro/a-79781333?maca=spa-rss-sp-all-1122-xml-mrss
   published_at_utc: '2026-10-27T18:35:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

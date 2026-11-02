@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:36Z'
 event_id: evt_20261027_a5a9abe7
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: GLOBAL
 scope_label: Mundial
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.54
 origins:
 - origin_id: orig_c273164f30ef4268
@@ -46,6 +55,8 @@ articles:
   canonical_url: https://www.dw.com/es/israel-abre-las-urnas-en-unas-elecciones-clave-para-el-primer-ministro-benjamín-netanyahu/a-79772364?maca=spa-rss-sp-all-1122-xml-mrss
   published_at_utc: '2026-10-27T06:52:00Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_864d873c61af2363
   source_id: glo_bbc_mundo
   source_name: BBC News Mundo
@@ -60,6 +71,8 @@ articles:
   canonical_url: https://www.bbc.com/mundo/articles/cj1dw0en7n36o?at_campaign=rss&at_medium=RSS
   published_at_utc: '2026-10-27T14:22:19Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

@@ -7,6 +7,12 @@ date: '2026-10-29T02:23:39Z'
 event_id: evt_20261029_6f9e907b
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_69ea8aecf4d23634
@@ -40,6 +49,8 @@ articles:
   canonical_url: https://www.yucatan.com.mx/mexico/2026/10/28/tribunal-revoca-medida-contra-cartonista-paco-navarrete-tras-ser-senalado-por-diputada-morenista.html
   published_at_utc: '2026-10-29T02:23:39Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

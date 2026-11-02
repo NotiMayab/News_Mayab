@@ -7,6 +7,12 @@ date: '2026-10-28T09:58:43Z'
 event_id: evt_20261027_a3f575b9
 topic_category: SALUD_BIENESTAR
 topic_label: Salud y Bienestar
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: CONFIRMED
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 2
 media_count: 2
+fuentes_count: 2
+origenes_independientes: 2
+origen_eco: ''
 clustering_confidence: 0.93
 origins:
 - origin_id: orig_9deea94d72914957
@@ -49,6 +58,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/politica/imss-anuncia-12-acciones-120-dias-aumento-salarial-8-basificacion-contratacion-especialistas-20261027-840707.html
   published_at_utc: '2026-10-27T15:05:30Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_aa1abb86b23aa7c4
   source_id: mex_jornada_nac
   source_name: La Jornada (Edición Nacional)
@@ -64,6 +75,8 @@ articles:
   canonical_url: https://www.jornada.com.mx/2026/10/28/politica/012n1pol?partner=rss
   published_at_utc: '2026-10-28T09:58:43Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

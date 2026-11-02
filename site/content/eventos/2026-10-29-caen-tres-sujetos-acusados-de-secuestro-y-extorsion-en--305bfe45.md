@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:00Z'
 event_id: evt_20261029_305bfe45
 topic_category: SEGURIDAD_JUSTICIA
 topic_label: Seguridad y Justicia
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: REGIONAL_PENINSULA
 scope_label: Regional (Península)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_05a9286745973b7e
@@ -41,6 +50,8 @@ articles:
   canonical_url: https://noticaribe.com.mx/2026/10/28/caen-tres-sujetos-acusados-de-secuestro-y-extorsion-en-cancun-exigian-hasta-5-mdp/
   published_at_utc: '2026-10-29T02:24:42Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

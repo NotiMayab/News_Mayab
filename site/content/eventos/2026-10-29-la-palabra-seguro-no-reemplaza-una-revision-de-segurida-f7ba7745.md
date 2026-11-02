@@ -6,6 +6,12 @@ date: '2026-10-29T02:48:54Z'
 event_id: evt_20261029_f7ba7745
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: REGIONAL_PENINSULA
 scope_label: Regional (Península)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_bcf7f8a53a1ea6de
@@ -38,6 +47,8 @@ articles:
   canonical_url: https://noticaribe.com.mx/2026/10/28/la-palabra-seguro-no-reemplaza-una-revision-de-seguridad-digital/
   published_at_utc: '2026-10-29T02:48:54Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

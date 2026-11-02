@@ -6,6 +6,12 @@ date: '2026-10-27T23:12:35Z'
 event_id: evt_20261027_f72d496d
 topic_category: MEDIO_AMBIENTE_CLIMA
 topic_label: Medio Ambiente y Clima
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_8333988ddf050ce7
@@ -37,6 +46,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/el-empresario/conoce-5-sintomas-estres-lideres-20261027-840789.html
   published_at_utc: '2026-10-27T23:12:35Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

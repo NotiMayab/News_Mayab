@@ -7,6 +7,12 @@ date: '2026-10-29T05:44:06Z'
 event_id: evt_20261028_6c976491
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_7eedd43439b009fa
@@ -39,6 +48,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/politica/fernando-gutierrez-barrios-blanca-cruz-presidentes-ife-ine-creacion-20261028-840973.html
   published_at_utc: '2026-10-28T21:17:17Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

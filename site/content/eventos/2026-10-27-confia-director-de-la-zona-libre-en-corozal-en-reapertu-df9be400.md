@@ -8,6 +8,12 @@ date: '2026-10-27T21:13:45Z'
 event_id: evt_20261027_df9be400
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: REGIONAL_PENINSULA
 scope_label: Regional (Península)
 verification_state: SINGLE_SOURCE
@@ -16,6 +22,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_09d2373f8eeafcc3
@@ -42,6 +51,8 @@ articles:
   canonical_url: https://noticaribe.com.mx/2026/10/27/confia-director-de-la-zona-libre-en-corozal-en-reapertura-del-puente-subteniente-lopez-para-transito-de-entrada-y-salida-esperan-buena-afluencia-de-visitantes-en-meses-venideros/
   published_at_utc: '2026-10-27T21:13:45Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

@@ -7,6 +7,12 @@ date: '2026-10-26T14:13:04Z'
 event_id: evt_20261026_40bcf18d
 topic_category: INFRAESTRUCTURA_TRANSPORTE
 topic_label: Infraestructura y Transporte
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: YUCATAN
 scope_label: Local (Yucatán)
 verification_state: SINGLE_SOURCE
@@ -15,6 +21,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_b8a1bd68f3141f4e
@@ -41,6 +50,8 @@ articles:
   canonical_url: https://infolliteras.com/2026/10/26/foto-noticia-transportistas-de-yucatan-comienzan-a-reunirse-en-el-periferico-de-merida-a-pesar-de-que-amotac-anuncio-que-no-participara/
   published_at_utc: '2026-10-26T14:13:04Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

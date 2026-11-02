@@ -6,6 +6,12 @@ date: '2026-10-28T22:04:45Z'
 event_id: evt_20261028_0bf35114
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: SINGLE_SOURCE
@@ -14,6 +20,9 @@ review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
 independent_origins_count: 1
 media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
 clustering_confidence: 1.0
 origins:
 - origin_id: orig_af23ea153235faef
@@ -37,6 +46,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/estados/queretaro-registra-250-000-profesionistas-10-poblacion-20261028-841003.html
   published_at_utc: '2026-10-28T22:04:45Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0

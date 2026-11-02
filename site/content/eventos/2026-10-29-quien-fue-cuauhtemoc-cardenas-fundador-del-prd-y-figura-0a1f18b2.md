@@ -7,6 +7,12 @@ date: '2026-10-29T05:43:44Z'
 event_id: evt_20261029_0a1f18b2
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
+categoria_principal: sin-clasificar
+categoria_label: Sin clasificar
+categorias_secundarias: []
+categorias:
+- sin-clasificar
+categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
 verification_state: UNCONFIRMED_REPORT
@@ -15,6 +21,9 @@ review_status: HUMAN_APPROVED
 review_badge: Validado y revisado por editor humano
 independent_origins_count: 5
 media_count: 5
+fuentes_count: 5
+origenes_independientes: 5
+origen_eco: ''
 clustering_confidence: 0.58
 origins:
 - origin_id: orig_851e56b1fc1cb180
@@ -70,6 +79,8 @@ articles:
   canonical_url: https://noticaribe.com.mx/2026/10/28/muere-cuauhtemoc-cardenas-a-los-92-anos-figura-clave-de-la-transicion-democratica-de-mexico/
   published_at_utc: '2026-10-29T03:04:59Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_48826721b4ded369
   source_id: yuc_lucesdelsiglo
   source_name: Luces del Siglo (Península)
@@ -85,6 +96,8 @@ articles:
   canonical_url: https://lucesdelsiglo.com/2026/10/28/murio-cuauhtemoc-cardenas-a-los-92-anos-nacional/
   published_at_utc: '2026-10-29T03:09:50Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_8545a7179e2d510c
   source_id: yuc_diario_yucatan
   source_name: Diario de Yucatán
@@ -101,6 +114,8 @@ articles:
   canonical_url: https://www.yucatan.com.mx/mexico/2026/10/28/muere-cuauhtemoc-cardenas-92-anios-icono-izquierda-mexicana.html
   published_at_utc: '2026-10-29T03:12:11Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_fa1a7413da8ec9ec
   source_id: mex_economista
   source_name: El Economista
@@ -114,6 +129,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/politica/cuauhtemoc-cardenas-solorzano-fallecio-92-anos-edad-20261028-841054.html
   published_at_utc: '2026-10-29T03:20:15Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_f8b8a79a0589b38f
   source_id: yuc_estamosaqui
   source_name: EstamosAquí MX (Mérida)
@@ -129,6 +146,8 @@ articles:
   canonical_url: https://estamosaqui.mx/muere-cuauhtemoc-cardenas/
   published_at_utc: '2026-10-29T03:32:10Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_e58ad5cf5a438d64
   source_id: yuc_estamosaqui
   source_name: EstamosAquí MX (Mérida)
@@ -145,6 +164,8 @@ articles:
   canonical_url: https://estamosaqui.mx/amlo-y-sheinbaum-lamentan-muerte-de-cuauhtemoc-cardenas-sin-el-otra-seria-la-realidad-politica-de-mexico/
   published_at_utc: '2026-10-29T03:50:58Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_554b7823f52b24d5
   source_id: yuc_noticaribe
   source_name: Noticaribe Peninsular
@@ -161,6 +182,8 @@ articles:
   canonical_url: https://noticaribe.com.mx/2026/10/28/lopez-obrador-y-sheinbaum-despiden-a-cuauhtemoc-cardenas-y-reconocen-su-papel-en-la-transformacion-democratica-de-mexico/
   published_at_utc: '2026-10-29T03:55:30Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 - article_id: art_c369c5a91a9b332c
   source_id: mex_economista
   source_name: El Economista
@@ -176,6 +199,8 @@ articles:
   canonical_url: https://www.eleconomista.com.mx/politica/cuauhtemoc-cardenas-fundador-prd-figura-clave-izquierda-mexicana-20261028-841063.html
   published_at_utc: '2026-10-29T04:10:34Z'
   is_near_duplicate_echo: false
+  categoria_principal: sin-clasificar
+  categorias_secundarias: []
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0
