@@ -1,0 +1,32 @@
+<nav class="cat-bar-sticky" id="category-filter-bar" aria-label="Filtrado temático de noticias">
+  <div class="site-container">
+    <div class="cat-scroll-container">
+      {{ $cats := slice
+        (dict "slug" "todas" "label" "Todas")
+        (dict "slug" "politica" "label" "Política")
+        (dict "slug" "seguridad" "label" "Seguridad")
+        (dict "slug" "economia" "label" "Economía")
+        (dict "slug" "cultura" "label" "Cultura")
+        (dict "slug" "ciencia" "label" "Ciencia")
+        (dict "slug" "deportes" "label" "Deportes")
+        (dict "slug" "salud" "label" "Salud")
+        (dict "slug" "medio-ambiente" "label" "Medio Ambiente")
+        (dict "slug" "sociedad" "label" "Sociedad")
+        (dict "slug" "sin-clasificar" "label" "Sin clasificar")
+      }}
+      {{ range $cats }}
+        {{ if eq .slug "todas" }}
+          <button type="button" class="cat-chip cat-chip-btn active" data-cat-slug="todas" aria-pressed="true">
+            {{ .label }}
+          </button>
+        {{ else }}
+          <label class="cat-chip cat-chip-btn" data-cat-slug="{{ .slug }}" aria-pressed="false">
+            <input type="checkbox" value="{{ .slug }}" data-cat-toggle="{{ .slug }}" aria-label="Filtrar {{ .label }}">
+            <a href="{{ printf "/categorias/%s/" .slug | relURL }}">{{ .label }}</a>
+          </label>
+        {{ end }}
+      {{ end }}
+      <span id="cat-results-counter" class="sr-only" aria-live="polite"></span>
+    </div>
+  </div>
+</nav>

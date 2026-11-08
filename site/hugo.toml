@@ -1,8 +1,9 @@
 baseURL = "https://news-mayab.noti-mayab.workers.dev/"
 locale = "es-mx"
 defaultContentLanguage = "es"
-title = "News Mayab — Transparencia y Trazabilidad Informativa en Yucatán"
+title = "Mayab — Trazabilidad Informativa en Yucatán"
 enableRobotsTXT = true
+theme = "mayab"
 
 [taxonomies]
   categoria = "categorias"

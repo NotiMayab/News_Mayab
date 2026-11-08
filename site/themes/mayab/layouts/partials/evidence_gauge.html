@@ -1,0 +1,45 @@
+{{ $medios := or .Params.fuentes_count .Params.media_count 1 }}
+{{ $origenes := or .Params.origenes_independientes .Params.independent_origins_count 1 }}
+{{ $eco := sub $medios $origenes }}
+{{ if lt $eco 0 }}{{ $eco = 0 }}{{ end }}
+
+<div class="evidence-gauge" aria-label="{{ $medios }} medios cubren esta historia basándose en {{ $origenes }} origen(es) independiente(s)">
+  <span class="gauge-dots" aria-hidden="true">
+    {{/* Puntos llenos: orígenes independientes (máximo 6 para mantener compacto) */}}
+    {{ $puntosLlenos := $origenes }}
+    {{ if gt $puntosLlenos 6 }}{{ $puntosLlenos = 6 }}{{ end }}
+    {{ range seq $puntosLlenos }}
+      <span class="dot-filled"></span>
+    {{ end }}
+
+    {{/* Puntos huecos: medios adicionales que replican boletín o cable (eco) */}}
+    {{ $puntosHuecos := $eco }}
+    {{ if gt $puntosHuecos 6 }}{{ $puntosHuecos = 6 }}{{ end }}
+    {{ range seq $puntosHuecos }}
+      <span class="dot-hollow"></span>
+    {{ end }}
+  </span>
+
+  <span class="evidence-label">
+    {{ if eq $medios 1 }}
+      1 medio &middot; 1 origen independiente
+    {{ else if and (gt $medios 1) (eq $origenes 1) }}
+      {{ $medios }} medios &middot; 1 origen {{ with .Params.origen_eco }}<span class="echo-label">({{ . }})</span>{{ else }}<span class="echo-label">(eco de boletín/cable)</span>{{ end }}
+    {{ else }}
+      {{ $medios }} medios &middot; {{ $origenes }} orígenes independientes
+    {{ end }}
+  </span>
+
+  <details class="popover-details">
+    <summary class="popover-summary" aria-label="Explicación de qué es un origen independiente">¿Qué significa?</summary>
+    <div class="popover-glass">
+      <strong>¿Qué es un origen independiente?</strong>
+      <p style="margin-top: 4px; font-size: 0.85em; line-height: 1.4;">
+        Distingue confirmación cruzada real frente a replicación. Si varios periódicos copian el mismo boletín oficial o cable de agencia, cuentan como <strong>1 solo origen</strong>.
+      </p>
+      <p style="margin-top: 6px; font-size: 0.85em;">
+        <a href="/metodologia/#1-principio-rector-origenes-independientes-no-eco-de-boletines" style="color: var(--color-accent); font-weight: 600;">Leer metodología completa &rarr;</a>
+      </p>
+    </div>
+  </details>
+</div>

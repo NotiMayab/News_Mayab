@@ -92,3 +92,12 @@
 * **Decisión:** Opción 2.
 * **Consecuencias:** El recall en pares positivos sube de `18.75%` (`3/16`) a `100.00%` (`16/16`) manteniendo `0.00%` (`0/16`) de falsos positivos en hechos de municipios distintos; en el corpus real los eventos con $\ge 2$ orígenes independientes se más que duplican (`4.25%` $\rightarrow$ `10.07%`); cada evento huérfano expone su causa exacta en `./bin/revisar` y `./bin/diagnostico`; las reclasificaciones humanas (`categoria_humana = 1`) quedan auditadas en `verification_history` (`changed_by = 'EDITOR_HUMAN'`) con prioridad sobre el clasificador; y se garantiza por construcción y por pruebas que ninguna categoría (`seguridad` u otra) altera `is_sensitive` ni `review_status`.
 
+## ADR-012: Sistema de Diseño Editorial Accesible y Tema Estático en Hugo (Mayab)
+* **Contexto:** Mayab requería un tema visual propio para Hugo, con identidad de "periódico de registro moderno" con guiños regionales yucatecos sobrios, sin imágenes de portada ni fotografías propias, cumpliendo estrictamente accesibilidad WCAG 2.2 AA en modo claro y oscuro, cero dependencias de Node.js/npm ni frameworks JS, y soporte de degradación 100% funcional sin JavaScript.
+* **Opciones:**
+  1. Integrar Tailwind CSS o Bootstrap mediante Node.js/PostCSS en el build de Cloudflare Pages.
+  2. Implementar un tema Hugo autónomo (`site/themes/mayab/`) en CSS puro con `@layer`, Hugo Pipes (`resources.Minify` + `fingerprint`), fuentes autoalojadas en WOFF2 (Fraunces + Inter), JavaScript vanilla (< 3 KB diferido con `defer`), acento terracota adaptativo (`#B5502E` en claro, `#DE734C` en oscuro para ratio $\ge 4.5:1$), liquid glass acotado a barras flotantes con fallback sólido, y visualizador SVG inline del medidor "N medios · M orígenes".
+* **Decisión:** Opción 2.
+* **Consecuencias:** Compilación estática ultrarrápida (< 250 ms para 695 páginas) sin arrastrar la cadena de suministro de npm; presupuesto de rendimiento garantizado (CSS < 40 KB, JS < 3 KB, HTML < 100 KB); cero cookies, cero rastreadores y cero llamadas a CDNs externas de fuentes; navegación accesible por teclado y compatible con `prefers-reduced-motion` y `prefers-reduced-transparency`; y preservación absoluta de los invariantes editoriales, ya que el tema únicamente renderiza datos previamente validados por el exportador.
+
+

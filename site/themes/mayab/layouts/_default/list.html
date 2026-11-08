@@ -1,0 +1,23 @@
+{{ define "main" }}
+<div class="site-container" style="margin-block: var(--space-l);">
+  <header style="margin-bottom: var(--space-l); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-s);">
+    <h1 style="font-size: var(--step-3);">{{ .Title }}</h1>
+    {{ with .Description }}
+      <p style="color: var(--color-text-muted); font-size: var(--step-0); margin-top: 4px;">{{ . }}</p>
+    {{ end }}
+  </header>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-m);">
+    {{ range .Pages }}
+      {{ if eq .Section "eventos" }}
+        {{ partial "event_card.html" . }}
+      {{ else }}
+        <article class="event-card">
+          <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+          <p>{{ .Summary }}</p>
+        </article>
+      {{ end }}
+    {{ end }}
+  </div>
+</div>
+{{ end }}

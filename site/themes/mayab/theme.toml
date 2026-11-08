@@ -1,0 +1,12 @@
+name = "Mayab"
+license = "MIT"
+licenselink = "https://github.com/NotiMayab/News_Mayab/blob/main/LICENSE"
+description = "Tema editorial estático para Mayab — Periodismo de registro, trazabilidad de orígenes y accesibilidad WCAG 2.2 AA."
+homepage = "https://news-mayab.noti-mayab.workers.dev/"
+tags = ["news", "editorial", "journalism", "accessibility", "responsive", "dark-mode", "hugo"]
+features = ["WCAG 2.2 AA", "No JS Frameworks", "Zero Cookies", "Self-hosted Fonts", "Liquid Glass", "RSS"]
+min_version = "0.120.0"
+
+[author]
+  name = "Mayab"
+  homepage = "https://news-mayab.noti-mayab.workers.dev/"

@@ -1,0 +1,34 @@
+{{ $catSlug := .Params.categoria_principal | default "sin-clasificar" }}
+{{ $allCatsList := or .Params.categorias (slice $catSlug) }}
+{{ $allCatsStr := delimit $allCatsList " " }}
+
+{{ $firstExcerpt := "" }}
+{{ with .Params.articles }}
+  {{ with index . 0 }}
+    {{ $firstExcerpt = .excerpt_plain }}
+  {{ end }}
+{{ end }}
+
+<article class="event-card{{ if .Params.is_featured }} card-featured{{ end }}" data-cat="{{ $allCatsStr }}" data-cats="{{ delimit $allCatsList "," }}">
+  <div class="card-meta-top">
+    <span class="meta-tag-category">
+      <a href="{{ printf "/categorias/%s/" $catSlug | relURL }}">{{ .Params.categoria_label | default $catSlug }}</a>
+    </span>
+    <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" title="{{ .Date.Format "02/01/2006 15:04 MST" }}">
+      {{ .Date.Format "02/01/2006" }}
+    </time>
+  </div>
+
+  <h3 class="card-title">
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+  </h3>
+
+  {{ with $firstExcerpt }}
+    <p class="card-excerpt">{{ . }}</p>
+  {{ end }}
+
+  <div class="card-footer">
+    {{ partial "evidence_gauge.html" . }}
+    {{ partial "review_badge.html" . }}
+  </div>
+</article>

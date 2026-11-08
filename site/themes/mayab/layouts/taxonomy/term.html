@@ -1,0 +1,21 @@
+{{ define "main" }}
+{{ partial "category_bar.html" . }}
+
+<div class="site-container" style="margin-block: var(--space-l);">
+  <header style="margin-bottom: var(--space-l); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-s);">
+    <div style="font-size: var(--step--1); color: var(--color-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+      Categoría Temática
+    </div>
+    <h1 style="font-size: var(--step-3); margin-top: 4px;">{{ .Title }}</h1>
+    <p style="color: var(--color-text-muted); font-size: var(--step-0); margin-top: 4px;">
+      Cobertura periodística filtrada por categoría. Funcional de manera estática con y sin JavaScript.
+    </p>
+  </header>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-m);">
+    {{ range .Pages }}
+      {{ partial "event_card.html" . }}
+    {{ end }}
+  </div>
+</div>
+{{ end }}

@@ -1,0 +1,16 @@
+{{ define "main" }}
+<div class="site-container" style="margin-block: var(--space-l);">
+  <header style="margin-bottom: var(--space-l); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-s);">
+    <h1 style="font-size: var(--step-3);">{{ .Title }}</h1>
+    <p style="color: var(--color-text-muted); font-size: var(--step-0); margin-top: 4px;">
+      Archivo histórico de eventos y hechos noticiosos verificados.
+    </p>
+  </header>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-m);">
+    {{ range .Pages }}
+      {{ partial "event_card.html" . }}
+    {{ end }}
+  </div>
+</div>
+{{ end }}

@@ -1,0 +1,134 @@
+{{ define "main" }}
+<article class="site-container" style="max-width: 840px; margin-block: var(--space-l);">
+  <header style="margin-bottom: var(--space-l);">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs); margin-bottom: var(--space-xs); font-size: var(--step--1);">
+      <span class="meta-tag-category">
+        <a href="{{ printf "/categorias/%s/" (.Params.categoria_principal | default "sin-clasificar") | relURL }}">
+          {{ .Params.categoria_label | default "General" }}
+        </a>
+      </span>
+      <span>&middot;</span>
+      <span>{{ .Params.scope_label | default "Local" }}</span>
+      <span>&middot;</span>
+      <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+        Publicado: {{ .Date.Format "02 de enero de 2006, 15:04 MST" }}
+      </time>
+    </div>
+
+    <h1 style="font-size: var(--step-4); line-height: 1.18; margin-bottom: var(--space-s);">
+      {{ .Title }}
+    </h1>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-s); padding-block: var(--space-xs); border-block: 1px solid var(--color-border);">
+      {{ partial "evidence_gauge.html" . }}
+      {{ partial "review_badge.html" . }}
+    </div>
+  </header>
+
+  {{/* Aviso si el evento está en disputa */}}
+  {{ if eq .Params.verification_state "DISPUTED" }}
+    <aside class="corrections-box" role="alert" style="margin-bottom: var(--space-l);">
+      <h2 style="font-size: var(--step-1); margin-bottom: var(--space-3xs);">Versiones Contradictorias o en Disputa</h2>
+      <p style="font-size: var(--step-0);">
+        Existen desmentidos o versiones públicas incompatibles entre los medios u orígenes que reportan este suceso. Las notas se presentan a continuación para consulta documental.
+      </p>
+    </aside>
+  {{ end }}
+
+  {{/* Alerta de integridad si cita obra retractada */}}
+  {{ with .Params.trust_graph }}
+    {{ if .has_retraction_alert }}
+      <aside class="corrections-box" role="alert" style="margin-bottom: var(--space-l);">
+        <h2 style="font-size: var(--step-1); margin-bottom: var(--space-3xs);">Alerta de Integridad Científica (Retraction Watch)</h2>
+        <p style="font-size: var(--step-0);">
+          Una o más de las publicaciones científicas o académicas citadas por los medios en este hecho registran aviso de retiro o retractación en índices internacionales.
+        </p>
+      </aside>
+    {{ end }}
+  {{ end }}
+
+  {{/* Desglose de Orígenes y Notas en Línea de Tiempo */}}
+  <section aria-label="Línea de tiempo de notas publicadas">
+    <h2 style="font-size: var(--step-2); margin-bottom: var(--space-m); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-3xs);">
+      Línea de Cobertura Documental ({{ len .Params.articles }} notas registradas)
+    </h2>
+
+    <p style="font-size: var(--step--1); color: var(--color-text-muted); margin-bottom: var(--space-m);">
+      Las notas a continuación se ordenan cronológicamente. Los extractos están estrictamente limitados a citas cortas (&le; 240 caracteres) para atribución y verificación. Enlaza directamente al medio para leer la cobertura completa.
+    </p>
+
+    <div class="timeline-container">
+      {{ range .Params.articles }}
+        <div class="article-timeline-item{{ if .is_near_duplicate_echo }} is-echo{{ end }}">
+          <div class="source-attribution">
+            <strong>{{ .source_name }}</strong>
+            {{ with .editorial_stance_note }}<span>({{ . }})</span>{{ end }}
+            <span>&middot;</span>
+            <time datetime="{{ .published_at_utc }}">{{ .published_at_utc }}</time>
+            {{ if .is_near_duplicate_echo }}
+              <span class="badge-editorial badge-auto" style="font-size: 0.75rem;">Eco / cable reproducido</span>
+            {{ end }}
+          </div>
+
+          <h3 class="article-title-link" style="font-size: var(--step-1); margin-top: 4px;">
+            {{ .title_plain }}
+          </h3>
+
+          <p style="font-size: var(--step-0); color: var(--color-text); line-height: 1.5; margin-block: 4px;">
+            &laquo;{{ .excerpt_plain }}&raquo;
+          </p>
+
+          <div>
+            {{/* Solo URLs válidas http/https y con rel seguro */}}
+            {{ if (or (hasPrefix .canonical_url "https://") (hasPrefix .canonical_url "http://")) }}
+              <a href="{{ .canonical_url }}" class="btn-source-external" target="_blank" rel="noopener noreferrer nofollow" aria-label="Leer nota original en {{ .source_name }}">
+                Leer nota completa en la fuente original ↗
+              </a>
+            {{ end }}
+          </div>
+        </div>
+      {{ end }}
+    </div>
+  </section>
+
+  {{/* Fe de Erratas / Correcciones */}}
+  {{ with .Params.corrections }}
+    {{ if gt (len .) 0 }}
+      <section class="corrections-box" aria-label="Historial de correcciones y fe de erratas">
+        <h2 style="font-size: var(--step-1); margin-bottom: var(--space-2xs);">Fe de Erratas y Correcciones Editoriales</h2>
+        <ul style="list-style-type: square; padding-left: var(--space-m);">
+          {{ range . }}
+            <li style="margin-bottom: var(--space-2xs); font-size: var(--step--1);">
+              <strong>{{ .correction_type }}</strong> (<time datetime="{{ .created_at_utc }}">{{ .created_at_utc }}</time>):
+              {{ .explanation }}
+            </li>
+          {{ end }}
+        </ul>
+      </section>
+    {{ end }}
+  {{ end }}
+
+  {{/* Subgrafo de Confianza Académico */}}
+  {{ with .Params.trust_graph }}
+    {{ if gt .total_linked_works 0 }}
+      <section class="trust-graph-box" aria-label="Evidencia científica y académica vinculada">
+        <h2 style="font-size: var(--step-1); margin-bottom: var(--space-2xs);">Evidencia Científica Vinculada (Grafo de Confianza)</h2>
+        <p style="font-size: var(--step--1);">
+          Este hecho cita {{ .total_linked_works }} obra(s) académica(s) con identificadores abiertos verificables (DOI / OpenAlex / ORCID):
+        </p>
+        <ul style="margin-top: var(--space-2xs); font-size: var(--step--1); padding-left: var(--space-m);">
+          <li>Artículos con revisión por pares: {{ .peer_reviewed_count }}</li>
+          <li>Preprints sin arbitrar: {{ .preprint_count }}</li>
+          <li>Investigadores con ORCID: {{ .authors_with_orcid_count }}</li>
+        </ul>
+      </section>
+    {{ end }}
+  {{ end }}
+
+  <footer style="margin-top: var(--space-xl); padding-top: var(--space-m); border-top: 1px solid var(--color-border); font-size: var(--step--1); color: var(--color-text-muted);">
+    <p>
+      ¿Dudas sobre cómo se agruparon estas fuentes? <a href="/metodologia/" style="color: var(--color-accent); text-decoration: underline;">Consulta nuestra metodología editorial pública</a>.
+    </p>
+  </footer>
+</article>
+{{ end }}

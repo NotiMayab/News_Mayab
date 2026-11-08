@@ -1,0 +1,78 @@
+{{ define "main" }}
+{{ partial "category_bar.html" . }}
+
+<div class="site-container">
+  {{ $eventos := where .Site.RegularPages "Section" "eventos" }}
+  {{ $recientes := sort $eventos "Date" "desc" }}
+  {{ $ordenadosPorOrigenes := sort $eventos ".Params.origenes_independientes" "desc" }}
+  {{ $destacado := index $ordenadosPorOrigenes 0 }}
+
+  <div class="home-layout">
+    <div class="main-column">
+      {{ with $destacado }}
+        <section aria-label="Evento con mayor confirmación independiente">
+          <h1 class="sr-only">Mayab — Noticias regionales agrupadas y verificadas por orígenes independientes</h1>
+          <div style="margin-bottom: var(--space-xs); font-size: var(--step--1); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-accent);">
+            Mayor confirmación independiente en la Península
+          </div>
+          {{ partial "event_card.html" (dict "Title" .Title "RelPermalink" .RelPermalink "Date" .Date "Params" (merge .Params (dict "is_featured" true))) }}
+        </section>
+      {{ end }}
+
+      <section aria-label="Cobertura de eventos recientes">
+        <h2 style="margin-bottom: var(--space-m); font-size: var(--step-2); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-2xs);">
+          Eventos agrupados por confirmación cruzada
+        </h2>
+        <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-m);">
+          {{ range first 25 $recientes }}
+            {{ if and $destacado (ne .RelPermalink $destacado.RelPermalink) }}
+              {{ partial "event_card.html" . }}
+            {{ end }}
+          {{ end }}
+        </div>
+
+        <nav style="margin-top: var(--space-l); text-align: center;" aria-label="Paginación y archivo">
+          <a href="/eventos/" class="cat-chip" style="display: inline-flex; padding: 10px 24px; font-weight: 600; border-color: var(--color-accent); color: var(--color-accent);">
+            Ver todos los eventos en el archivo histórico &rarr;
+          </a>
+        </nav>
+      </section>
+    </div>
+
+    <aside class="sidebar-column" aria-label="Columna informativa">
+      <section>
+        <h3 style="font-size: var(--step-1); margin-bottom: var(--space-s); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-3xs);">
+          Lo último registrado
+        </h3>
+        <ol style="list-style: none; display: flex; flex-direction: column; gap: var(--space-s);">
+          {{ range first 8 $recientes }}
+            <li style="border-bottom: 1px solid var(--color-border-subtle); padding-bottom: var(--space-2xs);">
+              <div style="font-size: var(--step--2); color: var(--color-accent); font-weight: 600; text-transform: uppercase;">
+                {{ .Params.categoria_label | default "General" }} &middot; <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "15:04" }}</time>
+              </div>
+              <h4 style="font-size: var(--step-0); font-family: var(--font-serif); font-weight: 600; margin-top: 2px;">
+                <a href="{{ .RelPermalink }}" style="color: var(--color-text); text-decoration: none;">{{ .Title }}</a>
+              </h4>
+              <div style="font-size: var(--step--2); color: var(--color-text-muted); margin-top: 4px;">
+                {{ or .Params.fuentes_count .Params.media_count 1 }} medios &middot; {{ or .Params.origenes_independientes .Params.independent_origins_count 1 }} origen(es)
+              </div>
+            </li>
+          {{ end }}
+        </ol>
+      </section>
+
+      <section style="background: var(--color-surface-subtle); padding: var(--space-m); border-radius: var(--radius-m); border: 1px solid var(--color-border);">
+        <h3 style="font-size: var(--step-0); font-weight: 700; margin-bottom: var(--space-2xs);">
+          Transparencia de Orígenes
+        </h3>
+        <p style="font-size: var(--step--1); line-height: 1.5; color: var(--color-text-muted);">
+          No premiamos el volumen de boletines repetidos. Cuando varios medios publican el mismo texto oficial, Mayab lo reporta como <strong>1 solo origen independiente</strong>.
+        </p>
+        <p style="font-size: var(--step--1); margin-top: var(--space-2xs);">
+          <a href="/metodologia/" style="color: var(--color-accent); font-weight: 600;">Conoce los 5 estados de verificación &rarr;</a>
+        </p>
+      </section>
+    </aside>
+  </div>
+</div>
+{{ end }}

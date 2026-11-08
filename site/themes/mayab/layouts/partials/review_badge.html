@@ -1,0 +1,36 @@
+{{ $status := .Params.review_status }}
+{{ $vstate := .Params.verification_state }}
+{{ $hasCorrections := and .Params.corrections (gt (len .Params.corrections) 0) }}
+
+{{ if $hasCorrections }}
+  <span class="badge-editorial badge-disputed">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+    </svg>
+    <span>Corregido (Fe de erratas)</span>
+  </span>
+{{ else if or (eq $vstate "DISPUTED") (eq $vstate "RETRACTED") }}
+  <span class="badge-editorial badge-disputed">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/>
+      <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span>{{ if eq $vstate "RETRACTED" }}Retractado{{ else }}Versiones en disputa{{ end }}</span>
+  </span>
+{{ else if eq $status "HUMAN_APPROVED" }}
+  <span class="badge-editorial badge-approved">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+    <span>Revisado por editor</span>
+  </span>
+{{ else }}
+  <span class="badge-editorial badge-auto">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+      <line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <span>Agrupación automática — Pendiente de validación editorial</span>
+  </span>
+{{ end }}
