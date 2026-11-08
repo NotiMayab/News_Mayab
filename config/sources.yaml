@@ -106,6 +106,46 @@ ownership_groups:
     group_type: "PUBLIC_STATE_ENTITY"
     transparency_notes: "Servicio público internacional británico en español."
 
+  - ownership_group_id: "GRP_SOL_YUCATAN"
+    display_name: "Sol Yucatán (Mérida, Yucatán)"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Periódico impreso y portal digital de investigación y política local en Yucatán."
+
+  - ownership_group_id: "GRP_PUNTO_MEDIO_YUC"
+    display_name: "Editorial Punto Medio (Mérida, Yucatán)"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Diario y portal informativo local con cobertura de Mérida y municipios de Yucatán."
+
+  - ownership_group_id: "GRP_EL_UNIVERSAL_MEX"
+    display_name: "El Universal Compañía Periodística Nacional S.A. de C.V."
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Diario nacional de circulación general en México."
+
+  - ownership_group_id: "GRP_PRISA_ELPAIS"
+    display_name: "Grupo PRISA / Ediciones El País (México)"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Grupo multimedia hispanoamericano; edición mexicana de El País."
+
+  - ownership_group_id: "GRP_REFORMA_CICSA"
+    display_name: "Grupo Reforma (Consorcio Interamericano de Comunicación)"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Grupo editorial nacional (Reforma, El Norte, Mural) bajo modelo de suscripción."
+
+  - ownership_group_id: "GRP_MULTIMEDIOS_FINANCIERO"
+    display_name: "Grupo Multimedia Lauman (El Financiero)"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Diario nacional especializado en economía, negocios, mercados y política en alianza con Bloomberg."
+
+  - ownership_group_id: "GRP_IMAGEN_EXCELSIOR"
+    display_name: "Grupo Imagen (Excélsior)"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Consorcio nacional de prensa, radio y televisión (Grupo Empresarial Ángeles)."
+
+  - ownership_group_id: "GRP_WBD_CNN"
+    display_name: "Warner Bros. Discovery / CNN en Español"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Cadena internacional de noticias en español."
+
 sources:
   # --- FUENTES ACTIVAS Y VERIFICADAS EN YUCATÁN Y PENÍNSULA ---
   - source_id: "yuc_diario_yucatan"
@@ -229,6 +269,66 @@ sources:
     headline_and_link_only: false
     is_active: true
 
+  - source_id: "mex_eluniversal"
+    name: "El Universal"
+    rss_url: "https://www.eluniversal.com.mx/arc/outboundfeeds/rss/"
+    website_url: "https://www.eluniversal.com.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_EL_UNIVERSAL_MEX"
+    editorial_stance_note: "Diario nacional de información general, política, estados y sociedad."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "mex_elpais"
+    name: "El País México"
+    rss_url: "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/mexico/portada"
+    website_url: "https://elpais.com/mexico/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_PRISA_ELPAIS"
+    editorial_stance_note: "Edición mexicana de El País con cobertura de política, sociedad, ciencia y cultura."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "mex_reforma"
+    name: "Reforma"
+    rss_url: "https://www.reforma.com/rss/portada.xml"
+    website_url: "https://www.reforma.com"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_REFORMA_CICSA"
+    editorial_stance_note: "Diario nacional bajo muro de pago; se indexa únicamente titular y enlace directo."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: true
+    is_active: true
+
+  - source_id: "mex_elfinanciero"
+    name: "El Financiero"
+    rss_url: "https://www.elfinanciero.com.mx/arc/outboundfeeds/rss/?outputType=xml"
+    website_url: "https://www.elfinanciero.com.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_MULTIMEDIOS_FINANCIERO"
+    editorial_stance_note: "Diario nacional especializado en economía, negocios, finanzas y política."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "mex_excelsior"
+    name: "Excélsior"
+    rss_url: "https://www.excelsior.com.mx/rss"
+    website_url: "https://www.excelsior.com.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_IMAGEN_EXCELSIOR"
+    editorial_stance_note: "Diario nacional de información general, política y comunidad."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
   # --- FUENTES ACTIVAS MUNDIALES Y CIENCIA ---
   - source_id: "glo_dw_espanol"
     name: "DW Español"
@@ -323,6 +423,42 @@ sources:
     ownership_group_id: "GRP_PROCESO"
     editorial_stance_note: "Cobertura política, derechos humanos y seguridad nacional."
     geographic_scope: "NATIONAL"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "yuc_solyucatan"
+    name: "Sol Yucatán"
+    rss_url: "https://solyucatan.mx/feed/"
+    website_url: "https://solyucatan.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_SOL_YUCATAN"
+    editorial_stance_note: "Investigación y cobertura política local en Yucatán (protegido por WAF)."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "yuc_puntomedio"
+    name: "Punto Medio (Yucatán)"
+    rss_url: "https://www.puntomedio.mx/feed/"
+    website_url: "https://www.puntomedio.mx"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_PUNTO_MEDIO_YUC"
+    editorial_stance_note: "Cobertura local de Mérida y municipios de Yucatán (reto WAF activo en feed)."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "glo_cnn_espanol"
+    name: "CNN en Español"
+    rss_url: "https://cnnespanol.cnn.com/feed/"
+    website_url: "https://cnnespanol.cnn.com"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_WBD_CNN"
+    editorial_stance_note: "Cobertura internacional en español (feed RSS público deshabilitado HTTP 404)."
+    geographic_scope: "GLOBAL"
     fetch_mode: "local_isp_only"
     headline_and_link_only: false
     is_active: false

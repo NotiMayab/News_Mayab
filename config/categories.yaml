@@ -1,0 +1,261 @@
+# =============================================================================
+# Catálogo Declarativo de Categorías Temáticas — News_Mayab (Tarea E)
+# =============================================================================
+# Señal fuerte: etiquetas <category> del feed RSS mapeadas vía `rss_hints`.
+# Respaldo: coincidencia de `keywords` normalizadas (minúsculas, sin acentos).
+# Desempate determinista: orden alfabético por clave de categoría.
+
+categorias:
+  politica:
+    peso: 1.0
+    label: "Política"
+    rss_hints:
+      - "politica"
+      - "gobierno"
+      - "congreso"
+      - "elecciones"
+      - "legislativo"
+      - "nacional"
+      - "estados"
+    keywords:
+      - "congreso"
+      - "diputados"
+      - "senado"
+      - "senadores"
+      - "cabildo"
+      - "ayuntamiento"
+      - "gobierno"
+      - "gobernador"
+      - "alcalde"
+      - "alcaldesa"
+      - "reforma"
+      - "ley"
+      - "iniciativa"
+      - "iepac"
+      - "ine"
+      - "partido"
+      - "decreto"
+
+  seguridad:
+    peso: 1.0
+    label: "Seguridad"
+    rss_hints:
+      - "policiaca"
+      - "seguridad"
+      - "justicia"
+      - "sucesos"
+      - "roja"
+      - "policia"
+    keywords:
+      - "fiscalia"
+      - "detenido"
+      - "detenidos"
+      - "accidente"
+      - "policia"
+      - "seguridad publica"
+      - "ssp"
+      - "fge"
+      - "delito"
+      - "juez"
+      - "tribunal"
+      - "operativo"
+      - "patrulla"
+      - "bomberos"
+      - "emergencia"
+      - "vialidad"
+
+  economia:
+    peso: 1.0
+    label: "Economía"
+    rss_hints:
+      - "economia"
+      - "finanzas"
+      - "negocios"
+      - "empresas"
+      - "mercados"
+      - "dinero"
+    keywords:
+      - "economia"
+      - "inflacion"
+      - "empleo"
+      - "inversion"
+      - "turismo"
+      - "comercio"
+      - "presupuesto"
+      - "impuesto"
+      - "exportacion"
+      - "salario"
+      - "empresarios"
+      - "industria"
+      - "puerto de altura"
+      - "finanzas"
+      - "divisas"
+
+  cultura:
+    peso: 1.0
+    label: "Cultura"
+    rss_hints:
+      - "cultura"
+      - "arte"
+      - "humanidades"
+      - "espectaculos"
+      - "libros"
+      - "letras"
+    keywords:
+      - "cultura"
+      - "museo"
+      - "teatro"
+      - "exposicion"
+      - "concierto"
+      - "patrimonio"
+      - "arqueologia"
+      - "inah"
+      - "literatura"
+      - "lengua maya"
+      - "festival"
+      - "orquesta"
+      - "pintura"
+      - "danza"
+      - "libro"
+      - "novela"
+
+  ciencia:
+    peso: 1.0
+    label: "Ciencia"
+    rss_hints:
+      - "ciencia"
+      - "tecnologia"
+      - "investigacion"
+      - "academia"
+      - "divulgacion"
+    keywords:
+      - "cientifico"
+      - "cientificos"
+      - "investigacion"
+      - "investigadores"
+      - "cicy"
+      - "uady"
+      - "estudio"
+      - "astronomia"
+      - "biologia"
+      - "biotecnologia"
+      - "laboratorio"
+      - "inteligencia artificial"
+      - "universidad"
+
+  deportes:
+    peso: 1.0
+    label: "Deportes"
+    rss_hints:
+      - "deportes"
+      - "deporte"
+      - "futbol"
+      - "beisbol"
+      - "aficion"
+    keywords:
+      - "beisbol"
+      - "futbol"
+      - "torneo"
+      - "campeonato"
+      - "liga"
+      - "estadio"
+      - "leones de yucatan"
+      - "venados"
+      - "serie mundial"
+      - "atletas"
+      - "medalla"
+      - "deporte"
+      - "deportiva"
+      - "entrenador"
+
+  salud:
+    peso: 1.0
+    label: "Salud"
+    rss_hints:
+      - "salud"
+      - "bienestar"
+      - "medicina"
+      - "sanidad"
+    keywords:
+      - "hospital"
+      - "salud"
+      - "vacunacion"
+      - "vacuna"
+      - "dengue"
+      - "imss"
+      - "issste"
+      - "clinica"
+      - "enfermedad"
+      - "medicos"
+      - "pacientes"
+      - "epidemiologico"
+      - "cirugia"
+      - "obesidad"
+
+  medio-ambiente:
+    peso: 1.0
+    label: "Medio Ambiente"
+    rss_hints:
+      - "medio ambiente"
+      - "ecologia"
+      - "clima"
+      - "naturaleza"
+      - "sustentabilidad"
+    keywords:
+      - "huracan"
+      - "lluvia"
+      - "frente frio"
+      - "sequia"
+      - "reforestacion"
+      - "arboles"
+      - "cenote"
+      - "cenotes"
+      - "acuifero"
+      - "manglar"
+      - "clima"
+      - "temperatura"
+      - "sargazo"
+      - "profepa"
+      - "semarnat"
+      - "procivy"
+      - "conagua"
+      - "contaminacion"
+
+  sociedad:
+    peso: 1.0
+    label: "Sociedad"
+    rss_hints:
+      - "sociedad"
+      - "comunidad"
+      - "local"
+      - "merida"
+      - "yucatan"
+      - "educacion"
+      - "derechos humanos"
+    keywords:
+      - "derechos humanos"
+      - "codhey"
+      - "protesta"
+      - "manifestacion"
+      - "comunidad maya"
+      - "consulta indigena"
+      - "escuela"
+      - "clases"
+      - "docentes"
+      - "estudiantes"
+      - "segey"
+      - "becas"
+      - "transporte"
+      - "va y ven"
+      - "japay"
+      - "agua potable"
+      - "bacheo"
+      - "repavimentacion"
+      - "ciudadania"
+      - "vecinos"
+
+  sin-clasificar:
+    peso: 0.0
+    label: "Sin clasificar"
+    rss_hints: []
+    keywords: []

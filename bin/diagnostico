@@ -1,0 +1,161 @@
+#!/usr/bin/env python3
+"""CLI de diagnóstico de solo lectura (Tarea A): Ingesta por portal, eventos huérfanos y distribución de orígenes."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sqlite3
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT_DIR / "src"))
+
+from mayab_news.ops.diagnostics import (  # noqa: E402
+    SystemDiagnosticReport,
+    compute_system_diagnostics,
+)
+
+
+def _connect_readonly_or_default(db_path: Path) -> sqlite3.Connection:
+    conn = sqlite3.connect(str(db_path), timeout=15.0)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA query_only = ON;")
+    return conn
+
+
+def _print_text_report(report: SystemDiagnosticReport, limit_orphans: int) -> None:
+    print("=" * 96)
+    print(f"DIAGNÓSTICO DE SISTEMA (SOLO LECTURA) — Referencia UTC: {report.reference_utc}")
+    print("=" * 96)
+
+    print("\n1. ARTÍCULOS INGERIDOS POR PORTAL (ÚLTIMAS 72 H Y 7 DÍAS)")
+    print("-" * 96)
+    print(
+        f"{'SOURCE_ID':<22} {'ACTIVA':<7} {'72H':<6} {'7D':<6} {'TOTAL':<7} {'ESTADO / DETALLE'}"
+    )
+    print("-" * 96)
+    for s in report.sources_ingestion:
+        act_str = "SÍ" if s.is_active else "NO"
+        err_suffix = (
+            f" (fallos={s.consecutive_failures}, err={s.last_error_kind})"
+            if s.last_error_kind or s.consecutive_failures
+            else ""
+        )
+        print(
+            f"{s.source_id:<22} {act_str:<7} {s.articles_72h:<6} {s.articles_7d:<6} "
+            f"{s.total_articles:<7} {s.status}{err_suffix}"
+        )
+
+    print("\n2. EVENTOS CON UN SOLO ARTÍCULO (HUÉRFANOS) AGRUPADOS POR PORTAL")
+    print("-" * 96)
+    if not report.orphans_by_source:
+        print("  (Ningún evento de un solo artículo)")
+    else:
+        print(f"{'SOURCE_ID':<22} {'PORTAL':<42} {'EVENTOS_1_ARTÍCULO'}")
+        print("-" * 96)
+        for o in report.orphans_by_source:
+            print(f"{o.source_id:<22} {o.source_name[:40]:<42} {o.orphan_events_count}")
+
+    print("\n3. DIAGNÓSTICO DE EVENTOS HUÉRFANOS (MEJOR CANDIDATO DESCARTADO Y MOTIVO)")
+    print("-" * 96)
+    print("Desglose global por motivo de rechazo (rejected_reason):")
+    for reason, cnt in report.rejected_reasons_breakdown.items():
+        print(f"  - {reason:<24}: {cnt}")
+    print("-" * 96)
+    shown = report.orphan_diagnostics[:limit_orphans]
+    for od in shown:
+        cand_id = od.best_candidate_event_id or "ninguno"
+        comp = od.components
+        print(
+            f"* Huérfano: {od.event_id} [{od.source_id}] | best_score={od.best_score:.3f} | "
+            f"motivo={od.rejected_reason} | mejor_candidato={cand_id}"
+        )
+        print(
+            f"  Componentes: coseno_titulo={comp['coseno_titulo']:.3f}, "
+            f"coseno_cuerpo={comp['coseno_cuerpo']:.3f}, "
+            f"solape_entidades={comp['solape_entidades']:.3f}"
+        )
+        print(f"  Titular huérfano:  {od.headline_display[:80]}")
+        if od.best_candidate_headline:
+            print(f"  Titular candidato: {od.best_candidate_headline[:80]}")
+    if len(report.orphan_diagnostics) > limit_orphans:
+        remaining = len(report.orphan_diagnostics) - limit_orphans
+        print(
+            f"  ... ({remaining} eventos huérfanos adicionales omitidos en vista texto; "
+            f"use --limit-orphans o --json para ver todos)"
+        )
+
+    print("\n4. DISTRIBUCIÓN DE EVENTOS POR N_MEDIOS E INDEPENDENT_ORIGINS_COUNT")
+    print("-" * 96)
+    print("Por número de medios (media_count / n_medios):")
+    for n_med, cnt in report.distribution_by_n_medios.items():
+        print(f"  - {n_med} medio(s): {cnt} evento(s)")
+    print("Por número de orígenes independientes (independent_origins_count):")
+    for n_orig, cnt in report.distribution_by_independent_origins.items():
+        print(f"  - {n_orig} origen(es): {cnt} evento(s)")
+
+    sm = report.summary
+    print("\n5. RESUMEN EJECUTIVO")
+    print("-" * 96)
+    print(f"Total de eventos activos:                              {sm.total_events}")
+    print(
+        f"% de eventos con 1 medio:                              {sm.pct_single_media:.2f}% "
+        f"({sm.single_media_events}/{sm.total_events})"
+    )
+    print(
+        f"% con 1 origen pero varios medios (eco colapsado):     {sm.pct_collapsed_echo:.2f}% "
+        f"({sm.collapsed_echo_events}/{sm.total_events})"
+    )
+    print(
+        f"% con >=2 orígenes independientes:                     {sm.pct_multi_origin:.2f}% "
+        f"({sm.multi_origin_events}/{sm.total_events})"
+    )
+    print("=" * 96)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Diagnóstico de solo lectura de ingesta, agrupación y orígenes (Tarea A)"
+    )
+    parser.add_argument(
+        "--db",
+        type=Path,
+        default=ROOT_DIR / "state.sqlite",
+        help="Ruta al archivo state.sqlite",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Imprime el reporte completo en formato JSON determinista",
+    )
+    parser.add_argument(
+        "--now",
+        type=str,
+        default=None,
+        help="Timestamp ISO-8601 UTC de referencia opcional (ej. 2026-11-01T22:00:00Z)",
+    )
+    parser.add_argument(
+        "--limit-orphans",
+        type=int,
+        default=25,
+        help="Límite de eventos huérfanos detallados a mostrar en salida de texto (por defecto 25)",
+    )
+    args = parser.parse_args()
+
+    conn = _connect_readonly_or_default(args.db)
+    try:
+        report = compute_system_diagnostics(conn, reference_utc=args.now)
+    finally:
+        conn.close()
+
+    if args.json:
+        print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2, sort_keys=True))
+    else:
+        _print_text_report(report, limit_orphans=args.limit_orphans)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

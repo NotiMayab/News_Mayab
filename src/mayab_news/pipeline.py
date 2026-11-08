@@ -13,9 +13,15 @@ from typing import Callable
 
 from mayab_news.ingest.http_client import FeedFetchResult, fetch_feed_safely
 from mayab_news.ingest.xml_parser import FeedParseError, parse_rss_or_atom_bytes
+from mayab_news.nlp.categories import (
+    classify_article_categories,
+    vote_event_categories,
+)
 from mayab_news.nlp.clustering import (
     EventCandidate,
     build_feature_weights,
+    get_or_compute_historical_idf,
+    load_grouping_improvements_config,
     make_event_slug_and_id,
     match_article_to_event,
     merge_feature_weights,
@@ -59,17 +65,29 @@ class PipelineRunSummary:
     status: str
 
 
-def _load_active_event_candidates(conn: sqlite3.Connection) -> list[EventCandidate]:
-    rows = conn.execute(
+def _load_active_event_candidates(
+    conn: sqlite3.Connection,
+    *,
+    compare_against_existing_events: bool = True,
+) -> list[EventCandidate]:
+    if compare_against_existing_events:
+        query = """
+        SELECT event_id, canonical_headline, geographic_scope, first_seen_at_utc,
+               last_updated_at_utc, tfidf_terms_json, key_entities_json, clustering_confidence
+        FROM events
+        WHERE review_status != 'REJECTED'
+        ORDER BY last_updated_at_utc DESC;
         """
-        SELECT event_id, canonical_headline, geographic_scope, last_updated_at_utc,
-               tfidf_terms_json, key_entities_json, clustering_confidence
+    else:
+        query = """
+        SELECT event_id, canonical_headline, geographic_scope, first_seen_at_utc,
+               last_updated_at_utc, tfidf_terms_json, key_entities_json, clustering_confidence
         FROM events
         WHERE review_status != 'REJECTED'
         ORDER BY last_updated_at_utc DESC
         LIMIT 300;
         """
-    ).fetchall()
+    rows = conn.execute(query).fetchall()
 
     candidates: list[EventCandidate] = []
     for r in rows:
@@ -90,6 +108,7 @@ def _load_active_event_candidates(conn: sqlite3.Connection) -> list[EventCandida
                 term_weights=weights,
                 key_entities=entities,
                 clustering_confidence=float(r["clustering_confidence"]),
+                first_seen_at_utc=str(r["first_seen_at_utc"] or ""),
             )
         )
     return candidates
@@ -144,6 +163,9 @@ def recompute_event_state(
     conn: sqlite3.Connection,
     event_id: str,
     rules_path: Path = DEFAULT_RULES_PATH,
+    *,
+    improvements_override: dict[str, bool] | None = None,
+    force_pending_on_gray_zone_join: bool = False,
 ) -> None:
     """Recalcula conteos de medios vs orígenes independientes, sensibilidad y estado de verificación."""
     evt_row = conn.execute(
@@ -154,7 +176,9 @@ def recompute_event_state(
 
     articles_rows = conn.execute(
         """
-        SELECT article_id, source_id, title_plain, excerpt_plain, published_at_utc
+        SELECT article_id, source_id, title_plain, excerpt_plain, published_at_utc,
+               similarity_to_event, rss_categories_json, categoria_principal,
+               categorias_secundarias_json
         FROM articles
         WHERE event_id = ?
         ORDER BY published_at_utc ASC;
@@ -163,6 +187,10 @@ def recompute_event_state(
     ).fetchall()
     if not articles_rows:
         return
+
+    grp_cfg = load_grouping_improvements_config(
+        rules_path=rules_path, improvements_override=improvements_override
+    )
 
     media_count = len({str(r["source_id"]) for r in articles_rows})
 
@@ -180,15 +208,19 @@ def recompute_event_state(
     all_reasons: set[str] = set()
     any_dispute = False
     any_retraction = False
-    merged_entities: set[str] = set()
+    entity_counts: dict[str, int] = {}
+    first_article_entities: set[str] = set()
     merged_weights: dict[str, float] = {}
     rule_version = str(evt_row["rule_engine_version"])
 
-    for r in articles_rows:
+    for idx, r in enumerate(articles_rows):
         title_p = str(r["title_plain"])
         excerpt_p = str(r["excerpt_plain"])
         assess = evaluate_text_sensitivity_and_signals(
-            title_p, excerpt_p, rules_path=rules_path
+            title_p,
+            excerpt_p,
+            rules_path=rules_path,
+            improvements_override=improvements_override,
         )
         rule_version = assess.rule_engine_version
         all_reasons.update(assess.reason_codes)
@@ -196,9 +228,26 @@ def recompute_event_state(
             any_dispute = True
         if assess.has_retraction_signal:
             any_retraction = True
-        merged_entities.update(assess.key_entities)
-        w = build_feature_weights(title_p, excerpt_p)
+        if idx == 0:
+            first_article_entities.update(assess.key_entities)
+        for ent in set(assess.key_entities):
+            entity_counts[ent] = entity_counts.get(ent, 0) + 1
+        w = build_feature_weights(
+            title_p,
+            excerpt_p,
+            weighted_title=grp_cfg.weighted_title,
+            title_weight=grp_cfg.title_weight,
+        )
         merged_weights = merge_feature_weights(merged_weights, w)
+
+    if grp_cfg.anchor_entity_boost and len(articles_rows) > 1:
+        # Evitar encadenamiento (snowball): conservar entidades del artículo canónico inicial
+        # más aquellas corroboradas por >= 2 artículos del evento.
+        merged_entities = first_article_entities | {
+            ent for ent, cnt in entity_counts.items() if cnt >= 2
+        }
+    else:
+        merged_entities = set(entity_counts.keys())
 
     is_sensitive = bool(all_reasons)
     sorted_reasons = sorted(all_reasons)
@@ -218,18 +267,54 @@ def recompute_event_state(
     prev_verification_state = str(evt_row["verification_state"])
     prev_review_status = str(evt_row["review_status"])
 
-    # Si un humano ya aprobó el evento y no apareció una nueva sensibilidad o disputa/retractación,
-    # se respeta HUMAN_APPROVED; si se volvió sensible o disputado, vuelve a PENDING_HUMAN.
+    # Si un humano ya aprobó el evento y no apareció una nueva sensibilidad, disputa/retractación
+    # ni una unión por zona gris que exija re-verificación humana, se respeta HUMAN_APPROVED.
     if (
         prev_review_status == "HUMAN_APPROVED"
         and not is_sensitive
         and decision.verification_state not in ("DISPUTED", "RETRACTED")
+        and not force_pending_on_gray_zone_join
     ):
         final_review_status = "HUMAN_APPROVED"
     else:
         final_review_status = decision.review_status
 
     latest_pub = max(str(r["published_at_utc"]) for r in articles_rows)
+
+    # Clasificación temática de categorías (Tarea E):
+    # - Si un editor humano reclasificó el evento (`categoria_humana == 1`), tiene prioridad absoluta.
+    # - De lo contrario, se decide por votación ponderada entre los artículos del evento.
+    # - Invariante de seguridad: la categoría NUNCA altera `is_sensitive` ni `review_status`.
+    is_human_category = bool(evt_row["categoria_humana"]) if "categoria_humana" in evt_row.keys() else False
+    if is_human_category:
+        final_cat_principal = str(evt_row["categoria_principal"])
+        final_cat_sec_json = str(evt_row["categorias_secundarias_json"])
+    else:
+        article_votes: list[tuple[str, list[str], float]] = []
+        for r in articles_rows:
+            c_prin = str(r["categoria_principal"] or "sin-clasificar")
+            try:
+                c_sec = json.loads(r["categorias_secundarias_json"] or "[]")
+                if not isinstance(c_sec, list):
+                    c_sec = []
+            except Exception:
+                c_sec = []
+            # Si el artículo es previo a la migración y está sin clasificar, evaluar determinísticamente
+            if c_prin == "sin-clasificar" and not c_sec:
+                try:
+                    rss_cats = json.loads(r["rss_categories_json"] or "[]")
+                except Exception:
+                    rss_cats = []
+                inferred = classify_article_categories(
+                    str(r["title_plain"]), str(r["excerpt_plain"]), rss_cats
+                )
+                c_prin = inferred.categoria_principal
+                c_sec = inferred.categorias_secundarias
+            sim_w = float(r["similarity_to_event"]) if r["similarity_to_event"] is not None else 1.0
+            article_votes.append((c_prin, [str(x) for x in c_sec], max(0.25, sim_w)))
+        voted_cat = vote_event_categories(article_votes)
+        final_cat_principal = voted_cat.categoria_principal
+        final_cat_sec_json = json.dumps(voted_cat.categorias_secundarias, ensure_ascii=False)
 
     conn.execute(
         """
@@ -244,7 +329,9 @@ def recompute_event_state(
             media_count = ?,
             tfidf_terms_json = ?,
             key_entities_json = ?,
-            rule_engine_version = ?
+            rule_engine_version = ?,
+            categoria_principal = ?,
+            categorias_secundarias_json = ?
         WHERE event_id = ?;
         """,
         (
@@ -259,6 +346,8 @@ def recompute_event_state(
             json.dumps(merged_weights, ensure_ascii=False),
             json.dumps(sorted(merged_entities), ensure_ascii=False),
             rule_version,
+            final_cat_principal,
+            final_cat_sec_json,
             event_id,
         ),
     )
@@ -289,6 +378,8 @@ def ingest_normalized_article(
     conn: sqlite3.Connection,
     norm: NormalizedArticle,
     rules_path: Path = DEFAULT_RULES_PATH,
+    *,
+    improvements_override: dict[str, bool] | None = None,
 ) -> ArticleIngestionOutcome:
     """Procesa un NormalizedArticle de forma idempotente y transaccional en SQLite."""
     existing = conn.execute(
@@ -323,18 +414,44 @@ def ingest_normalized_article(
     high_thresh = float(clust_cfg.get("high_confidence_threshold", 0.42))
     gray_thresh = float(clust_cfg.get("gray_zone_threshold", 0.24))
 
+    grp_cfg = load_grouping_improvements_config(
+        rules_path=rules_path, improvements_override=improvements_override
+    )
+
     combined_text = f"{norm.title_plain} {norm.excerpt_plain}".strip()
     simhash_hex = compute_simhash_hex(combined_text)
-    art_weights = build_feature_weights(norm.title_plain, norm.excerpt_plain)
+    art_weights = build_feature_weights(
+        norm.title_plain,
+        norm.excerpt_plain,
+        weighted_title=grp_cfg.weighted_title,
+        title_weight=grp_cfg.title_weight,
+    )
     assess = evaluate_text_sensitivity_and_signals(
-        norm.title_plain, norm.excerpt_plain, rules_path=rules_path
+        norm.title_plain,
+        norm.excerpt_plain,
+        rules_path=rules_path,
+        improvements_override=improvements_override,
     )
 
     article_scope = str(src_row["geographic_scope"])
-    if any(e.startswith("mun:") for e in assess.key_entities):
+    if any(e.startswith(("mun:", "mun_passing:")) for e in assess.key_entities):
         article_scope = "YUCATAN"
 
-    candidates = _load_active_event_candidates(conn)
+    hist_df: dict[str, int] | None = None
+    hist_total = 0
+    if grp_cfg.historical_idf:
+        hist_df, hist_total = get_or_compute_historical_idf(
+            conn,
+            norm.published_at_utc,
+            window_days=grp_cfg.historical_idf_days,
+            max_docs=grp_cfg.historical_idf_max_docs,
+            weighted_title=grp_cfg.weighted_title,
+            title_weight=grp_cfg.title_weight,
+        )
+
+    candidates = _load_active_event_candidates(
+        conn, compare_against_existing_events=grp_cfg.compare_against_existing_events
+    )
     match_res = match_article_to_event(
         article_weights=art_weights,
         article_entities=assess.key_entities,
@@ -344,9 +461,26 @@ def ingest_normalized_article(
         window_hours=window_hours,
         high_confidence_threshold=high_thresh,
         gray_zone_threshold=gray_thresh,
+        article_title=norm.title_plain,
+        article_excerpt=norm.excerpt_plain,
+        weighted_title=grp_cfg.weighted_title,
+        title_weight=grp_cfg.title_weight,
+        historical_doc_freq=hist_df,
+        historical_total_docs=hist_total,
+        scoped_municipality_penalty=grp_cfg.scoped_municipality_penalty,
+        anchor_entity_boost=grp_cfg.anchor_entity_boost,
+        min_high_specificity_anchors=grp_cfg.min_high_specificity_anchors,
     )
 
     article_id = f"art_{norm.url_hash[:16]}"
+    diagnostics_json = match_res.diagnostics.to_json()
+    cat_res = classify_article_categories(
+        norm.title_plain,
+        norm.excerpt_plain,
+        norm.rss_categories,
+    )
+    rss_cats_json = json.dumps(list(norm.rss_categories), ensure_ascii=False)
+    art_sec_cats_json = json.dumps(cat_res.categorias_secundarias, ensure_ascii=False)
 
     with conn:
         event_created = False
@@ -367,8 +501,9 @@ def ingest_normalized_article(
                     is_sensitive, sensitivity_reasons_json, verification_state,
                     review_status, review_priority, independent_origins_count,
                     media_count, clustering_confidence, tfidf_terms_json,
-                    key_entities_json, rule_engine_version
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'SINGLE_SOURCE', ?, ?, 1, 1, 1.0, ?, ?, ?);
+                    key_entities_json, rule_engine_version,
+                    categoria_principal, categorias_secundarias_json, categoria_humana
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'SINGLE_SOURCE', ?, ?, 1, 1, 1.0, ?, ?, ?, ?, ?, 0);
                 """,
                 (
                     event_id,
@@ -385,6 +520,8 @@ def ingest_normalized_article(
                     json.dumps(art_weights, ensure_ascii=False),
                     json.dumps(assess.key_entities, ensure_ascii=False),
                     assess.rule_engine_version,
+                    cat_res.categoria_principal,
+                    art_sec_cats_json,
                 ),
             )
             similarity_to_event = 1.0
@@ -408,8 +545,10 @@ def ingest_normalized_article(
             INSERT INTO articles (
                 article_id, source_id, event_id, canonical_url, url_hash,
                 title_plain, excerpt_plain, author_raw, published_at_utc,
-                simhash_hex, duplicate_of_article_id, similarity_to_event
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                simhash_hex, duplicate_of_article_id, similarity_to_event,
+                match_diagnostics_json, rss_categories_json,
+                categoria_principal, categorias_secundarias_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
             """,
             (
                 article_id,
@@ -424,6 +563,10 @@ def ingest_normalized_article(
                 simhash_hex,
                 duplicate_of_id,
                 similarity_to_event,
+                diagnostics_json,
+                rss_cats_json,
+                cat_res.categoria_principal,
+                art_sec_cats_json,
             ),
         )
 
@@ -489,7 +632,13 @@ def ingest_normalized_article(
                 ),
             )
 
-        recompute_event_state(conn, event_id, rules_path=rules_path)
+        recompute_event_state(
+            conn,
+            event_id,
+            rules_path=rules_path,
+            improvements_override=improvements_override,
+            force_pending_on_gray_zone_join=match_res.in_gray_zone,
+        )
 
     return ArticleIngestionOutcome(
         article_id=article_id,

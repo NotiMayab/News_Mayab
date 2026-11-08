@@ -2,8 +2,10 @@ baseURL = "https://news-mayab.noti-mayab.workers.dev/"
 locale = "es-mx"
 defaultContentLanguage = "es"
 title = "News Mayab — Transparencia y Trazabilidad Informativa en Yucatán"
-disableKinds = ["taxonomy", "term"]
 enableRobotsTXT = true
+
+[taxonomies]
+  categoria = "categorias"
 
 [security]
   [security.funcs]

@@ -1,10 +1,14 @@
 {{ define "main" }}
 <article>
   {{ if eq .Section "eventos" }}
+    {{ $catSlug := .Params.categoria_principal | default "sin-clasificar" }}
+    {{ $catLabel := .Params.categoria_label | default $catSlug }}
+    {{ $medios := .Params.fuentes_count | default .Params.media_count }}
+    {{ $origenes := .Params.origenes_independientes | default .Params.independent_origins_count }}
     <div class="meta-row">
       <span class="badge badge-{{ .Params.verification_state }}">{{ .Params.verification_label }}</span>
       <span class="badge">{{ .Params.scope_label }}</span>
-      <span class="badge">{{ .Params.topic_label }}</span>
+      <a class="badge" href="{{ printf "/categorias/%s/" $catSlug | relURL }}">{{ $catLabel }}</a>
       <span class="badge">{{ .Params.review_badge }}</span>
     </div>
 
@@ -20,7 +24,13 @@
     {{ end }}
 
     <div class="ratio-box">
-      <strong>Trazabilidad de Orígenes:</strong> Este evento es cubierto por <strong>{{ .Params.media_count }}</strong> medio(s), sustentados en <strong>{{ .Params.independent_origins_count }}</strong> origen(es) independiente(s).
+      <span>
+        <strong>{{ $medios }}</strong> {{ if eq (int $medios) 1 }}medio{{ else }}medios{{ end }}
+        ·
+        <strong>{{ $origenes }}</strong> {{ if eq (int $origenes) 1 }}origen{{ else }}orígenes independientes{{ end }}
+        {{ with .Params.origen_eco }}({{ . }}){{ else }}{{ if eq (int $origenes) 1 }}independiente{{ end }}{{ end }}
+      </span>
+      <a class="method-link" href="/metodologia/#1-principio-rector-origenes-independientes-no-eco-de-boletines">¿Cómo medimos medios vs. orígenes independientes?</a>
     </div>
 
     <h2>1. Orígenes Independientes Detectados ({{ .Params.independent_origins_count }})</h2>

@@ -84,8 +84,11 @@
 * **Decisión:** Opción 2.
 * **Consecuencias:** Transparencia metodológica total ante el lector; cero costo de infraestructura adicional; alerta inmediata si se divulga un paper retractado; y métricas cuantitativas para detectar sesgo de concentración de medios por tema.
 
-
-
-
-
+## ADR-011: Trazabilidad del Agrupador, Mejoras de Recall por Banderas y Taxonomía de Categorías Declarativas
+* **Contexto:** Al auditar el corpus real con `./bin/diagnostico`, el 95.75% de los eventos tenía un solo medio porque el agrupador inicial descartaba pares legítimos del mismo hecho (`recall = 18.75%` en pares sintéticos con redacción distinta o mención de municipio de pasada) sin dejar traza auditable del motivo de rechazo; además, el sitio requería mostrar de forma explícita la relación `"N medios · M orígenes"` y permitir filtrar por categorías temáticas con y sin JavaScript sin afectar jamás los invariantes de sensibilidad editorial.
+* **Opciones:**
+  1. Reducir arbitrariamente los umbrales `[0.24, 0.42)` o introducir un modelo de embeddings externo y un framework JS en el frontend.
+  2. Mantener intactos los umbrales `[0.24, 0.42)` y `0.88`, persistir la traza determinista en `articles.match_diagnostics_json` (Migración `003`), activar mejoras modulares detrás de `grouping.improvements.*` en `config/rules.yaml` (peso mayor al título, caché diario `idf_corpus_cache` en Migración `004`, distinción entre municipio sujeto `mun:` y de pasada `mun_passing:`, y refuerzo por $\ge 2$ anclas de alta especificidad con anclaje de entidades canónicas para evitar encadenamiento), y añadir clasificación temática declarativa en `config/categories.yaml` (Migración `005`) con taxonomía estática Hugo `/categorias/<slug>/` y filtro progresivo sin dependencias.
+* **Decisión:** Opción 2.
+* **Consecuencias:** El recall en pares positivos sube de `18.75%` (`3/16`) a `100.00%` (`16/16`) manteniendo `0.00%` (`0/16`) de falsos positivos en hechos de municipios distintos; en el corpus real los eventos con $\ge 2$ orígenes independientes se más que duplican (`4.25%` $\rightarrow$ `10.07%`); cada evento huérfano expone su causa exacta en `./bin/revisar` y `./bin/diagnostico`; las reclasificaciones humanas (`categoria_humana = 1`) quedan auditadas en `verification_history` (`changed_by = 'EDITOR_HUMAN'`) con prioridad sobre el clasificador; y se garantiza por construcción y por pruebas que ninguna categoría (`seguridad` u otra) altera `is_sensitive` ni `review_status`.
 

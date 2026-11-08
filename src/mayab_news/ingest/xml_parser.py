@@ -22,6 +22,7 @@ class RawFeedItem:
     summary_raw: str
     author_raw: str
     published_at_utc: str
+    categories_raw: tuple[str, ...] = ()
 
 
 def _local_name(tag: str) -> str:
@@ -106,6 +107,7 @@ def _parse_rss_item(item_elem: Element, fallback_utc: str | None) -> RawFeedItem
     content_encoded = ""
     author = ""
     pub_date = ""
+    categories: list[str] = []
 
     for child in item_elem:
         lname = _local_name(child.tag)
@@ -122,6 +124,10 @@ def _parse_rss_item(item_elem: Element, fallback_utc: str | None) -> RawFeedItem
             author = text
         elif lname in ("pubdate", "date") and not pub_date:
             pub_date = text
+        elif lname == "category":
+            cat_val = text or (child.attrib.get("term") or "").strip()
+            if cat_val:
+                categories.append(cat_val)
 
     if not title or not link:
         return None
@@ -133,6 +139,7 @@ def _parse_rss_item(item_elem: Element, fallback_utc: str | None) -> RawFeedItem
         summary_raw=summary,
         author_raw=author,
         published_at_utc=parse_feed_date_to_utc(pub_date, fallback_utc),
+        categories_raw=tuple(categories),
     )
 
 
@@ -143,6 +150,7 @@ def _parse_atom_entry(entry_elem: Element, fallback_utc: str | None) -> RawFeedI
     content = ""
     author = ""
     pub_date = ""
+    categories: list[str] = []
 
     for child in entry_elem:
         lname = _local_name(child.tag)
@@ -167,6 +175,12 @@ def _parse_atom_entry(entry_elem: Element, fallback_utc: str | None) -> RawFeedI
                 author = text
         elif lname in ("published", "updated") and not pub_date:
             pub_date = text
+        elif lname == "category":
+            cat_val = (
+                child.attrib.get("term") or child.attrib.get("label") or text
+            ).strip()
+            if cat_val:
+                categories.append(cat_val)
 
     if not title or not link:
         return None
@@ -177,4 +191,5 @@ def _parse_atom_entry(entry_elem: Element, fallback_utc: str | None) -> RawFeedI
         summary_raw=summary if summary else content,
         author_raw=author,
         published_at_utc=parse_feed_date_to_utc(pub_date, fallback_utc),
+        categories_raw=tuple(categories),
     )

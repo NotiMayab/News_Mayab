@@ -18,17 +18,23 @@ from mayab_news.editorial.review import (  # noqa: E402
     get_event_review_detail,
     issue_editorial_correction,
     list_review_queue,
+    list_unclassified_events,
     merge_events,
+    reclassify_event_category,
     reject_event,
     split_article_to_new_event,
 )
+from mayab_news.nlp.categories import VALID_CATEGORIES  # noqa: E402
 
 
 def _print_event_detail(detail) -> None:
     item = detail.queue_item
+    sec_str = f" (+ {', '.join(item.categorias_secundarias)})" if item.categorias_secundarias else ""
+    hum_str = " [asignada por HUMANO]" if item.categoria_humana else " [automática]"
     print("=" * 88)
     print(f"EVENTO:     {item.event_id}  (Prioridad: P{item.review_priority} | Confianza: {item.clustering_confidence:.2f})")
     print(f"TITULAR:    {item.canonical_headline}")
+    print(f"CATEGORÍA:  {item.categoria_principal}{sec_str}{hum_str}")
     print(f"TEMA/ÁMBITO:{item.topic_category} / {item.geographic_scope}")
     print(f"ESTADO:     {item.verification_state} | REVISIÓN: {item.review_status}")
     print(f"SENSIBLE:   {'SÍ ' + str(item.sensitivity_reasons) if item.is_sensitive else 'NO'}")
@@ -49,6 +55,26 @@ def _print_event_detail(detail) -> None:
         if a.excerpt_plain:
             print(f"    Extracto: “{a.excerpt_plain}”")
         print(f"    URL:      {a.canonical_url}")
+    if len(detail.articles) == 1:
+        diag = detail.articles[0].match_diagnostics or {}
+        print("-" * 88)
+        print("DIAGNÓSTICO DE AGRUPACIÓN (EVENTO DE 1 ARTÍCULO):")
+        if diag:
+            best_cand = diag.get("best_candidate_event_id") or "ninguno"
+            best_sc = float(diag.get("best_score", 0.0))
+            rej = diag.get("rejected_reason", "below_threshold")
+            comp = diag.get("components") or {}
+            ct = float(comp.get("coseno_titulo", 0.0))
+            cb = float(comp.get("coseno_cuerpo", 0.0))
+            eo = float(comp.get("solape_entidades", 0.0))
+            print(
+                f"  Mejor candidato: {best_cand} | best_score={best_sc:.3f} | motivo={rej}"
+            )
+            print(
+                f"  Componentes:     coseno_titulo={ct:.3f}, coseno_cuerpo={cb:.3f}, solape_entidades={eo:.3f}"
+            )
+        else:
+            print("  Sin traza previa registrada (ingerido antes de Migración 003).")
     if detail.corrections:
         print("-" * 88)
         print("FE DE ERRATAS / CORRECCIONES:")
@@ -73,7 +99,7 @@ def _run_interactive(conn) -> int:
         _print_event_detail(detail)
         while True:
             cmd = input(
-                "Acción: [a]probar | cambiar e[s]tado y aprobar | [r]echazar | [m]erge | separar art [x] | [n]ext | [q]uit > "
+                "Acción: [a]probar | cambiar e[s]tado y aprobar | [c]ategoría | [r]echazar | [m]erge | separar art [x] | [n]ext | [q]uit > "
             ).strip().lower()
             if cmd == "a":
                 approve_event(conn, q_item.event_id)
@@ -85,6 +111,20 @@ def _run_interactive(conn) -> int:
                 approve_event(conn, q_item.event_id, new_verification_state=state, editorial_note=note)
                 print(f"-> Aprobado con estado {state}.")
                 break
+            if cmd == "c":
+                cat = input(f"Nueva categoría {sorted(VALID_CATEGORIES)}: ").strip().lower()
+                sec_raw = input("Categorías secundarias separadas por coma (opcional): ").strip()
+                sec_list = [s.strip() for s in sec_raw.split(",") if s.strip()] if sec_raw else None
+                note = input("Nota editorial (opcional): ").strip()
+                reclassify_event_category(
+                    conn,
+                    q_item.event_id,
+                    new_category=cat,
+                    categorias_secundarias=sec_list,
+                    editorial_note=note,
+                )
+                print(f"-> Categoría actualizada a {cat!r} (prioridad humana registrada).")
+                continue
             if cmd == "r":
                 reason = input("Motivo de rechazo (opcional): ").strip()
                 reject_event(conn, q_item.event_id, reason=reason)
@@ -153,6 +193,15 @@ def main() -> int:
     co_p.add_argument("--text", required=True)
     co_p.add_argument("--state", choices=sorted(VALID_VERIFICATION_STATES), default=None)
 
+    un_p = sub.add_parser("unclassified", help="Lista eventos con categoria_principal = 'sin-clasificar'")
+    un_p.add_argument("--limit", type=int, default=50)
+
+    rc_p = sub.add_parser("reclassify", help="Reclasifica manualmente la categoría de un evento")
+    rc_p.add_argument("event_id")
+    rc_p.add_argument("category", choices=sorted(VALID_CATEGORIES))
+    rc_p.add_argument("--secondary", default="", help="Categorías secundarias separadas por coma")
+    rc_p.add_argument("--note", default="")
+
     sub.add_parser("interactive", help="Modo interactivo por teclado sobre PENDING_HUMAN")
 
     args = parser.parse_args()
@@ -213,6 +262,28 @@ def main() -> int:
                 new_verification_state=args.state,
             )
             print(f"Fe de erratas registrada ({cid}) en evento {args.event_id}.")
+        elif cmd == "unclassified":
+            items = list_unclassified_events(conn, limit=args.limit)
+            print(
+                f"{'EVENT_ID':<22} {'CATEGORÍA':<16} {'ESTADO':<16} {'ORÍG/MED':<9} {'TITULAR'}"
+            )
+            print("-" * 100)
+            for it in items:
+                ratio = f"{it.independent_origins_count}/{it.media_count}"
+                print(
+                    f"{it.event_id:<22} {it.categoria_principal:<16} {it.review_status:<16} "
+                    f"{ratio:<9} {it.canonical_headline[:50]}"
+                )
+        elif cmd == "reclassify":
+            sec_list = [s.strip() for s in args.secondary.split(",") if s.strip()] if args.secondary else None
+            reclassify_event_category(
+                conn,
+                args.event_id,
+                new_category=args.category,
+                categorias_secundarias=sec_list,
+                editorial_note=args.note,
+            )
+            print(f"Evento {args.event_id} reclasificado manualmente a {args.category!r}.")
         elif cmd == "interactive":
             return _run_interactive(conn)
     finally:

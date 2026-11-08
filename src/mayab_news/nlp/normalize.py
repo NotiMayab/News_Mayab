@@ -158,6 +158,7 @@ class NormalizedArticle:
     excerpt_plain: str
     author_raw: str
     published_at_utc: str
+    rss_categories: tuple[str, ...] = ()
 
 
 def normalize_feed_item(
@@ -184,6 +185,11 @@ def normalize_feed_item(
         headline_and_link_only=headline_and_link_only,
     )
     author_plain = strip_html_to_plain_text(item.author_raw)[:120]
+    clean_cats = tuple(
+        c
+        for c in (strip_html_to_plain_text(raw_c)[:60] for raw_c in item.categories_raw)
+        if c
+    )
 
     return NormalizedArticle(
         source_id=source_id,
@@ -193,4 +199,5 @@ def normalize_feed_item(
         excerpt_plain=excerpt_plain,
         author_raw=author_plain,
         published_at_utc=item.published_at_utc,
+        rss_categories=clean_cats,
     )

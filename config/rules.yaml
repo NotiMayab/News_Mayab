@@ -13,6 +13,18 @@ clustering:
   entity_boost_weight: 0.35
   tfidf_cosine_weight: 0.65
 
+grouping:
+  title_weight: 2.0
+  historical_idf_days: 30
+  historical_idf_max_docs: 5000
+  min_high_specificity_anchors: 2
+  improvements:
+    weighted_title: true
+    historical_idf: true
+    scoped_municipality_penalty: true
+    anchor_entity_boost: true
+    compare_against_existing_events: true
+
 # Expresiones compuestas inocuas que contienen palabras polisémicas ("muerto", "ejecutado", "fosa")
 # y se excluyen antes de evaluar las reglas de sensibilidad.
 safe_phrase_exclusions:

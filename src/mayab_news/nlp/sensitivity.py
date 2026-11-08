@@ -14,6 +14,101 @@ from mayab_news.nlp.dedup import fold_spanish_text
 
 DEFAULT_RULES_PATH = Path(__file__).resolve().parents[3] / "config" / "rules.yaml"
 
+KNOWN_INSTITUTIONAL_ACRONYMS = frozenset(
+    {
+        "cicy",
+        "uady",
+        "ssp",
+        "fge",
+        "aty",
+        "japay",
+        "procivy",
+        "conagua",
+        "segey",
+        "codhey",
+        "inah",
+        "imss",
+        "issste",
+        "cfe",
+        "iepac",
+        "iepacy",
+        "profepa",
+        "semarnat",
+        "inegi",
+        "unam",
+        "conahcyt",
+        "pemex",
+        "sedena",
+        "semar",
+        "cofepris",
+        "profeco",
+    }
+)
+
+GENERIC_PROPER_PHRASES = frozenset(
+    {
+        "ciudad de",
+        "estado de",
+        "estados unidos",
+        "quintana roo",
+        "playa del",
+        "america latina",
+        "baja california",
+        "nuevo leon",
+        "san luis",
+        "secretaria de",
+        "comision de",
+        "instituto de",
+        "consejo de",
+        "consejo general",
+        "tribunal de",
+        "suprema corte",
+        "camara de",
+        "gobierno de",
+        "gobierno del",
+        "ayuntamiento de",
+        "municipio de",
+        "peninsula de",
+        "universidad de",
+        "centro de",
+        "agencia de",
+        "junta de",
+        "sistema de",
+        "partido de",
+        "banco de",
+    }
+)
+
+GENERIC_PROPER_PREFIXES = frozenset(
+    {
+        "en",
+        "el",
+        "la",
+        "los",
+        "las",
+        "un",
+        "una",
+        "del",
+        "al",
+        "por",
+        "para",
+        "con",
+        "sin",
+        "sobre",
+        "entre",
+        "hasta",
+        "desde",
+        "este",
+        "esta",
+        "estos",
+        "estas",
+        "ante",
+        "tras",
+        "segun",
+        "como",
+    }
+)
+
 
 @dataclass(frozen=True, slots=True)
 class SensitivityAssessment:
@@ -60,18 +155,36 @@ def classify_topic_category(
     return best_topic
 
 
+def extract_first_sentence(text: str) -> str:
+    """Extrae la primera oración de un texto plano (hasta el primer punto seguido o salto de línea)."""
+    cleaned = text.strip()
+    if not cleaned:
+        return ""
+    parts = re.split(r"[.!?](?:\s+|$)|\n+", cleaned, maxsplit=1)
+    return parts[0].strip()
+
+
 def extract_key_entities(
     raw_text: str,
     folded_text: str,
     municipalities: list[str],
+    *,
+    subject_folded_text: str | None = None,
+    scoped_municipality_penalty: bool = False,
+    anchor_entity_boost: bool = False,
 ) -> list[str]:
     """Extrae municipios de Yucatán, siglas institucionales y números/kilómetros clave para anclar eventos."""
     entities: set[str] = set()
+    effective_subject = (
+        subject_folded_text if (scoped_municipality_penalty and subject_folded_text) else folded_text
+    )
 
     for mun in municipalities:
         f_mun = fold_spanish_text(mun)
-        if _keyword_matches_folded(folded_text, f_mun):
+        if _keyword_matches_folded(effective_subject, f_mun):
             entities.add(f"mun:{f_mun}")
+        elif scoped_municipality_penalty and _keyword_matches_folded(folded_text, f_mun):
+            entities.add(f"mun_passing:{f_mun}")
 
     # Siglas institucionales o académicas en mayúsculas (3 a 8 letras)
     for acronym in re.findall(r"\b[A-ZÁÉÍÓÚÑ]{3,8}\b", raw_text):
@@ -79,16 +192,31 @@ def extract_key_entities(
         if folded_acr not in {"para", "como", "este", "esta", "todo", "toda", "pero"}:
             entities.add(f"acr:{folded_acr}")
 
-    # Números específicos relevantes (ej. kilómetro 28, ruta 70, 10 mil)
-    for num_match in re.findall(r"\b(?:km|kilometro|ruta|linea|ley)\s+(\d{1,4})\b", folded_text):
+    if anchor_entity_boost:
+        for known_acr in KNOWN_INSTITUTIONAL_ACRONYMS:
+            if _keyword_matches_folded(folded_text, known_acr):
+                entities.add(f"acr:{known_acr}")
+
+    # Números específicos relevantes (ej. kilómetro 28, ruta 70, carretera 180, calle 60)
+    num_pattern = (
+        r"\b(?:km|kilometro|ruta|linea|ley|carretera|calle|tramo|unidad)\s+(\d{1,4})\b"
+        if anchor_entity_boost
+        else r"\b(?:km|kilometro|ruta|linea|ley)\s+(\d{1,4})\b"
+    )
+    for num_match in re.findall(num_pattern, folded_text):
         entities.add(f"num:{num_match}")
 
-    # Nombres propios compuestos (ej. "Anillo Periférico", "Tren Maya", "Puerto de Altura")
+    # Nombres propios compuestos (ej. "Anillo Periférico", "Tren Maya", "Puerto de Altura", "Joaquín Díaz")
     for prop in re.findall(
         r"\b([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+(?:de|del|la|el|y)\s+|\s+)[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)\b",
         raw_text,
     ):
         f_prop = fold_spanish_text(prop)
+        first_word = f_prop.split()[0] if f_prop else ""
+        if anchor_entity_boost and (
+            first_word in GENERIC_PROPER_PREFIXES or f_prop in GENERIC_PROPER_PHRASES
+        ):
+            continue
         if len(f_prop) >= 6:
             entities.add(f"prop:{f_prop}")
 
@@ -99,13 +227,24 @@ def evaluate_text_sensitivity_and_signals(
     title_plain: str,
     excerpt_plain: str = "",
     rules_path: Path = DEFAULT_RULES_PATH,
+    *,
+    improvements_override: dict[str, bool] | None = None,
 ) -> SensitivityAssessment:
     """Evalúa un artículo o evento contra todas las reglas deterministas de sensibilidad, disputa y tema."""
     cfg = load_rules_config(rules_path)
     version = str(cfg.get("rule_engine_version", "v1.0.0"))
+    grp_cfg = cfg.get("grouping", {})
+    imp_cfg = dict(grp_cfg.get("improvements", {}))
+    if improvements_override:
+        imp_cfg.update(improvements_override)
+
+    scoped_mun = bool(imp_cfg.get("scoped_municipality_penalty", False))
+    anchor_boost = bool(imp_cfg.get("anchor_entity_boost", False))
 
     combined_raw = f"{title_plain} {excerpt_plain}".strip()
     folded = fold_spanish_text(combined_raw)
+    first_sent = extract_first_sentence(excerpt_plain)
+    subject_folded = fold_spanish_text(f"{title_plain} {first_sent}".strip())
 
     folded_for_sensitivity = folded
     for safe_phrase in cfg.get("safe_phrase_exclusions", []):
@@ -141,6 +280,9 @@ def evaluate_text_sensitivity_and_signals(
         combined_raw,
         folded,
         cfg.get("yucatan_municipalities", []),
+        subject_folded_text=subject_folded,
+        scoped_municipality_penalty=scoped_mun,
+        anchor_entity_boost=anchor_boost,
     )
 
     return SensitivityAssessment(

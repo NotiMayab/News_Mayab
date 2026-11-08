@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 from mayab_news.editorial.review import get_event_review_detail
+from mayab_news.nlp.categories import CATEGORY_LABELS
 from mayab_news.trustgraph.graph import get_event_trust_subgraph
 
 DEFAULT_HUGO_EVENTS_DIR = (
@@ -107,22 +108,30 @@ def build_event_front_matter(conn: sqlite3.Connection, event_id: str) -> dict[st
     except Exception:
         aliases_list = []
 
-    articles_payload = [
-        {
-            "article_id": a.article_id,
-            "source_id": a.source_id,
-            "source_name": a.source_name,
-            "ownership_group_id": a.ownership_group_id,
-            "ownership_group_name": a.ownership_group_name,
-            "editorial_stance_note": stance_map.get(a.source_id, ""),
-            "title_plain": a.title_plain,
-            "excerpt_plain": a.excerpt_plain,
-            "canonical_url": a.canonical_url,
-            "published_at_utc": a.published_at_utc,
-            "is_near_duplicate_echo": a.duplicate_of_article_id is not None,
-        }
-        for a in detail.articles
-    ]
+    articles_payload = []
+    for a in detail.articles:
+        if not a.canonical_url.startswith(("http://", "https://")):
+            raise RuntimeError(
+                f"Violación de seguridad de URL en exportación a Hugo: {a.canonical_url!r}"
+            )
+        excerpt_safe = a.excerpt_plain[:240]
+        articles_payload.append(
+            {
+                "article_id": a.article_id,
+                "source_id": a.source_id,
+                "source_name": a.source_name,
+                "ownership_group_id": a.ownership_group_id,
+                "ownership_group_name": a.ownership_group_name,
+                "editorial_stance_note": stance_map.get(a.source_id, ""),
+                "title_plain": a.title_plain,
+                "excerpt_plain": excerpt_safe,
+                "canonical_url": a.canonical_url,
+                "published_at_utc": a.published_at_utc,
+                "is_near_duplicate_echo": a.duplicate_of_article_id is not None,
+                "categoria_principal": a.categoria_principal,
+                "categorias_secundarias": a.categorias_secundarias,
+            }
+        )
 
     origins_payload = [
         {
@@ -139,6 +148,28 @@ def build_event_front_matter(conn: sqlite3.Connection, event_id: str) -> dict[st
         for o in detail.origins
     ]
 
+    # Texto corto de eco cuando varios medios colapsan en 1 solo origen independiente (Tarea D)
+    origen_eco = ""
+    if item.media_count > 1 and item.independent_origins_count == 1 and detail.origins:
+        sole_origin = detail.origins[0]
+        actor_name = sole_origin.actor_display_name
+        if sole_origin.origin_type == "OFFICIAL_BULLETIN":
+            origen_eco = (
+                actor_name
+                if actor_name.lower().startswith("boletín")
+                else f"boletín de {actor_name}"
+            )
+        elif sole_origin.origin_type == "WIRE_AGENCY":
+            origen_eco = f"cable de {actor_name}"
+        else:
+            origen_eco = actor_name
+
+    # Taxonomía Hugo `categorias` = principal + secundarias sin duplicados (Tarea E)
+    categorias_taxonomy: list[str] = [item.categoria_principal]
+    for sec_cat in item.categorias_secundarias:
+        if sec_cat not in categorias_taxonomy:
+            categorias_taxonomy.append(sec_cat)
+
     trust_subgraph = get_event_trust_subgraph(conn, event_id)
 
     return {
@@ -149,6 +180,13 @@ def build_event_front_matter(conn: sqlite3.Connection, event_id: str) -> dict[st
         "event_id": item.event_id,
         "topic_category": item.topic_category,
         "topic_label": TOPIC_LABELS.get(item.topic_category, item.topic_category),
+        "categoria_principal": item.categoria_principal,
+        "categoria_label": CATEGORY_LABELS.get(
+            item.categoria_principal, item.categoria_principal
+        ),
+        "categorias_secundarias": item.categorias_secundarias,
+        "categorias": categorias_taxonomy,
+        "categoria_humana": item.categoria_humana,
         "geographic_scope": item.geographic_scope,
         "scope_label": SCOPE_LABELS.get(item.geographic_scope, item.geographic_scope),
         "verification_state": item.verification_state,
@@ -159,6 +197,9 @@ def build_event_front_matter(conn: sqlite3.Connection, event_id: str) -> dict[st
         "review_badge": review_badge,
         "independent_origins_count": item.independent_origins_count,
         "media_count": item.media_count,
+        "fuentes_count": item.media_count,
+        "origenes_independientes": item.independent_origins_count,
+        "origen_eco": origen_eco,
         "clustering_confidence": round(item.clustering_confidence, 2),
         "origins": origins_payload,
         "articles": articles_payload,

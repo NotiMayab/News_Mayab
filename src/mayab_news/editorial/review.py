@@ -6,10 +6,15 @@ import hashlib
 import json
 import sqlite3
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
+from mayab_news.nlp.categories import (
+    VALID_CATEGORIES,
+    classify_article_categories,
+)
 from mayab_news.nlp.clustering import build_feature_weights, make_event_slug_and_id
 from mayab_news.nlp.origins import (
     detect_article_origins,
@@ -62,6 +67,9 @@ class ReviewQueueItem:
     media_count: int
     clustering_confidence: float
     last_updated_at_utc: str
+    categoria_principal: str = "sin-clasificar"
+    categorias_secundarias: list[str] = field(default_factory=list)
+    categoria_humana: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,6 +85,9 @@ class ArticleDetail:
     published_at_utc: str
     duplicate_of_article_id: str | None
     similarity_to_event: float
+    match_diagnostics: dict[str, Any] = field(default_factory=dict)
+    categoria_principal: str = "sin-clasificar"
+    categorias_secundarias: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True, slots=True)
@@ -103,6 +114,20 @@ def _row_to_queue_item(row: sqlite3.Row) -> ReviewQueueItem:
         reasons = json.loads(row["sensitivity_reasons_json"])
     except Exception:
         reasons = []
+    row_keys = row.keys()
+    cat_prin = (
+        str(row["categoria_principal"])
+        if "categoria_principal" in row_keys and row["categoria_principal"]
+        else "sin-clasificar"
+    )
+    try:
+        raw_sec = row["categorias_secundarias_json"] if "categorias_secundarias_json" in row_keys else "[]"
+        cat_sec = json.loads(raw_sec) if raw_sec else []
+        if not isinstance(cat_sec, list):
+            cat_sec = []
+    except Exception:
+        cat_sec = []
+    cat_hum = bool(row["categoria_humana"]) if "categoria_humana" in row_keys else False
     return ReviewQueueItem(
         event_id=str(row["event_id"]),
         slug=str(row["slug"]),
@@ -118,6 +143,9 @@ def _row_to_queue_item(row: sqlite3.Row) -> ReviewQueueItem:
         media_count=int(row["media_count"]),
         clustering_confidence=float(row["clustering_confidence"]),
         last_updated_at_utc=str(row["last_updated_at_utc"]),
+        categoria_principal=cat_prin,
+        categorias_secundarias=[str(x) for x in cat_sec],
+        categoria_humana=cat_hum,
     )
 
 
@@ -140,6 +168,25 @@ def list_review_queue(
     return [_row_to_queue_item(r) for r in rows]
 
 
+def list_unclassified_events(
+    conn: sqlite3.Connection,
+    limit: int = 50,
+) -> list[ReviewQueueItem]:
+    """Lista los eventos no rechazados con `categoria_principal = 'sin-clasificar'` para reclasificación humana."""
+    rows = conn.execute(
+        """
+        SELECT *
+        FROM events
+        WHERE review_status != 'REJECTED'
+          AND categoria_principal = 'sin-clasificar'
+        ORDER BY review_priority ASC, last_updated_at_utc DESC
+        LIMIT ?;
+        """,
+        (limit,),
+    ).fetchall()
+    return [_row_to_queue_item(r) for r in rows]
+
+
 def get_event_review_detail(conn: sqlite3.Connection, event_id: str) -> EventReviewDetail:
     """Obtiene el desglose completo de un evento, sus artículos, orígenes e historial."""
     evt_row = conn.execute(
@@ -153,7 +200,8 @@ def get_event_review_detail(conn: sqlite3.Connection, event_id: str) -> EventRev
         SELECT a.article_id, a.source_id, ms.name AS source_name,
                ms.ownership_group_id, og.display_name AS ownership_group_name,
                a.title_plain, a.excerpt_plain, a.canonical_url, a.published_at_utc,
-               a.duplicate_of_article_id, a.similarity_to_event
+               a.duplicate_of_article_id, a.similarity_to_event,
+               a.match_diagnostics_json, a.categoria_principal, a.categorias_secundarias_json
         FROM articles a
         JOIN media_sources ms ON ms.source_id = a.source_id
         JOIN ownership_groups og ON og.ownership_group_id = ms.ownership_group_id
@@ -163,22 +211,46 @@ def get_event_review_detail(conn: sqlite3.Connection, event_id: str) -> EventRev
         (event_id,),
     ).fetchall()
 
-    articles = [
-        ArticleDetail(
-            article_id=str(r["article_id"]),
-            source_id=str(r["source_id"]),
-            source_name=str(r["source_name"]),
-            ownership_group_id=str(r["ownership_group_id"]),
-            ownership_group_name=str(r["ownership_group_name"]),
-            title_plain=str(r["title_plain"]),
-            excerpt_plain=str(r["excerpt_plain"]),
-            canonical_url=str(r["canonical_url"]),
-            published_at_utc=str(r["published_at_utc"]),
-            duplicate_of_article_id=r["duplicate_of_article_id"],
-            similarity_to_event=float(r["similarity_to_event"]),
+    articles: list[ArticleDetail] = []
+    for r in art_rows:
+        r_keys = r.keys()
+        try:
+            raw_diag = r["match_diagnostics_json"] if "match_diagnostics_json" in r_keys else "{}"
+            diag_dict = json.loads(raw_diag) if raw_diag else {}
+            if not isinstance(diag_dict, dict):
+                diag_dict = {}
+        except Exception:
+            diag_dict = {}
+        a_cat_prin = (
+            str(r["categoria_principal"])
+            if "categoria_principal" in r_keys and r["categoria_principal"]
+            else "sin-clasificar"
         )
-        for r in art_rows
-    ]
+        try:
+            raw_a_sec = r["categorias_secundarias_json"] if "categorias_secundarias_json" in r_keys else "[]"
+            a_cat_sec = json.loads(raw_a_sec) if raw_a_sec else []
+            if not isinstance(a_cat_sec, list):
+                a_cat_sec = []
+        except Exception:
+            a_cat_sec = []
+        articles.append(
+            ArticleDetail(
+                article_id=str(r["article_id"]),
+                source_id=str(r["source_id"]),
+                source_name=str(r["source_name"]),
+                ownership_group_id=str(r["ownership_group_id"]),
+                ownership_group_name=str(r["ownership_group_name"]),
+                title_plain=str(r["title_plain"]),
+                excerpt_plain=str(r["excerpt_plain"]),
+                canonical_url=str(r["canonical_url"]),
+                published_at_utc=str(r["published_at_utc"]),
+                duplicate_of_article_id=r["duplicate_of_article_id"],
+                similarity_to_event=float(r["similarity_to_event"]),
+                match_diagnostics=diag_dict,
+                categoria_principal=a_cat_prin,
+                categorias_secundarias=[str(x) for x in a_cat_sec],
+            )
+        )
 
     orig_rows = conn.execute(
         """
@@ -363,6 +435,97 @@ def reject_event(
                     {"action": "HUMAN_REJECT", "reason": reason.strip()},
                     ensure_ascii=False,
                 ),
+            ),
+        )
+
+
+def reclassify_event_category(
+    conn: sqlite3.Connection,
+    event_id: str,
+    new_category: str,
+    categorias_secundarias: list[str] | None = None,
+    editorial_note: str = "",
+) -> None:
+    """Reclasifica manualmente la categoría de un evento (`categoria_humana = 1`) y audita en `verification_history`.
+
+    Invariante de seguridad: la categoría NUNCA altera `is_sensitive` ni `review_status`.
+    """
+    target_cat = new_category.strip().lower()
+    if target_cat not in VALID_CATEGORIES:
+        raise ValueError(
+            f"Categoría inválida: {new_category!r}. Valores permitidos: {sorted(VALID_CATEGORIES)}"
+        )
+
+    clean_sec: list[str] = []
+    if categorias_secundarias:
+        for sc in categorias_secundarias:
+            sc_clean = sc.strip().lower()
+            if sc_clean not in VALID_CATEGORIES:
+                raise ValueError(
+                    f"Categoría secundaria inválida: {sc!r}. Valores permitidos: {sorted(VALID_CATEGORIES)}"
+                )
+            if (
+                sc_clean != target_cat
+                and sc_clean != "sin-clasificar"
+                and sc_clean not in clean_sec
+            ):
+                clean_sec.append(sc_clean)
+
+    evt_row = conn.execute(
+        "SELECT * FROM events WHERE event_id = ?", (event_id,)
+    ).fetchone()
+    if evt_row is None:
+        raise ValueError(f"Evento no encontrado: {event_id!r}")
+
+    prev_state = str(evt_row["verification_state"])
+    prev_cat = (
+        str(evt_row["categoria_principal"])
+        if "categoria_principal" in evt_row.keys() and evt_row["categoria_principal"]
+        else "sin-clasificar"
+    )
+    now_utc = _utc_now_iso()
+    rule_version = str(evt_row["rule_engine_version"])
+
+    reason_payload = {
+        "action": "HUMAN_CATEGORY_RECLASSIFICATION",
+        "previous_category": prev_cat,
+        "new_category": target_cat,
+        "categorias_secundarias": clean_sec,
+        "editorial_note": editorial_note.strip(),
+        "reclassified_at_utc": now_utc,
+    }
+
+    with conn:
+        conn.execute(
+            """
+            UPDATE events
+            SET categoria_principal = ?,
+                categorias_secundarias_json = ?,
+                categoria_humana = 1,
+                last_updated_at_utc = ?
+            WHERE event_id = ?;
+            """,
+            (
+                target_cat,
+                json.dumps(clean_sec, ensure_ascii=False),
+                now_utc,
+                event_id,
+            ),
+        )
+        conn.execute(
+            """
+            INSERT INTO verification_history (
+                event_id, previous_state, new_state, changed_at_utc,
+                changed_by, rule_engine_version, reason_components_json
+            ) VALUES (?, ?, ?, ?, 'EDITOR_HUMAN', ?, ?);
+            """,
+            (
+                event_id,
+                prev_state,
+                prev_state,
+                now_utc,
+                rule_version,
+                json.dumps(reason_payload, ensure_ascii=False),
             ),
         )
 
@@ -561,13 +724,14 @@ def split_article_to_new_event(
     assess = evaluate_text_sensitivity_and_signals(
         title_plain, excerpt_plain, rules_path=rules_path
     )
+    cat_res = classify_article_categories(title_plain, excerpt_plain)
     art_weights = build_feature_weights(title_plain, excerpt_plain)
     new_event_id, slug = make_event_slug_and_id(
         f"{title_plain}-{article_id[-4:]}", pub_utc
     )
     scope = (
         "YUCATAN"
-        if any(e.startswith("mun:") for e in assess.key_entities)
+        if any(e.startswith(("mun:", "mun_passing:")) for e in assess.key_entities)
         else str(art_row["source_scope"])
     )
 
@@ -580,8 +744,9 @@ def split_article_to_new_event(
                 is_sensitive, sensitivity_reasons_json, verification_state,
                 review_status, review_priority, independent_origins_count,
                 media_count, clustering_confidence, tfidf_terms_json,
-                key_entities_json, rule_engine_version
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'SINGLE_SOURCE', ?, ?, 1, 1, 1.0, ?, ?, ?);
+                key_entities_json, rule_engine_version,
+                categoria_principal, categorias_secundarias_json, categoria_humana
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'SINGLE_SOURCE', ?, ?, 1, 1, 1.0, ?, ?, ?, ?, ?, 0);
             """,
             (
                 new_event_id,
@@ -598,6 +763,8 @@ def split_article_to_new_event(
                 json.dumps(art_weights, ensure_ascii=False),
                 json.dumps(assess.key_entities, ensure_ascii=False),
                 assess.rule_engine_version,
+                cat_res.categoria_principal,
+                json.dumps(cat_res.categorias_secundarias, ensure_ascii=False),
             ),
         )
         conn.execute(

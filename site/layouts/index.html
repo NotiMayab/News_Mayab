@@ -1,7 +1,34 @@
 {{ define "main" }}
 <section>
   <h1>Cobertura Agrupada por Evento y Orígenes Independientes</h1>
-  <p>Una historia, varias versiones: distinguimos cuántos medios publican una nota frente a cuántos <strong>orígenes independientes</strong> la sustentan.</p>
+  <p>Una historia, varias versiones: distinguimos cuántos medios publican una nota frente a cuántos <strong>orígenes independientes</strong> la sustentan (<a href="/metodologia/#1-principio-rector-origenes-independientes-no-eco-de-boletines">ver nota metodológica</a>).</p>
+
+  <nav class="cat-filter" aria-label="Filtrar eventos por categoría">
+    <fieldset>
+      <legend>Filtrar por categoría (con casillas o enlaces estáticos):</legend>
+      <div class="cat-chips">
+        {{ $catList := slice
+          (dict "slug" "politica" "label" "Política")
+          (dict "slug" "seguridad" "label" "Seguridad")
+          (dict "slug" "economia" "label" "Economía")
+          (dict "slug" "cultura" "label" "Cultura")
+          (dict "slug" "ciencia" "label" "Ciencia")
+          (dict "slug" "deportes" "label" "Deportes")
+          (dict "slug" "salud" "label" "Salud")
+          (dict "slug" "medio-ambiente" "label" "Medio Ambiente")
+          (dict "slug" "sociedad" "label" "Sociedad")
+          (dict "slug" "sin-clasificar" "label" "Sin Clasificar")
+        }}
+        {{ range $catList }}
+          <label class="cat-chip">
+            <input type="checkbox" value="{{ .slug }}" data-cat-toggle="{{ .slug }}" aria-label="Filtrar {{ .label }}">
+            <a href="{{ printf "/categorias/%s/" .slug | relURL }}">{{ .label }}</a>
+          </label>
+        {{ end }}
+      </div>
+    </fieldset>
+  </nav>
+
   {{ $eventos := where .Site.RegularPages "Section" "eventos" }}
   {{ if eq (len $eventos) 0 }}
     <div class="card">
@@ -9,33 +36,91 @@
       <p>Aún no se han exportado eventos desde <code>state.sqlite</code>. Consulta nuestra <a href="/metodologia/">Metodología Pública</a>.</p>
     </div>
   {{ else }}
-    {{ range $eventos }}
-      <article class="card">
-        <div class="meta-row">
-          <span class="badge badge-{{ .Params.verification_state }}">{{ .Params.verification_label }}</span>
-          <span class="badge">{{ .Params.scope_label }}</span>
-          <span class="badge">{{ .Params.topic_label }}</span>
-          <span>{{ .Params.review_badge }}</span>
-        </div>
-        <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
-        <div class="ratio-box">
-          <strong>{{ .Params.independent_origins_count }}</strong> origen(es) independiente(s) detectado(s) en <strong>{{ .Params.media_count }}</strong> medio(s).
-        </div>
-        {{ range first 2 .Params.articles }}
-          {{ if .excerpt_plain }}
-            <blockquote class="excerpt">“{{ .excerpt_plain }}”</blockquote>
-          {{ end }}
+    <div id="events-list">
+      {{ range $eventos }}
+        {{ $cats := .Params.categorias | default (slice (.Params.categoria_principal | default "sin-clasificar")) }}
+        {{ $catSlug := .Params.categoria_principal | default "sin-clasificar" }}
+        {{ $catLabel := .Params.categoria_label | default $catSlug }}
+        {{ $medios := .Params.fuentes_count | default .Params.media_count }}
+        {{ $origenes := .Params.origenes_independientes | default .Params.independent_origins_count }}
+        <article class="card" data-cats="{{ delimit $cats "," }}">
           <div class="meta-row">
-            <strong>{{ .source_name }}</strong>
-            <span>({{ .ownership_group_name }})</span>
-            · <a href="{{ .canonical_url }}" rel="noopener noreferrer" target="_blank">Leer en fuente original ↗</a>
+            <span class="badge badge-{{ .Params.verification_state }}">{{ .Params.verification_label }}</span>
+            <span class="badge">{{ .Params.scope_label }}</span>
+            <a class="badge" href="{{ printf "/categorias/%s/" $catSlug | relURL }}">{{ $catLabel }}</a>
+            <span>{{ .Params.review_badge }}</span>
           </div>
-        {{ end }}
-        <div style="margin-top: 0.5rem; font-size: 0.9rem;">
-          <a href="{{ .RelPermalink }}"><strong>Ver desglose de orígenes, versiones e historial &rarr;</strong></a>
-        </div>
-      </article>
-    {{ end }}
+          <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+          <div class="ratio-box">
+            <span>
+              <strong>{{ $medios }}</strong> {{ if eq (int $medios) 1 }}medio{{ else }}medios{{ end }}
+              ·
+              <strong>{{ $origenes }}</strong> {{ if eq (int $origenes) 1 }}origen{{ else }}orígenes independientes{{ end }}
+              {{ with .Params.origen_eco }}({{ . }}){{ else }}{{ if eq (int $origenes) 1 }}independiente{{ end }}{{ end }}
+            </span>
+            <a class="method-link" href="/metodologia/#1-principio-rector-origenes-independientes-no-eco-de-boletines">¿Medios vs. orígenes?</a>
+          </div>
+          {{ range first 2 .Params.articles }}
+            {{ if .excerpt_plain }}
+              <blockquote class="excerpt">“{{ .excerpt_plain }}”</blockquote>
+            {{ end }}
+            <div class="meta-row">
+              <strong>{{ .source_name }}</strong>
+              <span>({{ .ownership_group_name }})</span>
+              · <a href="{{ .canonical_url }}" rel="noopener noreferrer" target="_blank">Leer en fuente original ↗</a>
+            </div>
+          {{ end }}
+          <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+            <a href="{{ .RelPermalink }}"><strong>Ver desglose de orígenes, versiones e historial &rarr;</strong></a>
+          </div>
+        </article>
+      {{ end }}
+    </div>
   {{ end }}
 </section>
+<script>
+(function () {
+  var toggles = Array.prototype.slice.call(document.querySelectorAll('input[data-cat-toggle]'));
+  var cards = Array.prototype.slice.call(document.querySelectorAll('article.card[data-cats]'));
+  if (!toggles.length || !cards.length) return;
+
+  function applyFilter(updateHash) {
+    var active = toggles.filter(function (cb) { return cb.checked; }).map(function (cb) { return cb.value; });
+    cards.forEach(function (card) {
+      if (!active.length) {
+        card.hidden = false;
+        return;
+      }
+      var cardCats = (card.getAttribute('data-cats') || '').split(',');
+      var match = active.some(function (c) { return cardCats.indexOf(c) !== -1; });
+      card.hidden = !match;
+    });
+    if (updateHash) {
+      if (active.length === 1 && /^[a-z0-9-]+$/.test(active[0])) {
+        location.hash = '#' + active[0];
+      } else if (location.hash) {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+    }
+  }
+
+  function syncFromHash() {
+    var h = (location.hash || '').replace(/^#/, '');
+    if (h && /^[a-z0-9-]+$/.test(h)) {
+      var matchedAny = false;
+      toggles.forEach(function (cb) {
+        cb.checked = (cb.value === h);
+        if (cb.checked) matchedAny = true;
+      });
+      if (matchedAny) applyFilter(false);
+    }
+  }
+
+  toggles.forEach(function (cb) {
+    cb.addEventListener('change', function () { applyFilter(true); });
+  });
+  window.addEventListener('hashchange', syncFromHash);
+  syncFromHash();
+})();
+</script>
 {{ end }}
