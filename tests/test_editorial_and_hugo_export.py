@@ -218,7 +218,7 @@ class TestEditorialReviewAndHugoExport(unittest.TestCase):
                 text=True,
                 check=False,
             )
-            self.assertEqual(res.returncode, 0, msg=res.stderr)
+            self.assertEqual(res.returncode, 0, msg=f"Hugo build failed.\nSTDOUT:\n{res.stdout}\nSTDERR:\n{res.stderr}")
 
 
 if __name__ == "__main__":

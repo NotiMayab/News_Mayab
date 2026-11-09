@@ -1,4 +1,4 @@
-{{ with hugo.Data.system_status }}
+{{ with site.Data.system_status }}
   {{ if .is_unattended_degraded_mode }}
   <aside class="system-banner" role="status" aria-label="Aviso de continuidad operativa">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">

@@ -60,4 +60,4 @@ Edita las variables en `site/themes/mayab/assets/css/main.css` dentro de `@layer
 | `eventos/single.html` | `title`, `date`, `scope_label`, `categoria_principal`, `categoria_label`, `verification_state`, `articles` (`source_name`, `editorial_stance_note`, `published_at_utc`, `is_near_duplicate_echo`, `title_plain`, `excerpt_plain`, `canonical_url`), `corrections` (`correction_type`, `created_at_utc`, `explanation`), `trust_graph` (`total_linked_works`, `peer_reviewed_count`, `preprint_count`, `authors_with_orcid_count`, `has_retraction_alert`). |
 | `partials/evidence_gauge.html` | `fuentes_count`, `media_count`, `origenes_independientes`, `independent_origins_count`, `origen_eco`. |
 | `partials/review_badge.html` | `review_status`, `verification_state`, `corrections`. |
-| `partials/system_banner.html` | `hugo.Data.system_status.is_unattended_degraded_mode`. |
+| `partials/system_banner.html` | `site.Data.system_status.is_unattended_degraded_mode`. |
