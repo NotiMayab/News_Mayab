@@ -1,0 +1,77 @@
+---
+title: ‘Nos critican los que antes robaban’, acusa Sheinbaum
+slug: 2026-11-08-nos-critican-los-que-antes-robaban-acusa-sheinbaum-bbfffb4c
+aliases: []
+date: '2026-11-08T21:59:11Z'
+event_id: evt_20261108_bbfffb4c
+topic_category: POLITICA_GOBIERNO
+topic_label: Política y Gobierno
+categoria_principal: politica
+categoria_label: Política
+categorias_secundarias: []
+categorias:
+- politica
+categoria_humana: false
+geographic_scope: REGIONAL_PENINSULA
+scope_label: Regional (Península)
+verification_state: SINGLE_SOURCE
+verification_label: Una sola fuente
+review_status: AUTO_PUBLISHED
+review_badge: Agrupación automática — Pendiente de validación editorial
+independent_origins_count: 1
+media_count: 1
+fuentes_count: 1
+origenes_independientes: 1
+origen_eco: ''
+clustering_confidence: 1.0
+origins:
+- origin_id: orig_5241bb323dc20f19
+  origin_type: ORIGINAL_MEDIA_REPORTING
+  origin_type_label: Cobertura de Medio / Grupo Editorial
+  actor_display_name: Editorial Luces del Siglo (Península de Yucatán) (Luces del
+    Siglo (Península))
+  detection_method: OWNERSHIP_GROUP_COLLAPSE
+  detection_method_label: Agrupado por grupo empresarial propietario
+  attributed_articles_count: 1
+articles:
+- article_id: art_e648f84f87d40bfd
+  source_id: yuc_lucesdelsiglo
+  source_name: Luces del Siglo (Península)
+  ownership_group_id: GRP_LUCES_DEL_SIGLO
+  ownership_group_name: Editorial Luces del Siglo (Península de Yucatán)
+  editorial_stance_note: Periodismo regional de investigación, salud, ciencia y sociedad
+    en la Península.
+  title_plain: ‘Nos critican los que antes robaban’, acusa Sheinbaum
+  excerpt_plain: Por la multiplicación de su cartera de créditos vencidos del Infonavit,
+    que aumentó de 290 mil a 998 mil 668 de 2018 a septiembre pasado.
+  canonical_url: https://lucesdelsiglo.com/2026/11/08/nos-critican-los-que-antes-robaban-acusa-sheinbaum-nacional/
+  published_at_utc: '2026-11-08T21:59:11Z'
+  is_near_duplicate_echo: false
+  categoria_principal: politica
+  categorias_secundarias: []
+trust_graph:
+  total_linked_works: 0
+  peer_reviewed_count: 0
+  preprint_count: 0
+  book_or_monograph_count: 0
+  retracted_or_concern_count: 0
+  authors_with_orcid_count: 0
+  institutions_with_ror_or_wikidata_count: 0
+  works_with_declared_conflicts_count: 0
+  has_retraction_alert: false
+  works_detail: []
+  graph_nodes_traversed: []
+corrections: []
+history:
+- previous_state: null
+  new_state: SINGLE_SOURCE
+  changed_at_utc: '2026-11-09T02:02:47Z'
+  changed_by: PIPELINE_RULE
+  rule_engine_version: v1.0.0
+  reason_components_json: '{"independent_origins_count": 1, "media_count": 1, "origin_types":
+    ["ORIGINAL_MEDIA_REPORTING"], "is_sensitive": false, "sensitivity_reasons": [],
+    "has_dispute_signal": false, "has_retraction_signal": false, "clustering_confidence":
+    1.0, "in_gray_zone": false}'
+---
+
+Evento cubierto por 1 medio(s) a partir de 1 origen(es) independiente(s). Estado de verificación: Una sola fuente.

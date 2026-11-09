@@ -146,6 +146,36 @@ ownership_groups:
     group_type: "PRIVATE_MEDIA_GROUP"
     transparency_notes: "Cadena internacional de noticias en español."
 
+  - ownership_group_id: "GRP_24_HORAS"
+    display_name: "24 Horas (El Diario Sin Límites)"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Periódico y portal informativo nacional con edición regional en Yucatán."
+
+  - ownership_group_id: "GRP_YUCATANALAMANO"
+    display_name: "Yucatán a la Mano"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Medio digital de noticias locales, política y municipios de Yucatán."
+
+  - ownership_group_id: "GRP_YUCATANAHORA"
+    display_name: "Yucatán Ahora"
+    group_type: "INDEPENDENT_OUTLET"
+    transparency_notes: "Portal informativo de sucesos, policiaca y vida local en Yucatán."
+
+  - ownership_group_id: "GRP_AZTECA_SALINAS"
+    display_name: "TV Azteca / Grupo Salinas"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Consorcio nacional privado de telecomunicaciones y televisión; canal regional TV Azteca Yucatán."
+
+  - ownership_group_id: "GRP_MULTIMEDIOS_MILENIO"
+    display_name: "Grupo Multimedios / Milenio Diario"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "Consorcio nacional de televisión, radio y prensa escrita (Milenio)."
+
+  - ownership_group_id: "GRP_TELEVISA_UNIVISION"
+    display_name: "TelevisaUnivision / N+ (N+ Media)"
+    group_type: "PRIVATE_MEDIA_GROUP"
+    transparency_notes: "División de noticias de TelevisaUnivision con cobertura local en N+ Yucatán."
+
 sources:
   # --- FUENTES ACTIVAS Y VERIFICADAS EN YUCATÁN Y PENÍNSULA ---
   - source_id: "yuc_diario_yucatan"
@@ -228,6 +258,66 @@ sources:
     ownership_group_id: "GRP_LUCES_DEL_SIGLO"
     editorial_stance_note: "Periodismo regional de investigación, salud, ciencia y sociedad en la Península."
     geographic_scope: "REGIONAL_PENINSULA"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_elpais"
+    name: "El País (Yucatán)"
+    rss_url: "https://feeds.elpais.com/mrss-s/list/ep/site/elpais.com/tag/yucatan_a"
+    website_url: "https://elpais.com/noticias/yucatan/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_PRISA_ELPAIS"
+    editorial_stance_note: "Sección temática de cobertura sobre Yucatán en El País México."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_24horas"
+    name: "24 Horas Yucatán"
+    rss_url: "https://24-horas.mx/yucatan/feed/"
+    website_url: "https://24-horas.mx/yucatan/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_24_HORAS"
+    editorial_stance_note: "Edición estatal de 24 Horas con cobertura de Mérida y municipios de Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_yucatanalamano"
+    name: "Yucatán a la Mano"
+    rss_url: "https://yucatanalamano.com/feed/"
+    website_url: "https://yucatanalamano.com/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_YUCATANALAMANO"
+    editorial_stance_note: "Portal digital de información general, política y comunidad en Mérida y municipios."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_yucatanahora"
+    name: "Yucatán Ahora"
+    rss_url: "https://yucatanahora.com.mx/feed/"
+    website_url: "https://yucatanahora.com.mx/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_YUCATANAHORA"
+    editorial_stance_note: "Cobertura de hechos locales, vialidad, seguridad y vida municipal en Yucatán."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "ci_and_local"
+    headline_and_link_only: false
+    is_active: true
+
+  - source_id: "yuc_poresto"
+    name: "Por Esto! Yucatán"
+    rss_url: "https://www.poresto.com/rss/portada.xml"
+    website_url: "https://www.poresto.com/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_PORESTO_PENINSULA"
+    editorial_stance_note: "Diario regional impreso y digital con amplia cobertura de municipios de Yucatán."
+    geographic_scope: "YUCATAN"
     fetch_mode: "ci_and_local"
     headline_and_link_only: false
     is_active: true
@@ -373,19 +463,7 @@ sources:
     website_url: "https://sipse.com/novedades-yucatan/"
     source_type: "INDEPENDENT_MEDIA"
     ownership_group_id: "GRP_SIPSE"
-    editorial_stance_note: "Cobertura generalista y policiaca de Mérida y municipios de Yucatán."
-    geographic_scope: "YUCATAN"
-    fetch_mode: "local_isp_only"
-    headline_and_link_only: false
-    is_active: false
-
-  - source_id: "yuc_poresto"
-    name: "Por Esto! Yucatán"
-    rss_url: "https://www.poresto.net/rss/feed.xml"
-    website_url: "https://www.poresto.net/yucatan/"
-    source_type: "INDEPENDENT_MEDIA"
-    ownership_group_id: "GRP_PORESTO_PENINSULA"
-    editorial_stance_note: "Diario regional con amplia cobertura de municipios de Yucatán."
+    editorial_stance_note: "Cobertura generalista y policiaca de Mérida y municipios de Yucatán (feed deshabilitado HTTP 404/403)."
     geographic_scope: "YUCATAN"
     fetch_mode: "local_isp_only"
     headline_and_link_only: false
@@ -459,6 +537,42 @@ sources:
     ownership_group_id: "GRP_WBD_CNN"
     editorial_stance_note: "Cobertura internacional en español (feed RSS público deshabilitado HTTP 404)."
     geographic_scope: "GLOBAL"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "yuc_azteca_yucatan"
+    name: "TV Azteca Yucatán"
+    rss_url: "https://www.aztecayucatan.com/feed"
+    website_url: "https://www.aztecayucatan.com/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_AZTECA_SALINAS"
+    editorial_stance_note: "Noticiero televisivo y portal digital regional de TV Azteca en Yucatán (sin feed RSS público disponible; inactivo por defecto)."
+    geographic_scope: "YUCATAN"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "mex_milenio"
+    name: "Milenio Noticias"
+    rss_url: "https://www.milenio.com/rss"
+    website_url: "https://www.milenio.com/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_MULTIMEDIOS_MILENIO"
+    editorial_stance_note: "Diario nacional con cobertura regional y estatal (feed protegido por WAF/bloqueo HTTP 403; inactivo por defecto)."
+    geographic_scope: "NATIONAL"
+    fetch_mode: "local_isp_only"
+    headline_and_link_only: false
+    is_active: false
+
+  - source_id: "yuc_nmas_yucatan"
+    name: "N+ Yucatán (Televisa)"
+    rss_url: "https://www.nmas.com.mx/yucatan/feed"
+    website_url: "https://www.nmas.com.mx/yucatan/"
+    source_type: "INDEPENDENT_MEDIA"
+    ownership_group_id: "GRP_TELEVISA_UNIVISION"
+    editorial_stance_note: "División informativa de noticias y noticiero local de TelevisaUnivision en Yucatán (sin feed RSS público estándar; inactivo por defecto)."
+    geographic_scope: "YUCATAN"
     fetch_mode: "local_isp_only"
     headline_and_link_only: false
     is_active: false

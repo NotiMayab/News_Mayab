@@ -3,15 +3,19 @@ title: 'IMSS anuncia 12 acciones en 120 días: aumento salarial de 8%, basificac
   y contratación de especialistas'
 slug: 2026-10-27-imss-anuncia-12-acciones-en-120-dias-aumento-salarial-d-a3f575b9
 aliases: []
-date: '2026-10-28T09:58:43Z'
+date: '2026-10-30T18:57:00Z'
 event_id: evt_20261027_a3f575b9
 topic_category: SALUD_BIENESTAR
 topic_label: Salud y Bienestar
-categoria_principal: sin-clasificar
-categoria_label: Sin clasificar
-categorias_secundarias: []
+categoria_principal: salud
+categoria_label: Salud
+categorias_secundarias:
+- sociedad
+- politica
 categorias:
-- sin-clasificar
+- salud
+- sociedad
+- politica
 categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
@@ -19,10 +23,10 @@ verification_state: CONFIRMED
 verification_label: Confirmado (≥2 orígenes independientes)
 review_status: AUTO_PUBLISHED
 review_badge: Agrupación automática — Pendiente de validación editorial
-independent_origins_count: 2
-media_count: 2
-fuentes_count: 2
-origenes_independientes: 2
+independent_origins_count: 3
+media_count: 3
+fuentes_count: 3
+origenes_independientes: 3
 origen_eco: ''
 clustering_confidence: 0.93
 origins:
@@ -38,6 +42,13 @@ origins:
   origin_type_label: Cobertura de Medio / Grupo Editorial
   actor_display_name: La Jornada / Demos (Nacional y Peninsular) (La Jornada (Edición
     Nacional))
+  detection_method: OWNERSHIP_GROUP_COLLAPSE
+  detection_method_label: Agrupado por grupo empresarial propietario
+  attributed_articles_count: 1
+- origin_id: orig_cf53f188b0b2b547
+  origin_type: ORIGINAL_MEDIA_REPORTING
+  origin_type_label: Cobertura de Medio / Grupo Editorial
+  actor_display_name: 24 Horas (El Diario Sin Límites) (24 Horas Yucatán)
   detection_method: OWNERSHIP_GROUP_COLLAPSE
   detection_method_label: Agrupado por grupo empresarial propietario
   attributed_articles_count: 1
@@ -77,6 +88,24 @@ articles:
   is_near_duplicate_echo: false
   categoria_principal: sin-clasificar
   categorias_secundarias: []
+- article_id: art_13531c9a47ec0bfd
+  source_id: yuc_24horas
+  source_name: 24 Horas Yucatán
+  ownership_group_id: GRP_24_HORAS
+  ownership_group_name: 24 Horas (El Diario Sin Límites)
+  editorial_stance_note: Edición estatal de 24 Horas con cobertura de Mérida y municipios
+    de Yucatán.
+  title_plain: Fortalece IMSS Yucatán infraestructura hospitalaria y condiciones laborales
+    con estrategia nacional
+  excerpt_plain: Con un plan de 12 acciones en 120 días, el Seguro Social en la entidad
+    busca fortalecer el servicio médico y mejorar las condiciones laborales de sus
+    trabajadores.
+  canonical_url: https://24-horas.mx/estados/fortalece-imss-yucatan-infraestructura-hospitalaria/
+  published_at_utc: '2026-10-30T18:57:00Z'
+  is_near_duplicate_echo: false
+  categoria_principal: sociedad
+  categorias_secundarias:
+  - salud
 trust_graph:
   total_linked_works: 0
   peer_reviewed_count: 0
@@ -111,4 +140,4 @@ history:
     0.9314, "in_gray_zone": false}'
 ---
 
-Evento cubierto por 2 medio(s) a partir de 2 origen(es) independiente(s). Estado de verificación: Confirmado (≥2 orígenes independientes).
+Evento cubierto por 3 medio(s) a partir de 3 origen(es) independiente(s). Estado de verificación: Confirmado (≥2 orígenes independientes).

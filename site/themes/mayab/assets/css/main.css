@@ -74,37 +74,41 @@
 
     --measure: 68ch;
 
-    /* Modo Claro (Paleta Papel Cálido / Caliza) */
-    --color-bg: #FAF8F4;
+    /* =========================================================================
+       Modo Claro — Navy (#0F1B3D), White (#FFFFFF) & Hot Pink (#FF3D8B)
+       ========================================================================= */
+    --color-bg: #F5F7FB;
     --color-surface: #FFFFFF;
-    --color-surface-subtle: #F3EFE7;
-    --color-text: #16140F;
-    --color-text-muted: #58544A;
-    --color-border: #E4DFD3;
-    --color-border-subtle: #ECE7DC;
-    --color-accent: #B5502E;
-    --color-accent-hover: #963D20;
-    --color-accent-soft: rgba(181, 80, 46, 0.10);
+    --color-surface-subtle: #EDF0F7;
+    --color-text: #0F1B3D;
+    --color-text-muted: #53627E;
+    --color-border: #D8DFEE;
+    --color-border-subtle: #E8EDF6;
+    --color-accent: #FF3D8B;
+    --color-accent-hover: #E62875;
+    --color-accent-text: #C8145C; /* >=4.5:1 para texto y enlaces accesibles sobre fondo claro */
+    --color-accent-contrast: #0F1B3D; /* 5.14:1 para texto Navy sobre botones y chips Hot Pink */
+    --color-accent-soft: rgba(255, 61, 139, 0.12);
 
-    /* Estados editoriales en claro */
-    --badge-auto-bg: #F4EFEB;
-    --badge-auto-border: #DCD4C9;
-    --badge-auto-text: #5E584E;
-    --badge-ok-bg: #EAF3EC;
-    --badge-ok-border: #BAD8C0;
-    --badge-ok-text: #1B5628;
-    --badge-warn-bg: #FEF6E8;
-    --badge-warn-border: #F0D4A8;
-    --badge-warn-text: #7A4B05;
-    --badge-alert-bg: #FBECE8;
-    --badge-alert-border: #ECC2B7;
-    --badge-alert-text: #8E2C18;
+    /* Estados editoriales en claro (sobrios y en armonía con Navy) */
+    --badge-auto-bg: #EDF1F7;
+    --badge-auto-border: #D0D9E7;
+    --badge-auto-text: #374663;
+    --badge-ok-bg: #E6F7ED;
+    --badge-ok-border: #A3E3B9;
+    --badge-ok-text: #0F5132;
+    --badge-warn-bg: #FFF7E6;
+    --badge-warn-border: #FFD591;
+    --badge-warn-text: #874D00;
+    --badge-alert-bg: #FEECEE;
+    --badge-alert-border: #F8B4BA;
+    --badge-alert-text: #9C1422;
 
-    /* Liquid Glass (acotado a nav flotante, filtros y popovers) */
-    --glass-bg: rgba(250, 248, 244, 0.84);
-    --glass-fallback: #FAF8F4;
-    --glass-border: rgba(22, 20, 15, 0.10);
-    --glass-shadow: 0 4px 20px -2px rgba(22, 20, 15, 0.06);
+    /* Liquid Glass en claro */
+    --glass-bg: rgba(245, 247, 251, 0.86);
+    --glass-fallback: #F5F7FB;
+    --glass-border: rgba(15, 27, 61, 0.08);
+    --glass-shadow: 0 4px 20px -2px rgba(15, 27, 61, 0.06);
 
     --radius-s: 4px;
     --radius-m: 8px;
@@ -112,67 +116,74 @@
     --radius-pill: 9999px;
   }
 
+  /* =========================================================================
+     Modo Oscuro — Midnight Navy (#090E1F), Deep Navy (#0F1B3D) & Hot Pink (#FF3D8B)
+     ========================================================================= */
   [data-theme="dark"] {
-    --color-bg: #14130F;
-    --color-surface: #1B1A15;
-    --color-surface-subtle: #24221B;
-    --color-text: #ECE8DE;
-    --color-text-muted: #A39E91;
-    --color-border: #2C2A24;
-    --color-border-subtle: #3A3730;
-    --color-accent: #DE734C;
-    --color-accent-hover: #E88C69;
-    --color-accent-soft: rgba(222, 115, 76, 0.15);
+    --color-bg: #090E1F;
+    --color-surface: #0F1B3D;
+    --color-surface-subtle: #172650;
+    --color-text: #F5F7FB;
+    --color-text-muted: #9AAAC7;
+    --color-border: #1F305E;
+    --color-border-subtle: #17254A;
+    --color-accent: #FF3D8B;
+    --color-accent-hover: #FF66A6;
+    --color-accent-text: #FF66A6; /* Luminoso y de alto contraste sobre Navy oscuro */
+    --color-accent-contrast: #090E1F;
+    --color-accent-soft: rgba(255, 61, 139, 0.20);
 
-    --badge-auto-bg: #22201A;
-    --badge-auto-border: #3D3930;
-    --badge-auto-text: #BDB7AB;
-    --badge-ok-bg: #14261B;
-    --badge-ok-border: #254F31;
-    --badge-ok-text: #86C995;
-    --badge-warn-bg: #2A2010;
-    --badge-warn-border: #523E1D;
-    --badge-warn-text: #DFAD58;
-    --badge-alert-bg: #2E1510;
-    --badge-alert-border: #5C271C;
-    --badge-alert-text: #F19B86;
+    --badge-auto-bg: #131D38;
+    --badge-auto-border: #24335C;
+    --badge-auto-text: #A6B7DB;
+    --badge-ok-bg: #0C2B1B;
+    --badge-ok-border: #1B5E3C;
+    --badge-ok-text: #75DE9E;
+    --badge-warn-bg: #2B1D08;
+    --badge-warn-border: #5C3E10;
+    --badge-warn-text: #EBB15B;
+    --badge-alert-bg: #330E14;
+    --badge-alert-border: #631C26;
+    --badge-alert-text: #F48B96;
 
-    --glass-bg: rgba(20, 19, 15, 0.86);
-    --glass-fallback: #14130F;
-    --glass-border: rgba(236, 232, 222, 0.12);
-    --glass-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.45);
+    --glass-bg: rgba(15, 27, 61, 0.88);
+    --glass-fallback: #0F1B3D;
+    --glass-border: rgba(245, 247, 251, 0.10);
+    --glass-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.60);
   }
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --color-bg: #14130F;
-      --color-surface: #1B1A15;
-      --color-surface-subtle: #24221B;
-      --color-text: #ECE8DE;
-      --color-text-muted: #A39E91;
-      --color-border: #2C2A24;
-      --color-border-subtle: #3A3730;
-      --color-accent: #DE734C;
-      --color-accent-hover: #E88C69;
-      --color-accent-soft: rgba(222, 115, 76, 0.15);
+      --color-bg: #090E1F;
+      --color-surface: #0F1B3D;
+      --color-surface-subtle: #172650;
+      --color-text: #F5F7FB;
+      --color-text-muted: #9AAAC7;
+      --color-border: #1F305E;
+      --color-border-subtle: #17254A;
+      --color-accent: #FF3D8B;
+      --color-accent-hover: #FF66A6;
+      --color-accent-text: #FF66A6;
+      --color-accent-contrast: #090E1F;
+      --color-accent-soft: rgba(255, 61, 139, 0.20);
 
-      --badge-auto-bg: #22201A;
-      --badge-auto-border: #3D3930;
-      --badge-auto-text: #BDB7AB;
-      --badge-ok-bg: #14261B;
-      --badge-ok-border: #254F31;
-      --badge-ok-text: #86C995;
-      --badge-warn-bg: #2A2010;
-      --badge-warn-border: #523E1D;
-      --badge-warn-text: #DFAD58;
-      --badge-alert-bg: #2E1510;
-      --badge-alert-border: #5C271C;
-      --badge-alert-text: #F19B86;
+      --badge-auto-bg: #131D38;
+      --badge-auto-border: #24335C;
+      --badge-auto-text: #A6B7DB;
+      --badge-ok-bg: #0C2B1B;
+      --badge-ok-border: #1B5E3C;
+      --badge-ok-text: #75DE9E;
+      --badge-warn-bg: #2B1D08;
+      --badge-warn-border: #5C3E10;
+      --badge-warn-text: #EBB15B;
+      --badge-alert-bg: #330E14;
+      --badge-alert-border: #631C26;
+      --badge-alert-text: #F48B96;
 
-      --glass-bg: rgba(20, 19, 15, 0.86);
-      --glass-fallback: #14130F;
-      --glass-border: rgba(236, 232, 222, 0.12);
-      --glass-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.45);
+      --glass-bg: rgba(15, 27, 61, 0.88);
+      --glass-fallback: #0F1B3D;
+      --glass-border: rgba(245, 247, 251, 0.10);
+      --glass-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.60);
     }
   }
 }
@@ -203,6 +214,11 @@
     text-wrap: pretty;
   }
 
+  ::selection {
+    background-color: var(--color-accent-soft);
+    color: var(--color-text);
+  }
+
   :focus-visible {
     outline: 3px solid var(--color-accent);
     outline-offset: 3px;
@@ -213,7 +229,7 @@
     top: -9999px;
     left: var(--space-s);
     background: var(--color-accent);
-    color: #FFFFFF;
+    color: var(--color-accent-contrast);
     padding: var(--space-2xs) var(--space-s);
     border-radius: var(--radius-s);
     z-index: 1000;
@@ -424,12 +440,12 @@
 
   .cat-chip:hover, .cat-chip:focus-visible {
     border-color: var(--color-accent);
-    color: var(--color-accent);
+    color: var(--color-accent-text);
   }
 
   .cat-chip[aria-pressed="true"], .cat-chip.active {
     background: var(--color-accent);
-    color: #FFFFFF;
+    color: var(--color-accent-contrast);
     border-color: var(--color-accent);
   }
 
@@ -481,7 +497,7 @@
 
   .meta-tag-category {
     font-weight: 600;
-    color: var(--color-accent);
+    color: var(--color-accent-text);
     text-transform: uppercase;
     letter-spacing: 0.04em;
     font-size: var(--step--2);
@@ -496,7 +512,7 @@
     text-decoration: none;
   }
   .card-title a:hover {
-    color: var(--color-accent);
+    color: var(--color-accent-text);
     text-decoration: underline;
   }
 
@@ -565,7 +581,7 @@
   .popover-summary {
     cursor: pointer;
     font-size: var(--step--2);
-    color: var(--color-accent);
+    color: var(--color-accent-text);
     text-decoration: underline;
     display: inline-flex;
     align-items: center;
@@ -662,7 +678,7 @@
 
   .origin-actor {
     font-weight: 700;
-    color: var(--color-accent);
+    color: var(--color-accent-text);
     font-size: var(--step-0);
   }
 
@@ -699,7 +715,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    color: var(--color-accent);
+    color: var(--color-accent-text);
     font-weight: 600;
     text-decoration: underline;
   }
