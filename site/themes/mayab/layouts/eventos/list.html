@@ -7,7 +7,7 @@
     </p>
   </header>
 
-  <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-m);">
+  <div class="events-grid events-grid-archive">
     {{ range .Pages }}
       {{ partial "event_card.html" . }}
     {{ end }}

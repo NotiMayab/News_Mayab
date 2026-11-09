@@ -20,10 +20,10 @@
       {{ end }}
 
       <section aria-label="Cobertura de eventos recientes">
-        <h2 style="margin-bottom: var(--space-m); font-size: var(--step-2); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-2xs);">
+        <h2 class="section-heading">
           Eventos agrupados por confirmación cruzada
         </h2>
-        <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-m);">
+        <div class="events-grid">
           {{ range first 25 $recientes }}
             {{ if and $destacado (ne .RelPermalink $destacado.RelPermalink) }}
               {{ partial "event_card.html" . }}
@@ -40,7 +40,7 @@
     </div>
 
     <aside class="sidebar-column" aria-label="Columna informativa">
-      <section>
+      <section class="sidebar-latest-section">
         <h3 style="font-size: var(--step-1); margin-bottom: var(--space-s); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-3xs);">
           Lo último registrado
         </h3>
