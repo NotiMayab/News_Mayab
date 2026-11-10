@@ -1,14 +1,15 @@
 ---
 title: "Metodología Editorial y Transparencia Algorítmica"
-date: 2026-10-27T00:00:00Z
+date: 2026-11-09T00:00:00Z
+description: "Principios de agrupación determinista, conteo de orígenes independientes, barreras de seguridad y triaje consultivo en Mayab."
 ---
 
 ## 1. Principio rector: Orígenes independientes, no eco de boletines
 
-En el ecosistema informativo regional y nacional es frecuente que diez medios publiquen el mismo comunicado oficial o cable de agencia. En **News Mayab**:
+En el ecosistema informativo regional y nacional es frecuente que diez medios publiquen el mismo comunicado oficial o cable de agencia. En **Mayab**:
 
 * **Medios que cubren el evento (`media_count`):** Número de portales distintos que publicaron una nota sobre el hecho.
-* **Orígenes independientes (`independent_origins_count`):** Fuentes primarias distintas verificables. Si cinco periódicos citan el mismo boletín de una dependencia (`OFFICIAL_BULLETIN`), reproducen un cable de agencia (`WIRE_AGENCY`) o pertenecen al mismo grupo empresarial (`ownership_group_id`), cuentan como **1 solo origen independiente**.
+* **Orígenes independientes (`independent_origins_count`):** Fuentes primarias distintas verificables. Si cinco periódicos citan el mismo boletín de una dependencia (`OFFICIAL_BULLETIN`), reproducen un cable de agencia (`WIRE_AGENCY`) o pertenecen al mismo consorcio empresarial (`ownership_group_id`), cuentan como **1 solo origen independiente**.
 
 ## 2. Estados de verificación visibles (Sin puntajes opacos)
 
@@ -38,3 +39,11 @@ Para notas basadas en estudios científicos, patrimonio cultural o humanidades, 
 
 * **Sin reescritura con IA generativa:** No sustituimos la lectura del medio original. Mostramos el titular funcional, fragmentos literales de máximo **240 caracteres** como evidencia de atribución y el enlace directo al medio autor.
 * **Privacidad por diseño:** El sitio público es 100% estático, sin cookies de rastreo, sin perfilamiento y sin recolección de datos personales de los lectores.
+
+## 6. Transparencia Algorítmica y Triaje Asistido por IA Local
+
+En cumplimiento de nuestros principios éticos y de responsabilidad editorial:
+
+* **Un modelo local ordena la cola de revisión; ninguna decisión editorial la toma un modelo.**
+* La inteligencia artificial actúa exclusivamente como una herramienta de triaje consultivo y priorización de riesgo para el editor humano en su estación de trabajo local, operando en circuito cerrado (loopback) sin conexión a servidores externos ni envío de datos a terceros.
+* La IA no tiene facultades de publicación, modificación de estado ni autorización automática. Toda nota clasificada como sensible o en controversia legal requiere obligatoriamente la validación explícita e indelegable de una persona (`EDITOR_HUMAN`) antes de hacerse pública.

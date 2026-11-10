@@ -1,0 +1,112 @@
+# =============================================================================
+# Directrices Legales y Configuración de Triaje Asistido por IA — Mayab News
+# =============================================================================
+# ADR-013: Triaje consultivo local. La Capa 1 es determinista y autoritativa.
+# La IA solo puede añadir señales, nunca degradar o ignorar una bandera BLOCK.
+
+prompt_version: "v1.0.0"
+model_name: "gemma4:rules"
+ollama_endpoint: "http://127.0.0.1:11434"
+
+# 1. Reglas Autoritativas de Capa 1 (Filtro Determinista Pre-IA)
+deterministic_rules:
+  - code: "MINOR_POSSIBLE"
+    severity: "BLOCK"
+    description: "Mención probable de persona menor de edad o instituciones educativas básicas"
+    patterns:
+      - "\\b(menor(?:es)?|adolescente(?:s)?|niñ[oa]s?|infante(?:s)?|bebé(?:s)?)\\b"
+      - "\\balumn[oa]s?\\s+de\\b"
+      - "\\bestudiante(?:s)?\\s+de\\s+(?:primaria|secundaria|preparatoria|bachiller(?:es)?|kínder|kinder)\\b"
+      - "\\b(?:un|una|[0-9]{1,2})\\s+años?\\s+de\\s+edad\\b"
+      - "\\b(?:dif|sipinna)\\b"
+      - "\\bhij[oa]s?\\s+de\\b"
+      - "\\bescuela(?:s)?\\s+(?:primaria|secundaria|preescolar|básica)\\b"
+
+  - code: "PROTECTED_VICTIM_CRIME"
+    severity: "BLOCK"
+    description: "Delitos con reserva legal estricta de identidad de víctimas (LGV / LGDNNA)"
+    patterns:
+      - "\\b(violaci[oó]n|abuso\\s+sexual|agresi[oó]n\\s+sexual|acoso\\s+sexual|estupro)\\b"
+      - "\\b(secuestro|secuestrad[oa]s?|plagio|plagiad[oa]s?|privaci[oó]n\\s+ilegal\\s+de\\s+la\\s+libertad)\\b"
+      - "\\b(extorsi[oó]n|cobro\\s+de\\s+piso)\\b"
+      - "\\b(trata\\s+de\\s+personas?|explotaci[oó]n\\s+infantil|pornograf[ií]a\\s+infantil)\\b"
+      - "\\b(violencia\\s+familiar|violencia\\s+dom[eé]stica|violencia\\s+de\\s+g[eé]nero)\\b"
+      - "\\bfeminicidio(?:s)?\\b"
+
+  - code: "CRIMINAL_IMPUTATION_PERSON"
+    severity: "BLOCK"
+    description: "Imputación penal dirigida a particulares sin sentencia firme"
+    patterns:
+      - "\\b(presunt[oa]\\s+(?:homicida|asesin[oa]|violador(?:a)?|secuestrador(?:a)?|ladr[oó]n(?:a)?|defraudador(?:a)?))\\b"
+      - "\\b(imputad[oa]s?|acusad[oa]s?|vinculad[oa]s?\\s+a\\s+proceso|procesad[oa]s?)\\b"
+      - "\\b(detenid[oa]s?\\s+por|arrestad[oa]s?\\s+por|capturad[oa]s?\\s+por)\\b"
+
+  - code: "ELECTORAL"
+    severity: "BLOCK"
+    description: "Materia electoral, campañas, delitos electorales o procesos de veda"
+    patterns:
+      - "\\b(delito(?:s)?\\s+electoral(?:es)?|compra\\s+de\\s+votos?|mapacheo)\\b"
+      - "\\b(fepade|fisel|iepac|tepjf)\\b"
+      - "\\b(veda\\s+electoral|campaña\\s+anticipada)\\b"
+
+  - code: "HEALTH_CRITICAL"
+    severity: "BLOCK"
+    description: "Riesgos biológicos críticos, brotes epidémicos o alertas sanitarias graves"
+    patterns:
+      - "\\b(brote\\s+epid[eé]mico|pandemia|alerta\\s+sanitaria|cuarentena)\\b"
+      - "\\b(c[oó]lera|ántrax|meningitis|viruela\\s+s[ií]mica)\\b"
+
+# 2. JSON Schema para Salida Estructurada de Ollama (/api/chat con format=JSON Schema)
+output_schema:
+  type: "object"
+  additionalProperties: false
+  required:
+    - "suggested_action"
+    - "priority"
+    - "confidence"
+    - "signals"
+    - "justification"
+  properties:
+    suggested_action:
+      type: "string"
+      enum:
+        - "SUGGEST_APPROVE"
+        - "SUGGEST_HOLD"
+        - "SUGGEST_REJECT"
+    priority:
+      type: "integer"
+      minimum: 1
+      maximum: 5
+    confidence:
+      type: "number"
+      minimum: 0.0
+      maximum: 1.0
+    signals:
+      type: "array"
+      items:
+        type: "object"
+        additionalProperties: false
+        required:
+          - "code"
+          - "evidence"
+          - "note"
+        properties:
+          code:
+            type: "string"
+            enum:
+              - "MINOR_POSSIBLE"
+              - "VICTIM_IDENTIFIABLE"
+              - "NAMED_PRIVATE_PERSON"
+              - "UNATTRIBUTED_ACCUSATION"
+              - "ELECTORAL"
+              - "HEALTH_CRITICAL"
+              - "INSTRUCTION_IN_CONTENT"
+              - "OTHER"
+          evidence:
+            type: "string"
+          note:
+            type: "string"
+            maxLength: 120
+    justification:
+      type: "string"
+      maxLength: 300

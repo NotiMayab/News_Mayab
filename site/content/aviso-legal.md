@@ -16,11 +16,11 @@ description: "Marco jurídico de citas breves, atribución de orígenes y aviso 
 
 ## 3. Procedimiento de Notificación y Retiro (*Notice and Take Down*)
 
-Si un titular de derechos o entidad considera que un enlace o cita documental vulnera sus derechos patrimoniales o morales:
+Si un titular de derechos o entidad considera que un enlace o cita documental vulnera sus derechos patrimoniales, morales o de datos personales:
 
-`[REDACTAR: Correo electrónico o mecanismo formal para recepción de avisos de infracción o retiro]`
-
-`[REDACTAR: Procedimiento operativo y tiempos de respuesta para baja de enlaces]`
+* **Buzón legal y de retiro de contenido:** `noti_mayab@proton.me`
+* **Datos requeridos para atención expedita:** Enlace a la ficha en Mayab, acreditación fehaciente de la titularidad o representación legal, señalamiento puntual del enlace o extracto aludido y fundamento jurídico de la solicitud.
+* **Tiempos de respuesta:** Las solicitudes fundamentadas se acusan en un plazo no mayor a **24 horas hábiles** y se resuelven en un máximo de **48 horas hábiles**, procediendo a la desindexación o baja del enlace si se comprueba afectación a derechos protegidos.
 
 ## 4. Privacidad y Ausencia de Cookies
 

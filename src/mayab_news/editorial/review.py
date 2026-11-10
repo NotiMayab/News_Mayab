@@ -149,22 +149,54 @@ def _row_to_queue_item(row: sqlite3.Row) -> ReviewQueueItem:
     )
 
 
+def _has_triage_table(conn: sqlite3.Connection) -> bool:
+    r = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='ai_triage_dictamenes';"
+    ).fetchone()
+    return r is not None
+
+
 def list_review_queue(
     conn: sqlite3.Connection,
     status_filter: str = "PENDING_HUMAN",
     limit: int = 50,
 ) -> list[ReviewQueueItem]:
-    """Lista los eventos en la cola de revisión ordenados por prioridad (1=urgente/sensible) y fecha."""
-    rows = conn.execute(
-        """
-        SELECT *
-        FROM events
-        WHERE review_status = ?
-        ORDER BY review_priority ASC, last_updated_at_utc DESC
-        LIMIT ?;
-        """,
-        (status_filter, limit),
-    ).fetchall()
+    """Lista los eventos en la cola de revisión ordenados por prioridad de triaje (1=urgente/sensible) y fecha."""
+    if _has_triage_table(conn):
+        rows = conn.execute(
+            """
+            SELECT e.*
+            FROM events e
+            LEFT JOIN (
+                SELECT event_id, priority, status
+                FROM ai_triage_dictamenes
+                WHERE id IN (
+                    SELECT MAX(id) FROM ai_triage_dictamenes GROUP BY event_id
+                )
+            ) d ON e.event_id = d.event_id
+            WHERE e.review_status = ?
+            ORDER BY
+                CASE
+                    WHEN d.status = 'ERROR' OR d.priority IS NULL THEN 1
+                    ELSE d.priority
+                END ASC,
+                e.review_priority ASC,
+                e.last_updated_at_utc DESC
+            LIMIT ?;
+            """,
+            (status_filter, limit),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            """
+            SELECT *
+            FROM events
+            WHERE review_status = ?
+            ORDER BY review_priority ASC, last_updated_at_utc DESC
+            LIMIT ?;
+            """,
+            (status_filter, limit),
+        ).fetchall()
     return [_row_to_queue_item(r) for r in rows]
 
 
@@ -355,12 +387,28 @@ def approve_event(
     now_utc = _utc_now_iso()
     rule_version = str(evt_row["rule_engine_version"])
 
-    reason_payload = {
+    reason_payload: dict[str, Any] = {
         "action": "HUMAN_APPROVAL",
         "previous_review_status": str(evt_row["review_status"]),
         "editorial_note": editorial_note.strip(),
         "approved_at_utc": now_utc,
     }
+
+    if _has_triage_table(conn):
+        d_row = conn.execute(
+            """
+            SELECT id, suggested_action
+            FROM ai_triage_dictamenes
+            WHERE event_id = ? AND status = 'OK'
+            ORDER BY created_at_utc DESC, id DESC
+            LIMIT 1;
+            """,
+            (event_id,),
+        ).fetchone()
+        if d_row:
+            reason_payload["ai_dictamen_id"] = d_row["id"]
+            reason_payload["ai_suggested_action"] = d_row["suggested_action"]
+            reason_payload["human_agreed"] = (d_row["suggested_action"] == "SUGGEST_APPROVE")
 
     with conn:
         conn.execute(
@@ -408,6 +456,27 @@ def reject_event(
     now_utc = _utc_now_iso()
     rule_version = str(evt_row["rule_engine_version"])
 
+    rej_payload: dict[str, Any] = {
+        "action": "HUMAN_REJECT",
+        "reason": reason.strip(),
+        "rejected_at_utc": now_utc,
+    }
+    if _has_triage_table(conn):
+        d_row = conn.execute(
+            """
+            SELECT id, suggested_action
+            FROM ai_triage_dictamenes
+            WHERE event_id = ? AND status = 'OK'
+            ORDER BY created_at_utc DESC, id DESC
+            LIMIT 1;
+            """,
+            (event_id,),
+        ).fetchone()
+        if d_row:
+            rej_payload["ai_dictamen_id"] = d_row["id"]
+            rej_payload["ai_suggested_action"] = d_row["suggested_action"]
+            rej_payload["human_agreed"] = (d_row["suggested_action"] == "SUGGEST_REJECT")
+
     with conn:
         conn.execute(
             """
@@ -431,10 +500,7 @@ def reject_event(
                 prev_state,
                 now_utc,
                 rule_version,
-                json.dumps(
-                    {"action": "HUMAN_REJECT", "reason": reason.strip()},
-                    ensure_ascii=False,
-                ),
+                json.dumps(rej_payload, ensure_ascii=False),
             ),
         )
 
@@ -869,3 +935,152 @@ def issue_editorial_correction(
             )
 
     return correction_id
+
+
+def get_event_triage_dictamen(conn: sqlite3.Connection, event_id: str) -> dict[str, Any] | None:
+    """Devuelve el dictamen de triaje más reciente para un evento."""
+    if not _has_triage_table(conn):
+        return None
+    row = conn.execute(
+        """
+        SELECT *
+        FROM ai_triage_dictamenes
+        WHERE event_id = ?
+        ORDER BY created_at_utc DESC, id DESC
+        LIMIT 1;
+        """,
+        (event_id,),
+    ).fetchone()
+    if row is None:
+        return None
+    d = dict(row)
+    try:
+        d["signals"] = json.loads(d["signals_json"]) if d.get("signals_json") else []
+    except Exception:
+        d["signals"] = []
+    try:
+        d["deterministic_flags"] = json.loads(d["deterministic_flags_json"]) if d.get("deterministic_flags_json") else []
+    except Exception:
+        d["deterministic_flags"] = []
+    return d
+
+
+def save_triage_dictamen(
+    conn: sqlite3.Connection,
+    event_id: str,
+    dictamen: Any,
+) -> int:
+    """Inserta de forma idempotente un dictamen de triaje en SQLite."""
+    now_utc = _utc_now_iso()
+    signals_str = json.dumps(dictamen.signals, ensure_ascii=False) if dictamen.signals is not None else None
+    flags_str = json.dumps(dictamen.deterministic_flags, ensure_ascii=False)
+    with conn:
+        cur = conn.execute(
+            """
+            INSERT INTO ai_triage_dictamenes (
+                event_id, input_hash, model_name, model_digest, prompt_version,
+                status, error_code, suggested_action, priority, confidence,
+                signals_json, deterministic_flags_json, justification, created_at_utc
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (event_id, input_hash, model_digest, prompt_version)
+            DO UPDATE SET
+                status = excluded.status,
+                error_code = excluded.error_code,
+                suggested_action = excluded.suggested_action,
+                priority = excluded.priority,
+                confidence = excluded.confidence,
+                signals_json = excluded.signals_json,
+                deterministic_flags_json = excluded.deterministic_flags_json,
+                justification = excluded.justification,
+                created_at_utc = excluded.created_at_utc;
+            """,
+            (
+                event_id,
+                dictamen.input_hash,
+                dictamen.model_name,
+                dictamen.model_digest,
+                dictamen.prompt_version,
+                dictamen.status,
+                dictamen.error_code,
+                dictamen.suggested_action,
+                dictamen.priority,
+                dictamen.confidence,
+                signals_str,
+                flags_str,
+                dictamen.justification,
+                now_utc,
+            ),
+        )
+        return int(cur.lastrowid or 0)
+
+
+def mark_stale_dictamenes(
+    conn: sqlite3.Connection,
+    current_digest: str,
+    current_prompt_version: str,
+) -> int:
+    """Marca como STALE dictámenes creados con un model_digest o prompt_version anterior."""
+    if not _has_triage_table(conn):
+        return 0
+    with conn:
+        cur = conn.execute(
+            """
+            UPDATE ai_triage_dictamenes
+            SET status = 'STALE'
+            WHERE status = 'OK'
+              AND (model_digest != ? OR prompt_version != ?);
+            """,
+            (current_digest, current_prompt_version),
+        )
+        return int(cur.rowcount)
+
+
+def get_ai_triage_report(conn: sqlite3.Connection) -> dict[str, Any]:
+    """Genera métricas de auditoría sobre concordancia humano-IA y alertas."""
+    if not _has_triage_table(conn):
+        return {"total_dictamenes": 0, "status": "NO_TABLE"}
+
+    total = conn.execute("SELECT COUNT(*) FROM ai_triage_dictamenes;").fetchone()[0]
+    by_status = dict(conn.execute("SELECT status, COUNT(*) FROM ai_triage_dictamenes GROUP BY status;").fetchall())
+    by_action = dict(conn.execute("SELECT suggested_action, COUNT(*) FROM ai_triage_dictamenes WHERE status = 'OK' GROUP BY suggested_action;").fetchall())
+
+    injections_count = conn.execute(
+        "SELECT COUNT(*) FROM ai_triage_dictamenes WHERE signals_json LIKE '%INSTRUCTION_IN_CONTENT%';"
+    ).fetchone()[0]
+
+    hist_rows = conn.execute(
+        "SELECT reason_components_json FROM verification_history WHERE changed_by = 'EDITOR_HUMAN';"
+    ).fetchall()
+    agreed = 0
+    disagreed = 0
+    false_approves_rejected = 0
+    for r in hist_rows:
+        try:
+            pl = json.loads(r[0])
+            if "ai_suggested_action" in pl:
+                sugg = pl.get("ai_suggested_action")
+                act = pl.get("action")
+                if pl.get("human_agreed") is True:
+                    agreed += 1
+                else:
+                    disagreed += 1
+                    if sugg == "SUGGEST_APPROVE" and act == "HUMAN_REJECT":
+                        false_approves_rejected += 1
+        except Exception:
+            continue
+
+    total_reviewed = agreed + disagreed
+    concordance_pct = (agreed / total_reviewed * 100.0) if total_reviewed > 0 else 0.0
+
+    return {
+        "total_dictamenes": total,
+        "by_status": by_status,
+        "by_action": by_action,
+        "injections_detected": injections_count,
+        "total_reviewed_with_ai": total_reviewed,
+        "agreed": agreed,
+        "disagreed": disagreed,
+        "concordance_pct": round(concordance_pct, 2),
+        "false_approves_rejected_by_human": false_approves_rejected,
+    }
+

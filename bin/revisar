@@ -1,39 +1,74 @@
 #!/usr/bin/env python3
-"""CLI de revisión editorial rápida en Linux para aprobar, rechazar, fusionar, separar y corregir eventos."""
+"""CLI de revisión editorial rápida en Linux para aprobar, rechazar, fusionar, separar, corregir y triaje con IA."""
 
 from __future__ import annotations
 
 import argparse
+import fcntl
+import os
+import re
 import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR / "src"))
 
+import yaml  # noqa: E402
+
 from mayab_news.db.migrations import apply_migrations, connect_db, sync_sources_catalog  # noqa: E402
+from mayab_news.editorial.ai_triage import (  # noqa: E402
+    execute_ai_triage,
+    fetch_model_digest,
+)
 from mayab_news.editorial.review import (  # noqa: E402
     VALID_CORRECTION_TYPES,
     VALID_VERIFICATION_STATES,
     approve_event,
+    get_ai_triage_report,
     get_event_review_detail,
+    get_event_triage_dictamen,
     issue_editorial_correction,
     list_review_queue,
     list_unclassified_events,
+    mark_stale_dictamenes,
     merge_events,
     reclassify_event_category,
     reject_event,
+    save_triage_dictamen,
     split_article_to_new_event,
 )
+from mayab_news.editorial.triage_rules import DEFAULT_GUIDELINES_PATH, TriageRulesEngine  # noqa: E402
 from mayab_news.nlp.categories import VALID_CATEGORIES  # noqa: E402
 
+_ANSI_RE = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 
-def _print_event_detail(detail) -> None:
+
+def _safe_terminal_text(text: Any) -> str:
+    """Elimina secuencias de escape ANSI para prevenir inyecciones a la terminal."""
+    if not text:
+        return ""
+    return _ANSI_RE.sub("", str(text))
+
+
+def _acquire_lock(lock_name: str = "mayab_revisar.lock"):
+    runtime_dir = os.environ.get("XDG_RUNTIME_DIR") or "/tmp"
+    lock_path = Path(runtime_dir) / lock_name
+    lock_file = open(lock_path, "w")
+    try:
+        fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except (BlockingIOError, OSError):
+        print(f"ERROR: Ya existe otra instancia de revisar/ai-triage en ejecución (bloqueo en {lock_path}).", file=sys.stderr)
+        sys.exit(1)
+    return lock_file
+
+
+def _print_event_detail(conn, detail) -> None:
     item = detail.queue_item
     sec_str = f" (+ {', '.join(item.categorias_secundarias)})" if item.categorias_secundarias else ""
     hum_str = " [asignada por HUMANO]" if item.categoria_humana else " [automática]"
     print("=" * 88)
     print(f"EVENTO:     {item.event_id}  (Prioridad: P{item.review_priority} | Confianza: {item.clustering_confidence:.2f})")
-    print(f"TITULAR:    {item.canonical_headline}")
+    print(f"TITULAR:    {_safe_terminal_text(item.canonical_headline)}")
     print(f"CATEGORÍA:  {item.categoria_principal}{sec_str}{hum_str}")
     print(f"TEMA/ÁMBITO:{item.topic_category} / {item.geographic_scope}")
     print(f"ESTADO:     {item.verification_state} | REVISIÓN: {item.review_status}")
@@ -43,7 +78,7 @@ def _print_event_detail(detail) -> None:
     print("ORÍGENES INDEPENDIENTES DETECTADOS:")
     for o in detail.origins:
         print(
-            f"  * [{o.origin_type}] {o.actor_display_name} "
+            f"  * [{o.origin_type}] {_safe_terminal_text(o.actor_display_name)} "
             f"(método={o.detection_method}, notas={o.attributed_articles_count})"
         )
     print("-" * 88)
@@ -51,9 +86,9 @@ def _print_event_detail(detail) -> None:
     for a in detail.articles:
         dup_tag = f" [ECO de {a.duplicate_of_article_id}]" if a.duplicate_of_article_id else ""
         print(f"  - ({a.article_id}) [{a.source_name} | {a.ownership_group_id}]{dup_tag}")
-        print(f"    Titular:  {a.title_plain}")
+        print(f"    Titular:  {_safe_terminal_text(a.title_plain)}")
         if a.excerpt_plain:
-            print(f"    Extracto: “{a.excerpt_plain}”")
+            print(f"    Extracto: “{_safe_terminal_text(a.excerpt_plain)}”")
         print(f"    URL:      {a.canonical_url}")
     if len(detail.articles) == 1:
         diag = detail.articles[0].match_diagnostics or {}
@@ -75,132 +110,281 @@ def _print_event_detail(detail) -> None:
             )
         else:
             print("  Sin traza previa registrada (ingerido antes de Migración 003).")
+
+    # Panel de Triaje Asistido por IA (si existe)
+    triage = get_event_triage_dictamen(conn, item.event_id)
+    if triage:
+        print("-" * 88)
+        print("TRIAJE ASISTIDO POR IA (*** SUGERENCIA AUTOMÁTICA, NO ES UNA REVISIÓN ***):")
+        st = triage.get("status")
+        sugg = triage.get("suggested_action") or "SIN_SUGERENCIA"
+        pri = triage.get("priority")
+        conf = triage.get("confidence")
+        print(f"  Estado: {st} | Sugerencia: {sugg} | Prioridad sugerida: P{pri} | Confianza: {conf}")
+        if triage.get("deterministic_flags"):
+            print("  Banderas Capa 1 (Autoritativas):")
+            for f in triage["deterministic_flags"]:
+                print(f"    - [{_safe_terminal_text(f.get('severity'))}] {_safe_terminal_text(f.get('code'))}: {_safe_terminal_text(f.get('evidence'))}")
+        if triage.get("signals"):
+            print("  Señales de Riesgo Capa 2 (IA):")
+            for s in triage["signals"]:
+                print(f"    * {_safe_terminal_text(s.get('code'))}: '{_safe_terminal_text(s.get('evidence'))}' ({_safe_terminal_text(s.get('note'))})")
+        if triage.get("justification"):
+            print(f"  Justificación: {_safe_terminal_text(triage['justification'])}")
+
     if detail.corrections:
         print("-" * 88)
         print("FE DE ERRATAS / CORRECCIONES:")
         for c in detail.corrections:
-            print(f"  ! [{c['issued_at_utc']}] ({c['correction_type']}): {c['public_explanation']}")
+            print(f"  ! [{c['issued_at_utc']}] ({c['correction_type']}): {_safe_terminal_text(c['public_explanation'])}")
     print("=" * 88)
 
 
 def _run_interactive(conn) -> int:
-    queue = list_review_queue(conn, status_filter="PENDING_HUMAN", limit=100)
-    if not queue:
-        print("Cola PENDING_HUMAN vacía. No hay eventos pendientes de revisión humana.")
-        return 0
+    lock = _acquire_lock("mayab_interactive.lock")
+    try:
+        queue = list_review_queue(conn, status_filter="PENDING_HUMAN", limit=100)
+        if not queue:
+            print("Cola PENDING_HUMAN vacía. No hay eventos pendientes de revisión humana.")
+            return 0
 
-    print(f"Iniciando revisión interactiva ({len(queue)} evento(s) en cola)...")
-    for idx, q_item in enumerate(queue, start=1):
-        try:
-            detail = get_event_review_detail(conn, q_item.event_id)
-        except ValueError:
-            continue
-        print(f"\n[{idx}/{len(queue)}]")
-        _print_event_detail(detail)
-        while True:
-            cmd = input(
-                "Acción: [a]probar | cambiar e[s]tado y aprobar | [c]ategoría | [r]echazar | [m]erge | separar art [x] | [n]ext | [q]uit > "
-            ).strip().lower()
-            if cmd == "a":
-                approve_event(conn, q_item.event_id)
-                print(f"-> Aprobado ({q_item.event_id}).")
-                break
-            if cmd == "s":
-                state = input(f"Nuevo estado {sorted(VALID_VERIFICATION_STATES)}: ").strip().upper()
-                note = input("Nota editorial (opcional): ").strip()
-                approve_event(conn, q_item.event_id, new_verification_state=state, editorial_note=note)
-                print(f"-> Aprobado con estado {state}.")
-                break
-            if cmd == "c":
-                cat = input(f"Nueva categoría {sorted(VALID_CATEGORIES)}: ").strip().lower()
-                sec_raw = input("Categorías secundarias separadas por coma (opcional): ").strip()
-                sec_list = [s.strip() for s in sec_raw.split(",") if s.strip()] if sec_raw else None
-                note = input("Nota editorial (opcional): ").strip()
-                reclassify_event_category(
-                    conn,
-                    q_item.event_id,
-                    new_category=cat,
-                    categorias_secundarias=sec_list,
-                    editorial_note=note,
-                )
-                print(f"-> Categoría actualizada a {cat!r} (prioridad humana registrada).")
+        print(f"Iniciando revisión interactiva ({len(queue)} evento(s) en cola)...")
+        for idx, q_item in enumerate(queue, start=1):
+            try:
+                detail = get_event_review_detail(conn, q_item.event_id)
+            except ValueError:
                 continue
-            if cmd == "r":
-                reason = input("Motivo de rechazo (opcional): ").strip()
-                reject_event(conn, q_item.event_id, reason=reason)
-                print(f"-> Rechazado ({q_item.event_id}).")
-                break
-            if cmd == "m":
-                target_id = input("ID del evento destino (target_event_id): ").strip()
-                explanation = input("Explicación pública (opcional): ").strip()
-                merge_events(conn, q_item.event_id, target_id, public_explanation=explanation)
-                print(f"-> Fusionado {q_item.event_id} -> {target_id}.")
-                break
-            if cmd == "x":
-                art_id = input("article_id a separar en nuevo evento: ").strip()
-                explanation = input("Explicación pública (opcional): ").strip()
-                new_id = split_article_to_new_event(conn, art_id, public_explanation=explanation)
-                print(f"-> Artículo {art_id} separado hacia nuevo evento {new_id}.")
-                break
-            if cmd == "n":
-                break
-            if cmd == "q":
-                return 0
+            print(f"\n[{idx}/{len(queue)}]")
+            _print_event_detail(conn, detail)
+            while True:
+                cmd = input(
+                    "Acción: [a]probar | cambiar e[s]tado y aprobar | [c]ategoría | [r]echazar | [m]erge | separar art [x] | [n]ext | [q]uit > "
+                ).strip().lower()
+                if cmd == "a":
+                    approve_event(conn, q_item.event_id)
+                    print(f"-> Aprobado ({q_item.event_id}).")
+                    break
+                if cmd == "s":
+                    state = input(f"Nuevo estado {sorted(VALID_VERIFICATION_STATES)}: ").strip().upper()
+                    note = input("Nota editorial (opcional): ").strip()
+                    approve_event(conn, q_item.event_id, new_verification_state=state, editorial_note=note)
+                    print(f"-> Aprobado con estado {state}.")
+                    break
+                if cmd == "c":
+                    cat = input(f"Nueva categoría {sorted(VALID_CATEGORIES)}: ").strip().lower()
+                    sec_raw = input("Categorías secundarias separadas por coma (opcional): ").strip()
+                    sec_list = [s.strip() for s in sec_raw.split(",") if s.strip()] if sec_raw else None
+                    note = input("Nota editorial (opcional): ").strip()
+                    reclassify_event_category(
+                        conn,
+                        q_item.event_id,
+                        new_category=cat,
+                        categorias_secundarias=sec_list,
+                        editorial_note=note,
+                    )
+                    print(f"-> Categoría actualizada a {cat!r}.")
+                    break
+                if cmd == "r":
+                    reason = input("Motivo de rechazo: ").strip()
+                    reject_event(conn, q_item.event_id, reason=reason)
+                    print(f"-> Rechazado ({q_item.event_id}).")
+                    break
+                if cmd == "m":
+                    target_id = input("ID de evento destino para fusionar: ").strip()
+                    expl = input("Explicación pública de la fusión: ").strip()
+                    merge_events(conn, q_item.event_id, target_id, public_explanation=expl)
+                    print(f"-> Evento {q_item.event_id} fusionado en {target_id}.")
+                    break
+                if cmd == "x":
+                    art_id = input("ID de artículo a separar: ").strip()
+                    expl = input("Explicación pública de separación: ").strip()
+                    new_id = split_article_to_new_event(conn, art_id, public_explanation=expl)
+                    print(f"-> Separado en nuevo evento {new_id}.")
+                    break
+                if cmd == "n":
+                    break
+                if cmd == "q":
+                    print("Revisión finalizada por el operador.")
+                    return 0
+    finally:
+        fcntl.flock(lock, fcntl.LOCK_UN)
+        lock.close()
+    return 0
+
+
+def _run_ai_triage(conn, args) -> int:
+    lock = _acquire_lock("mayab_ai_triage.lock")
+    try:
+        # 1. Cargar configuración de Capa 1 y Schema de Capa 2
+        with open(DEFAULT_GUIDELINES_PATH, "r", encoding="utf-8") as f:
+            cfg = yaml.safe_load(f) or {}
+        output_schema = cfg.get("output_schema")
+        prompt_version = cfg.get("prompt_version", "v1.0.0")
+        model_name = getattr(args, "model", None) or cfg.get("model_name", "gemma4:rules")
+        endpoint_url = getattr(args, "endpoint", None) or cfg.get("ollama_endpoint", "http://127.0.0.1:11434")
+        dry_run = getattr(args, "dry_run", False)
+        limit = getattr(args, "limit", 25)
+
+        # 2. Obtener digest del modelo
+        try:
+            info = fetch_model_digest(model_name, endpoint_url=endpoint_url)
+            model_digest = info.digest
+        except Exception as e:
+            print(f"ADVERTENCIA: No se pudo conectar a Ollama en {endpoint_url}: {e}", file=sys.stderr)
+            model_digest = "unreachable"
+
+        # 3. Marcar dictámenes stale si cambió digest o versión (solo si no es dry-run)
+        if not dry_run and model_digest != "unreachable":
+            stale_count = mark_stale_dictamenes(conn, model_digest, prompt_version)
+            if stale_count > 0:
+                print(f"Se marcaron {stale_count} dictamen(es) previos como STALE por cambio de modelo/versión.")
+
+        # 4. Buscar eventos candidatos sensibles en PENDING_HUMAN
+        query = """
+            SELECT e.event_id
+            FROM events e
+            WHERE e.is_sensitive = 1 AND e.review_status = 'PENDING_HUMAN'
+              AND e.event_id NOT IN (
+                  SELECT event_id FROM ai_triage_dictamenes
+                  WHERE status = 'OK' AND model_digest = ? AND prompt_version = ?
+              )
+            ORDER BY e.review_priority ASC, e.last_updated_at_utc DESC
+            LIMIT ?;
+        """
+        candidates = conn.execute(query, (model_digest, prompt_version, limit)).fetchall()
+        if not candidates:
+            print("No hay eventos sensibles pendientes que requieran triaje.")
+            return 0
+
+        engine = TriageRulesEngine()
+        print(f"Ejecutando triaje sobre {len(candidates)} evento(s) sensible(s) (dry_run={dry_run})...")
+
+        for r in candidates:
+            eid = r["event_id"]
+            detail = get_event_review_detail(conn, eid)
+            headline = detail.queue_item.canonical_headline
+            first_excerpt = detail.articles[0].excerpt_plain if detail.articles else ""
+            media_names = [a.source_name for a in detail.articles]
+            origin_types = [o.origin_type for o in detail.origins]
+            v_state = detail.queue_item.verification_state
+
+            # Capa 1
+            l1_res = engine.evaluate(
+                title=headline,
+                excerpt=first_excerpt,
+                independent_origins_count=detail.queue_item.independent_origins_count,
+                origin_types=origin_types,
+                verification_state=v_state,
+            )
+
+            if l1_res.is_excluded:
+                print(f"  * [{eid}] EXCLUIDO: {l1_res.exclusion_reason}")
+                continue
+
+            # Capa 2
+            dictamen = execute_ai_triage(
+                title=headline,
+                excerpt=first_excerpt,
+                media_names=media_names,
+                independent_origins_count=detail.queue_item.independent_origins_count,
+                origin_types=origin_types,
+                layer1_result=l1_res,
+                model_name=model_name,
+                model_digest=model_digest,
+                output_schema=output_schema,
+                endpoint_url=endpoint_url,
+            )
+
+            print(f"  * [{eid}] status={dictamen.status} sugg={dictamen.suggested_action} prio=P{dictamen.priority} conf={dictamen.confidence} flags={len(dictamen.deterministic_flags)} signals={len(dictamen.signals)}")
+            if dictamen.justification:
+                print(f"    Justificación: {_safe_terminal_text(dictamen.justification)}")
+
+            if not dry_run:
+                save_triage_dictamen(conn, eid, dictamen)
+
+        print("Triaje finalizado.")
+    finally:
+        fcntl.flock(lock, fcntl.LOCK_UN)
+        lock.close()
+    return 0
+
+
+def _run_ai_report(conn) -> int:
+    rep = get_ai_triage_report(conn)
+    if rep.get("status") == "NO_TABLE":
+        print("La tabla ai_triage_dictamenes no existe aún.")
+        return 0
+    print("=" * 80)
+    print("REPORTE DE AUDITORÍA Y CALIDAD DE TRIAJE IA (ADR-013)")
+    print("=" * 80)
+    print(f"Total de dictámenes generados:  {rep['total_dictamenes']}")
+    print(f"Desglose por estado:            {rep['by_status']}")
+    print(f"Desglose por sugerencia (OK):   {rep['by_action']}")
+    print(f"Inyecciones en contenido:       {rep['injections_detected']}")
+    print("-" * 80)
+    print(f"Eventos revisados con dictamen: {rep['total_reviewed_with_ai']}")
+    print(f"Concordancia humano-IA:         {rep['agreed']}/{rep['total_reviewed_with_ai']} ({rep['concordance_pct']}%)")
+    print(f"Falsos SUGGEST_APPROVE (rechazados por humano): {rep['false_approves_rejected_by_human']}")
+    if rep['false_approves_rejected_by_human'] > 0:
+        print("  ALERTA: Se detectaron sugerencias de aprobación que el editor humano rechazó.")
+    print("=" * 80)
     return 0
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Herramienta CLI de revisión editorial para News_Mayab"
-    )
-    parser.add_argument(
-        "--db",
-        type=Path,
-        default=ROOT_DIR / "state.sqlite",
-        help="Ruta al archivo SQLite de estado",
-    )
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--db", default="state.sqlite", help="Ruta al archivo SQLite")
     sub = parser.add_subparsers(dest="subcommand")
 
-    q_p = sub.add_parser("queue", help="Lista la cola de revisión")
-    q_p.add_argument("--status", default="PENDING_HUMAN", help="Filtro review_status")
-    q_p.add_argument("--limit", type=int, default=50)
+    qp = sub.add_parser("queue", help="Muestra la cola de revisión")
+    qp.add_argument("--status", default="PENDING_HUMAN", choices=["PENDING_HUMAN", "AUTO_PUBLISHED", "HUMAN_APPROVED", "REJECTED"])
+    qp.add_argument("--limit", type=int, default=50)
 
-    sh_p = sub.add_parser("show", help="Muestra el detalle de un evento")
-    sh_p.add_argument("event_id")
+    sp = sub.add_parser("show", help="Muestra el detalle completo de un evento")
+    sp.add_argument("event_id")
 
     ap_p = sub.add_parser("approve", help="Aprueba un evento (HUMAN_APPROVED)")
     ap_p.add_argument("event_id")
-    ap_p.add_argument("--state", choices=sorted(VALID_VERIFICATION_STATES), default=None)
+    ap_p.add_argument("--state", choices=sorted(VALID_VERIFICATION_STATES))
     ap_p.add_argument("--note", default="")
-    ap_p.add_argument("--headline", default=None)
+    ap_p.add_argument("--headline", default="")
 
-    rj_p = sub.add_parser("reject", help="Rechaza un evento (REJECTED)")
-    rj_p.add_argument("event_id")
-    rj_p.add_argument("--reason", default="")
+    rp = sub.add_parser("reject", help="Rechaza un evento (REJECTED)")
+    rp.add_argument("event_id")
+    rp.add_argument("--reason", default="")
 
-    mg_p = sub.add_parser("merge", help="Fusiona source_event_id dentro de target_event_id")
-    mg_p.add_argument("source_event_id")
-    mg_p.add_argument("target_event_id")
-    mg_p.add_argument("--explanation", default="")
+    mp = sub.add_parser("merge", help="Fusiona source_event_id dentro de target_event_id")
+    mp.add_argument("source_event_id")
+    mp.add_argument("target_event_id")
+    mp.add_argument("--explanation", required=True)
 
-    sp_p = sub.add_parser("split", help="Separa un article_id hacia un nuevo evento")
-    sp_p.add_argument("article_id")
-    sp_p.add_argument("--explanation", default="")
+    spp = sub.add_parser("split", help="Separa un artículo hacia un nuevo evento")
+    spp.add_argument("article_id")
+    spp.add_argument("--explanation", required=True)
 
-    co_p = sub.add_parser("correct", help="Emite una fe de erratas pública en un evento")
-    co_p.add_argument("event_id")
-    co_p.add_argument("--type", required=True, choices=sorted(VALID_CORRECTION_TYPES))
-    co_p.add_argument("--text", required=True)
-    co_p.add_argument("--state", choices=sorted(VALID_VERIFICATION_STATES), default=None)
+    cp = sub.add_parser("correct", help="Emite una fe de erratas / corrección editorial")
+    cp.add_argument("event_id")
+    cp.add_argument("--type", choices=sorted(VALID_CORRECTION_TYPES), required=True)
+    cp.add_argument("--text", required=True)
+    cp.add_argument("--state", choices=sorted(VALID_VERIFICATION_STATES))
 
-    un_p = sub.add_parser("unclassified", help="Lista eventos con categoria_principal = 'sin-clasificar'")
-    un_p.add_argument("--limit", type=int, default=50)
+    up = sub.add_parser("unclassified", help="Lista eventos sin clasificar temática")
+    up.add_argument("--limit", type=int, default=50)
 
-    rc_p = sub.add_parser("reclassify", help="Reclasifica manualmente la categoría de un evento")
+    rc_p = sub.add_parser("reclassify", help="Reclasifica la categoría de un evento")
     rc_p.add_argument("event_id")
     rc_p.add_argument("category", choices=sorted(VALID_CATEGORIES))
     rc_p.add_argument("--secondary", default="", help="Categorías secundarias separadas por coma")
     rc_p.add_argument("--note", default="")
+
+    # Subcomandos de Triaje Asistido por IA (ADR-013)
+    tp = sub.add_parser("ai-triage", help="Genera dictámenes de triaje consultivo para eventos sensibles")
+    tp.add_argument("--dry-run", action="store_true", help="No escribe en base de datos; solo imprime resumen")
+    tp.add_argument("--limit", type=int, default=25, help="Límite de eventos a procesar en serie")
+    tp.add_argument("--model", default=None, help="Nombre del modelo Ollama")
+    tp.add_argument("--endpoint", default=None, help="Endpoint Ollama loopback")
+
+    sub.add_parser("ai-report", help="Reporte de auditoría y concordancia humano-IA")
 
     sub.add_parser("interactive", help="Modo interactivo por teclado sobre PENDING_HUMAN")
 
@@ -224,10 +408,10 @@ def main() -> int:
                 ratio = f"{it.independent_origins_count}/{it.media_count}"
                 print(
                     f"{it.event_id:<22} P{it.review_priority:<3} {sens:<5} {ratio:<9} "
-                    f"{it.verification_state:<19} {it.canonical_headline[:55]}"
+                    f"{it.verification_state:<19} {_safe_terminal_text(it.canonical_headline)[:55]}"
                 )
         elif cmd == "show":
-            _print_event_detail(get_event_review_detail(conn, args.event_id))
+            _print_event_detail(conn, get_event_review_detail(conn, args.event_id))
         elif cmd == "approve":
             approve_event(
                 conn,
@@ -272,7 +456,7 @@ def main() -> int:
                 ratio = f"{it.independent_origins_count}/{it.media_count}"
                 print(
                     f"{it.event_id:<22} {it.categoria_principal:<16} {it.review_status:<16} "
-                    f"{ratio:<9} {it.canonical_headline[:50]}"
+                    f"{ratio:<9} {_safe_terminal_text(it.canonical_headline)[:50]}"
                 )
         elif cmd == "reclassify":
             sec_list = [s.strip() for s in args.secondary.split(",") if s.strip()] if args.secondary else None
@@ -284,6 +468,10 @@ def main() -> int:
                 editorial_note=args.note,
             )
             print(f"Evento {args.event_id} reclasificado manualmente a {args.category!r}.")
+        elif cmd == "ai-triage":
+            return _run_ai_triage(conn, args)
+        elif cmd == "ai-report":
+            return _run_ai_report(conn)
         elif cmd == "interactive":
             return _run_interactive(conn)
     finally:
