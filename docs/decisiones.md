@@ -92,12 +92,20 @@
 * **Decisión:** Opción 2.
 * **Consecuencias:** El recall en pares positivos sube de `18.75%` (`3/16`) a `100.00%` (`16/16`) manteniendo `0.00%` (`0/16`) de falsos positivos en hechos de municipios distintos; en el corpus real los eventos con $\ge 2$ orígenes independientes se más que duplican (`4.25%` $\rightarrow$ `10.07%`); cada evento huérfano expone su causa exacta en `./bin/revisar` y `./bin/diagnostico`; las reclasificaciones humanas (`categoria_humana = 1`) quedan auditadas en `verification_history` (`changed_by = 'EDITOR_HUMAN'`) con prioridad sobre el clasificador; y se garantiza por construcción y por pruebas que ninguna categoría (`seguridad` u otra) altera `is_sensitive` ni `review_status`.
 
-## ADR-012: Sistema de Diseño Editorial Accesible y Tema Estático en Hugo (Mayab)
-* **Contexto:** Mayab requería un tema visual propio para Hugo, con identidad de "periódico de registro moderno" con guiños regionales yucatecos sobrios, sin imágenes de portada ni fotografías propias, cumpliendo estrictamente accesibilidad WCAG 2.2 AA en modo claro y oscuro, cero dependencias de Node.js/npm ni frameworks JS, y soporte de degradación 100% funcional sin JavaScript.
+## ADR-013: Triaje Asistido por IA para Priorización de Riesgo Editorial (Flujo A-lite)
+* **Contexto:** La cola de eventos sensibles retenidos en `PENDING_HUMAN` requiere revisión humana obligatoria (ADR-003). Cuando el volumen de notas sensibles aumenta, el editor humano necesita priorizar los casos más urgentes o con mayor riesgo legal (imputaciones penales a particulares, mención de menores de edad, identidad de víctimas protegidas, controversias electorales) sin delegar jamás la decisión editorial en un modelo automatizado y sin violar la privacidad enviando datos a APIs comerciales externas en la nube.
 * **Opciones:**
-  1. Integrar Tailwind CSS o Bootstrap mediante Node.js/PostCSS en el build de Cloudflare Pages.
-  2. Implementar un tema Hugo autónomo (`site/themes/mayab/`) en CSS puro con `@layer`, Hugo Pipes (`resources.Minify` + `fingerprint`), fuentes autoalojadas en WOFF2 (Fraunces + Inter), JavaScript vanilla (< 3 KB diferido con `defer`), acento terracota adaptativo (`#B5502E` en claro, `#DE734C` en oscuro para ratio $\ge 4.5:1$), liquid glass acotado a barras flotantes con fallback sólido, y visualizador SVG inline del medidor "N medios · M orígenes".
-* **Decisión:** Opción 2.
-* **Consecuencias:** Compilación estática ultrarrápida (< 250 ms para 695 páginas) sin arrastrar la cadena de suministro de npm; presupuesto de rendimiento garantizado (CSS < 40 KB, JS < 3 KB, HTML < 100 KB); cero cookies, cero rastreadores y cero llamadas a CDNs externas de fuentes; navegación accesible por teclado y compatible con `prefers-reduced-motion` y `prefers-reduced-transparency`; y preservación absoluta de los invariantes editoriales, ya que el tema únicamente renderiza datos previamente validados por el exportador.
+  1. Utilizar un LLM comercial en la nube (ej. OpenAI / Anthropic) como filtro de publicación autónomo.
+  2. Triaje asistido por IA local (`gemma4:rules` sobre Ollama en `127.0.0.1:11434`) bajo el principio rector: **Triaje Únicamente, Nunca Autoridad (§0)**.
+* **Decisión:** Opción 2 (Flujo A-lite local con defensa en profundidad en dos capas):
+  * **Capa 1 (Determinista y Autoritativa):** Módulo `mayab_news.editorial.triage_rules` con reglas regex de NFKC en `config/legal_ai_guidelines.yaml`. Si Capa 1 emite una bandera `BLOCK`, esta es irrevocable y la IA física y lógicamente no puede degradarla ni autorizar el evento.
+  * **Capa 2 (Consultiva con LLM Local):** Módulo `mayab_news.editorial.ai_triage` que consulta a Ollama únicamente en loopback (`127.0.0.1`), con delimitadores nonces (`<<<DATOS_{nonce}>>>`), sanitización anti-inyecciones, salida estructurada por JSON Schema, verificación de evidencia literal (`EVIDENCE_MISMATCH`), y fail-closed (cualquier fallo técnico o sospecha de manipulación devuelve error y fuerza prioridad 1 de revisión humana).
+  * **Aislamiento e Invariantes:** El módulo de IA no tiene dependencias externas (solo standard library `urllib`), no importa `sqlite3` ni ejecuta escrituras sobre `events` o `verification_history`. Los dictámenes se almacenan en una tabla auxiliar aislada `ai_triage_dictamenes` (Migración `006`).
+  * **CLI y Auditoría:** Integración de subcomandos `ai-triage` y `ai-report` en `./bin/revisar`, con bloqueo por `fcntl.flock`, marcado de dictámenes obsoletos (`STALE`) ante cambios de modelo o versión de prompt, y registro de concordancia editorial humano-IA.
+* **Consecuencias:**
+  * Cero filtración de datos no revisados a internet y cero costos operativos de API.
+  * La responsabilidad y decisión editorial final reside exclusivamente en el editor humano (`EDITOR_HUMAN`).
+  * Los eventos sensibles con mayor riesgo son atendidos primero en la cola gracias al ordenamiento por prioridad sugerida de riesgo (`P1` a `P5`).
+  * Si el servicio local de Ollama se detiene o falla, el pipeline y la CLI continúan operando normalmente en modo manual sin bloqueos.
 
 

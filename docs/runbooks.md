@@ -11,14 +11,17 @@ Ejecuta esta secuencia una vez al día desde tu estación de trabajo para proces
 # 2. Correr ingesta en modo LOCAL_CLI (incluye portales .gob.mx / académicos de Yucatán)
 ./bin/run_pipeline --db state.sqlite --mode LOCAL_CLI
 
-# 3. Ver salud operativa y revisar la cola PENDING_HUMAN (prioridad P1 y P2)
+# 3. Triaje asistido por IA local (prioriza cola PENDING_HUMAN en P1-P5 sin autorizar)
+./bin/revisar --db state.sqlite ai-triage --limit 25
+
+# 4. Ver salud operativa y revisar la cola PENDING_HUMAN ordenada por riesgo
 ./bin/ops_status --db state.sqlite
 ./bin/revisar --db state.sqlite interactive
 
-# 4. Exportar eventos aprobados a Hugo, compilar y hacer git commit + push a origin/main
+# 5. Exportar eventos aprobados a Hugo, compilar y hacer git commit + push a origin/main
 ./bin/export_hugo --db state.sqlite --build --push
 
-# 5. Volver a cifrar state.sqlite y subir a la rama huérfana data-state
+# 6. Volver a cifrar state.sqlite y subir a la rama huérfana data-state
 ./bin/sync_state push
 ```
 
@@ -66,11 +69,31 @@ Si un medio se retracta o detectas una agrupación errónea ya publicada:
 3. Cifra `state.sqlite` con la nueva clave pública (`age1...`).
 4. Actualiza el secreto `AGE_SECRET_KEY` en GitHub Settings -> Secrets and variables -> Actions y reemplaza `~/.config/news-mayab/state.key`.
 
+### 3.4 Operación y Mantenimiento del Triaje Asistido por IA (ADR-013)
+El motor de triaje asiste en la priorización de la cola sensible sin tomar decisiones editoriales (§0):
+1. **Comprobar servicio Ollama local:**
+   ```bash
+   systemctl --user status ollama || sudo systemctl status ollama
+   curl -s http://127.0.0.1:11434/api/show -d '{"name": "gemma4:rules"}' | grep digest
+   ```
+2. **Ejecución y reporte de calidad:**
+   ```bash
+   # Simular triaje sobre candidatos pendientes sin persistir
+   ./bin/revisar --db state.sqlite ai-triage --dry-run --limit 10
+
+   # Auditar concordancia humano-IA y falsos SUGGEST_APPROVE
+   ./bin/revisar --db state.sqlite ai-report
+   ```
+3. **Manejo de caídas del modelo:**
+   - Si Ollama no responde o se apaga, `./bin/revisar` no se bloquea: los eventos quedan en `PENDING_HUMAN` con prioridad `P1` para inspección manual directa con `./bin/revisar interactive`.
+4. **Actualización de modelo o versión de prompt:**
+   - Al cambiar el digest del modelo o la versión en [`config/legal_ai_guidelines.yaml`](file:///home/gabriel/Escritorio/vscode/News_Mayab/config/legal_ai_guidelines.yaml), `./bin/revisar ai-triage` marca automáticamente los dictámenes anteriores como `STALE` y re-evalúa los eventos pendientes.
+
 ---
 
 ## 4. Checklist de Traspaso Operativo (Bus Factor = 1 -> 2)
 
 - [ ] Acceso de administrador al repositorio GitHub y a Cloudflare Pages (protegidos con 2FA TOTP/WebAuthn).
 - [ ] Copia fuera de banda de `~/.config/news-mayab/state.key` entregada en gestor de contraseñas cifrado (ej. KeePassXC / Bitwarden).
-- [ ] Verificación en la máquina del nuevo operador de: `python3 >= 3.12`, binario `age`, binario `hugo` y ejecución exitosa de `PYTHONPATH=src python3 -m unittest discover -s tests -v`.
-- [ ] Recorrido guiado por [`docs/decisiones.md`](file:///home/gabriel/Escritorio/vscode/News_Mayab/docs/decisiones.md), [`config/sources.yaml`](file:///home/gabriel/Escritorio/vscode/News_Mayab/config/sources.yaml) y [`config/rules.yaml`](file:///home/gabriel/Escritorio/vscode/News_Mayab/config/rules.yaml).
+- [ ] Verificación en la máquina del nuevo operador de: `python3 >= 3.12`, binario `age`, binario `hugo`, Ollama con modelo `gemma4:rules` (opcional para triaje acelerado) y ejecución exitosa de `PYTHONPATH=src python3 -m unittest discover -s tests -v`.
+- [ ] Recorrido guiado por [`docs/decisiones.md`](file:///home/gabriel/Escritorio/vscode/News_Mayab/docs/decisiones.md), [`docs/ai_triage_setup.md`](file:///home/gabriel/Escritorio/vscode/News_Mayab/docs/ai_triage_setup.md), [`config/sources.yaml`](file:///home/gabriel/Escritorio/vscode/News_Mayab/config/sources.yaml), [`config/rules.yaml`](file:///home/gabriel/Escritorio/vscode/News_Mayab/config/rules.yaml) y [`config/legal_ai_guidelines.yaml`](file:///home/gabriel/Escritorio/vscode/News_Mayab/config/legal_ai_guidelines.yaml).
