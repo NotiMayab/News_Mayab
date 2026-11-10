@@ -1,48 +1,39 @@
 {
-  "generated_at_utc": "2026-10-29T05:42:45Z",
-  "active_sources_count": 11,
-  "degraded_sources": [
-    {
-      "source_id": "yuc_hazruido",
-      "name": "Haz Ruido Yucatán",
-      "fetch_mode": "ci_and_local",
-      "consecutive_failures": 1,
-      "last_error_kind": "WAF_OR_GEO_BLOCK",
-      "last_checked_at_utc": "2026-10-29T05:42:34Z"
-    }
-  ],
-  "pending_queue_total": 80,
+  "generated_at_utc": "2026-11-10T00:56:55Z",
+  "active_sources_count": 21,
+  "degraded_sources": [],
+  "pending_queue_total": 146,
   "pending_by_priority": {
-    "P1": 67,
-    "P2": 13,
+    "P1": 100,
+    "P2": 46,
     "P3": 0,
     "P4": 0
   },
-  "oldest_pending_at_utc": "2026-10-22T17:15:13Z",
-  "last_human_action_at_utc": null,
-  "hours_since_last_human_action": null,
-  "is_unattended_degraded_mode": false,
-  "published_events_count": 461,
-  "total_media_mentions": 466,
-  "total_independent_origins": 466,
-  "echo_reduction_ratio": 0.0,
+  "oldest_pending_at_utc": "2025-08-23T09:30:00Z",
+  "last_human_action_at_utc": "2026-10-29T05:44:36Z",
+  "hours_since_last_human_action": 283.21,
+  "is_unattended_degraded_mode": true,
+  "published_events_count": 1098,
+  "total_media_mentions": 1156,
+  "total_independent_origins": 1155,
+  "echo_reduction_ratio": 0.0009,
   "events_by_verification_state": {
-    "CONFIRMED": 7,
-    "DISPUTED": 1,
-    "SINGLE_SOURCE": 517,
-    "UNCONFIRMED_REPORT": 16
+    "CONFIRMED": 35,
+    "DISPUTED": 4,
+    "SINGLE_SOURCE": 1138,
+    "UNCONFIRMED_REPORT": 67
   },
   "events_by_topic": {
-    "ARTE_CULTURA_HUMANIDADES": 14,
-    "CIENCIA_TECNOLOGIA": 13,
-    "DERECHOS_HUMANOS_SOCIEDAD": 5,
-    "ECONOMIA_EMPLEO": 30,
-    "EDUCACION": 6,
-    "INFRAESTRUCTURA_TRANSPORTE": 8,
-    "MEDIO_AMBIENTE_CLIMA": 3,
-    "POLITICA_GOBIERNO": 393,
-    "SALUD_BIENESTAR": 15,
-    "SEGURIDAD_JUSTICIA": 54
+    "ARTE_CULTURA_HUMANIDADES": 25,
+    "CIENCIA_TECNOLOGIA": 37,
+    "DERECHOS_HUMANOS_SOCIEDAD": 9,
+    "ECONOMIA_EMPLEO": 70,
+    "EDUCACION": 23,
+    "INFRAESTRUCTURA_TRANSPORTE": 20,
+    "MEDIO_AMBIENTE_CLIMA": 11,
+    "POLITICA_GOBIERNO": 888,
+    "SALUD_BIENESTAR": 28,
+    "SEGURIDAD_JUSTICIA": 133
   },
   "demoted_in_strict_mode": 0
 }

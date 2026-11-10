@@ -65,7 +65,7 @@ corrections: []
 history:
 - previous_state: null
   new_state: SINGLE_SOURCE
-  changed_at_utc: '2026-11-09T02:02:42Z'
+  changed_at_utc: '2026-11-10T00:41:27Z'
   changed_by: PIPELINE_RULE
   rule_engine_version: v1.0.0
   reason_components_json: '{"independent_origins_count": 1, "media_count": 1, "origin_types":

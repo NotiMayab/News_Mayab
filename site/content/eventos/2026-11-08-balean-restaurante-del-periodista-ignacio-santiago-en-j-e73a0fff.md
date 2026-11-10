@@ -3,7 +3,7 @@ title: 'Balean restaurante del periodista Ignacio Santiago en Juchitán, Oaxaca:
   pedían 50 mil pesos’'
 slug: 2026-11-08-balean-restaurante-del-periodista-ignacio-santiago-en-j-e73a0fff
 aliases: []
-date: '2026-11-09T00:17:29Z'
+date: '2026-11-10T00:59:51Z'
 event_id: evt_20261108_e73a0fff
 topic_category: POLITICA_GOBIERNO
 topic_label: Política y Gobierno
@@ -15,16 +15,16 @@ categorias:
 categoria_humana: false
 geographic_scope: NATIONAL
 scope_label: Nacional (México)
-verification_state: CONFIRMED
-verification_label: Confirmado (≥2 orígenes independientes)
-review_status: AUTO_PUBLISHED
-review_badge: Agrupación automática — Pendiente de validación editorial
+verification_state: UNCONFIRMED_REPORT
+verification_label: Reportado sin confirmar
+review_status: HUMAN_APPROVED
+review_badge: Validado y revisado por editor humano
 independent_origins_count: 2
 media_count: 2
 fuentes_count: 2
 origenes_independientes: 2
 origen_eco: ''
-clustering_confidence: 0.92
+clustering_confidence: 0.5
 origins:
 - origin_id: orig_7db903f37518be3a
   origin_type: ORIGINAL_MEDIA_REPORTING
@@ -33,11 +33,11 @@ origins:
   detection_method: OWNERSHIP_GROUP_COLLAPSE
   detection_method_label: Agrupado por grupo empresarial propietario
   attributed_articles_count: 1
-- origin_id: orig_bcffb7e680d2b4ef
+- origin_id: orig_de22c59071ca4030
   origin_type: ORIGINAL_MEDIA_REPORTING
   origin_type_label: Cobertura de Medio / Grupo Editorial
-  actor_display_name: Editorial Luces del Siglo (Península de Yucatán) (Luces del
-    Siglo (Península))
+  actor_display_name: El Universal Compañía Periodística Nacional S.A. de C.V. (El
+    Universal)
   detection_method: OWNERSHIP_GROUP_COLLAPSE
   detection_method_label: Agrupado por grupo empresarial propietario
   attributed_articles_count: 1
@@ -58,19 +58,20 @@ articles:
   is_near_duplicate_echo: false
   categoria_principal: sin-clasificar
   categorias_secundarias: []
-- article_id: art_828ecd51a5f28f95
-  source_id: yuc_lucesdelsiglo
-  source_name: Luces del Siglo (Península)
-  ownership_group_id: GRP_LUCES_DEL_SIGLO
-  ownership_group_name: Editorial Luces del Siglo (Península de Yucatán)
-  editorial_stance_note: Periodismo regional de investigación, salud, ciencia y sociedad
-    en la Península.
-  title_plain: Balean restaurante de reportero en Juchitán
-  excerpt_plain: Hombres armados en una motocicleta atacaron a tiros el negocio de
-    José Ignacio Santiago Martínez en Juchitán de Zaragoza, Oaxaca, después que le
-    exigieron ‘cobro de piso’ de 50 mil pesos.
-  canonical_url: https://lucesdelsiglo.com/2026/11/08/balean-restaurante-de-reportero-en-juchitan-oaxaca/
-  published_at_utc: '2026-11-09T00:17:29Z'
+- article_id: art_384760318709bd16
+  source_id: mex_eluniversal
+  source_name: El Universal
+  ownership_group_id: GRP_EL_UNIVERSAL_MEX
+  ownership_group_name: El Universal Compañía Periodística Nacional S.A. de C.V.
+  editorial_stance_note: Diario nacional de información general, política, estados
+    y sociedad.
+  title_plain: Periodista Ignacio Santiago cierra su restaurante en Juchitán tras
+    ataque armado; denuncia extorsión y falta de condiciones de seguridad
+  excerpt_plain: El director de Pluma Digital Noticias anunció el cierre definitivo
+    de Rockaway, luego de que hombres armados dispararan contra el establecimiento
+    el 7 de noviembre
+  canonical_url: https://www.eluniversal.com.mx/estados/periodista-ignacio-santiago-cierra-su-restaurante-en-juchitan-tras-ataque-armado-denuncia-extorsion-y-falta-de-condiciones-de-seguridad/
+  published_at_utc: '2026-11-09T19:49:16Z'
   is_near_duplicate_echo: false
   categoria_principal: sin-clasificar
   categorias_secundarias: []
@@ -90,7 +91,7 @@ corrections: []
 history:
 - previous_state: null
   new_state: SINGLE_SOURCE
-  changed_at_utc: '2026-11-09T02:02:15Z'
+  changed_at_utc: '2026-11-10T00:41:02Z'
   changed_by: PIPELINE_RULE
   rule_engine_version: v1.0.0
   reason_components_json: '{"independent_origins_count": 1, "media_count": 1, "origin_types":
@@ -98,14 +99,21 @@ history:
     "has_dispute_signal": false, "has_retraction_signal": false, "clustering_confidence":
     1.0, "in_gray_zone": false}'
 - previous_state: SINGLE_SOURCE
-  new_state: CONFIRMED
-  changed_at_utc: '2026-11-09T02:02:47Z'
+  new_state: UNCONFIRMED_REPORT
+  changed_at_utc: '2026-11-10T00:41:10Z'
   changed_by: PIPELINE_RULE
   rule_engine_version: v1.0.0
   reason_components_json: '{"independent_origins_count": 2, "media_count": 2, "origin_types":
-    ["ORIGINAL_MEDIA_REPORTING"], "is_sensitive": false, "sensitivity_reasons": [],
+    ["ORIGINAL_MEDIA_REPORTING"], "is_sensitive": true, "sensitivity_reasons": ["CRIME_OR_VIOLENCE"],
     "has_dispute_signal": false, "has_retraction_signal": false, "clustering_confidence":
-    0.9241, "in_gray_zone": false}'
+    0.5003, "in_gray_zone": true}'
+- previous_state: UNCONFIRMED_REPORT
+  new_state: UNCONFIRMED_REPORT
+  changed_at_utc: '2026-11-10T00:59:51Z'
+  changed_by: EDITOR_HUMAN
+  rule_engine_version: v1.0.0
+  reason_components_json: '{"action": "HUMAN_APPROVAL", "previous_review_status":
+    "PENDING_HUMAN", "editorial_note": "", "approved_at_utc": "2026-11-10T00:59:51Z"}'
 ---
 
-Evento cubierto por 2 medio(s) a partir de 2 origen(es) independiente(s). Estado de verificación: Confirmado (≥2 orígenes independientes).
+Evento cubierto por 2 medio(s) a partir de 2 origen(es) independiente(s). Estado de verificación: Reportado sin confirmar.
