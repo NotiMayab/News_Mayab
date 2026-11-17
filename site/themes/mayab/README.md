@@ -12,10 +12,9 @@ Tema editorial estático para **Mayab**, enfocado en la trazabilidad de orígene
 - **Modo Claro / Oscuro con contraste verificado:**
   - Claro: fondo papel `#FAF8F4`, texto `#16140F`, acento terracota `#B5502E` (ratio 4.8:1, pasa AA).
   - Oscuro: fondo `#14130F`, texto `#ECE8DE`, acento terracota `#DE734C` (ratio 5.9:1, pasa AA).
-- **Liquid Glass acotado:**
-  - Únicamente en elementos flotantes: barra de navegación superior sticky, filtro de categorías y popovers de detalle (`backdrop-filter: blur(14px) saturate(140%)`).
-  - Fallback sólido con `@supports not (backdrop-filter: blur(1px))`.
-  - Desactivado automáticamente con `@media (prefers-reduced-transparency: reduce)`.
+- **Diseño Híbrido: Brutalismo Editorial + Morfismo de Vidrio en Capas Flotantes:**
+  - **Estructura y Retícula con Brutalismo Editorial:** Inspirado en las gacetas y periódicos de registro clásicos (*Swiss Grid*). Filetes estructurales nítidos (`border: 1px solid var(--color-border)`, encabezados de sección `2px solid var(--color-text)`), esquinas arquitectónicas (`border-radius: 2px`), microinteracciones táctiles limpias (`translate(-1px, -1px)` con sombra de bloque sólida proyectada) y cero sombras borrosas que resten legibilidad.
+  - **Morfismo de Vidrio (Liquid/Frosted Glass) Acotado a Elementos Flotantes:** Barra de navegación superior fija (`.site-nav-sticky`), filtro sticky de categorías (`.cat-bar-sticky`) y popovers explicativos de orígenes (`.popover-glass`), implementados con `backdrop-filter: blur(16px-20px) saturate(140%-160%)`, brillo especular interior y fallback sólido automático mediante `@supports not (backdrop-filter: blur(1px))` y `@media (prefers-reduced-transparency: reduce)`.
 - **Accesibilidad:** Soporta `prefers-reduced-motion`, `prefers-color-scheme`, objetivos táctiles $\ge 44$ px, enlace "Saltar al contenido" y navegación por teclado.
 
 ---

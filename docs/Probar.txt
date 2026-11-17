@@ -1,0 +1,3 @@
+Probar algoritmo de porter para las coincidencias
+Probar el indice de jaccard
+Similitud coseno
